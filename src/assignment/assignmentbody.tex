@@ -6,76 +6,54 @@
 
 \section{主要任务与目标}
 
-\begin{tcolorbox}
-	首先，用一两句话简要描述该毕设需完成的主要任务（要做什么）；其次，列出该任务
-	所要达成的目标、预期效果等（做到怎样）。例如：
-\end{tcolorbox}
-
-本次毕设课题主要任务为：利用微软的WPF（Windows Presentation Foundation）与.NET框
-架，打造一款跨平台桌面任务管理应用，该应用致力于为用户的生活和办公带来便捷。现将
-其应达到的目标与效果简要描述如下：
+本次毕设课题主要任务为：基于Slidev框架设计并开发一款支持多人协作的智能幻灯片平台，整合AI辅助功能，实现云端资源管理、版本控制及Slidev格式深度兼容等核心功能。现将其应达到的目标与效果简要描述如下：
 \begin{enumerate}
-	\item 具备简要记录并存储备忘录功能；
-	\item 具备添加删除待办事项功能；
-	\item 具备设置日程并在适当时机提醒用户的功能；
-	\item 用户界面应简洁、美观，交互人性化。
+    \item 支持多人实时协同编辑、角色权限分配及版本控制与回溯功能；
+    \item 实现云端统一存储图片、模板等资源，支持团队共享与快速调用；
+    \item 提供AI辅助内容生成、格式优化等智能制作功能；
+    \item 深度兼容Slidev原生功能，包括Latex公式、代码高亮、Mermaid图表等；
 \end{enumerate}
 
 \section{主要内容与基本要求}
 
-\begin{tcolorbox}
-	首先，展开描述上述任务的主要内容（必要时可画出模块关系图）；其次，列出为完成
-	上述内容应做到满足哪些基本要求（可在此处引用主要参考文献）。例如：
-\end{tcolorbox}
-
-在本次毕设课题作品中，建议前端基于WPF与Prism框架，以C\#作为主要编程语言，结合
-XAML 语言呈现前端控件效果；后端需构建SQL数据库，可借助阿里云免费服务器实现云端存
-储。具体要求如下：
+本平台开发需遵循软件工程规范，依次完成需求分析、架构设计、数据库设计及界面布局规划，具体内容与要求如下：
 \begin{enumerate}
-	\item 阅读WPF与.NET框架的相关文献
-	      \cite{chen1980zhongguo,chen2005zhulu,chu2004tushu,yuan2012lanc,lamport1986document,niu2013zonghe,Bohan1928,Dubrovin1906,hls2012jinji,wikibook2014latex}、
-	      整理成文献综述，并学习相关技术；
-	\item 尽量设计合理的后端数据库表结构，保障数据存储的高效性；
-	\item 尽量合理利用设计模式（如MVVM模式），保证代码结构清晰、模块划分合理，提
-	      升代码的可读性与可维护性，便于后期维护与扩展；
-	\item 遇到问题应及时与指导教师沟通，尽量按进度完成任务。
+    \item 主要内容：
+    \begin{enumerate}
+        \item 支持多人实时协同编辑、角色权限分配及版本控制与回溯功能；
+        \item 实现云端统一存储图片、模板等资源，支持团队共享与快速调用；
+        \item 提供AI辅助内容生成、格式优化等智能制作功能；
+        \item 深度兼容Slidev原生功能，包括Latex公式、代码高亮、Mermaid图表等；
+    \end{enumerate}
+    \item 基本要求：
+    \begin{enumerate}
+        \item 多人协作管理模块：实现多人实时协同编辑功能，采用基于角色的权限分配系统\cite{zhang2013rbac,wu2002rbacweb,kuhlmann2013uml}，参考UML权限设计规范\cite{kuhlmann2013uml}及软件重构可行性经验\cite{li2011reengineering}，支持基础角色权限设置；
+        \item 云端资源管理模块：搭建云端资源存储与共享功能，参考文档共享系统方案\cite{li2015filenet}及软件项目文档管理系统的资源组织形式\cite{zhang2024javaweb}，实现资源的基础检索与调用；
+        \item AI 辅助功能模块：集成基础的 AI 内容生成、格式优化工具，参考插件化设计思路\cite{cai2022microfrontend}保障功能扩展性，提升幻灯片制作便捷性；
+        \item 按照基础软件工程流程完成编码实现、简单模块测试与系统优化，参考云资源管理中的应用实践\cite{wei2025rbaccloud}及WEB文档协作系统设计思路\cite{tan2012web,li2020cscw}，确保平台稳定运行，满足团队协作制作幻灯片的核心需求。
+    \end{enumerate}
 \end{enumerate}
 
 \section{毕业设计进度安排}
-
-\begin{tcolorbox}
-	按学校要求的时间节点合理安排进度即可，例如：
-\end{tcolorbox}
-
 \begin{table}[!htbp]
 	\centering
 	\vspace{-2ex}
 	\small% fontsize
-	% \setlength{\tabcolsep}{4pt}% column separation
-	% \renewcommand{\arraystretch}{1.2}%row space 
 	\begin{tabular}{cp{25em}p{10.5em}}
 		\toprule
 		\textbf{序号} & \multicolumn{1}{c}{\textbf{进度}} & \multicolumn{1}{c}{\textbf{起止时间}} \\
 		\midrule
-		1           & 任务下达                            & 2024.11.29 $\sim$ 2024.12.06      \\
-		2           & 完成开题报告，文献综述等文档撰写工作              & 2024.12.06 $\sim$ 2024.12.27      \\
-		3           & 完成开题答辩                          & 2024.12.27 $\sim$ 2025.01.02      \\
-		4           & 初步完成整体设计与开发任务                   & 2025.01.02 $\sim$ 2025.04.01      \\
-		5           & 完成中期检查                          & 2025.04.01 $\sim$ 2025.04.15      \\
-		6           & 完成项目开发并撰写毕业论文                   & 2025.04.15 $\sim$ 2025.05.01      \\
-		7           & 准备毕业设计答辩工作                      & 2025.05.01 $\sim$ 2025.05.17      \\
-		8           & 完成答辩并上交材料                       & 2025.05.17 $\sim$ 2025.05.20      \\
+		1           & 任务下达                          & 2025.11.27 $\sim$ 2025.12.03      \\
+		2           & 开题报告、文献综述等文档撰写      & 2025.12.06 $\sim$ 2025.12.27      \\
+		3           & 完成开题答辩                      & 2025.12.27 $\sim$ 2026.01.02      \\
+		4           & 整体设计与初步开发                & 2026.01.02 $\sim$ 2026.04.01      \\
+		5           & 完成中期检查                      & 2026.04.01 $\sim$ 2026.04.15      \\
+		6           & 项目开发收尾与毕业论文撰写        & 2026.04.15 $\sim$ 2026.05.01      \\
+		7           & 答辩准备与成果整理                & 2026.05.01 $\sim$ 2026.05.17      \\
+		8           & 完成答辩与材料归档                & 2026.05.17 $\sim$ 2026.05.20      \\
 		\bottomrule
 	\end{tabular}
 	\vspace{-2ex}
 \end{table}
 
 \section{主要参考文献}
-
-\begin{tcolorbox}
-	因官方并无明确要求参考文献数量，为保险起见，建议按毕业论文要求处理，即总量至
-	少10篇（包括至少2篇外文文献）。
-\end{tcolorbox}
-
-% Should be empty here, since the bibliograpy will be generated automatically
-% based on the citations in the main body.
