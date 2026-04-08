@@ -11,24 +11,12 @@
 % 4. 研究的创新点和意义
 
 \begin{chineseabstract}
-	{浙江传媒学院；毕业论文；\hologo{LaTeX}模板；排版工具；学术写作}本文是浙江传媒学院本
-	科毕业论文模板cuzthesis的使用说明文档。主要内容为介绍\hologo{LaTeX}文档类
-	cuzthesis的用法，以及撰写毕业论文的一些建议和指导。
+	{APPT；AI驱动的幻灯片协作编辑平台；实时协作；Yjs；Slidev；权限管理}随着信息技术的快速发展和数字化办公的普及，传统幻灯片制作工具在团队协作、版本控制和智能辅助方面存在明显局限性。为解决这些问题，本研究设计并实现了APPT（AI驱动的幻灯片协作编辑平台），该平台基于现代Web技术栈，整合实时协作技术、权限管理系统、AI辅助功能和简化版本控制，为技术团队和教育工作者提供高效的幻灯片制作与协作解决方案。
 
-	\begin{leftbar}
-		\noindent\textbf{建议：}摘要是全文的浓缩，要涵盖文章的主要内容，一般应保
-		证字数在300以上，须包括如下三点：做了什么、如何做的、做得怎样。具体而
-		言：\textbf{第一段}，可以用一句话概述课题背景；接着再用一两句话表明做的
-		东西。\textbf{第二段}，可以用三五句话描述如何做的，包括做这个东西分几步
-		（或几个模块），每步（模块）的任务，以及相邻步（或相关模块）之间的关系。
-		\textbf{最后一段}，用两三句话概括作品的亮点，以及效果怎样，包括可能的市
-		场反响、用户体验等等。
+平台采用React 19 + TypeScript + Vite构建前端，集成CodeMirror 6编辑器和Yjs协作库；后端采用NestJS框架，提供RESTful API和基于Hocuspocus的WebSocket协作服务。系统实现了实时协作编辑功能，支持多用户同时编辑和实时光标追踪；设计了基于RBAC的四级权限管理系统，实现细粒度的文档访问控制；集成了AI辅助功能，支持基于大语言模型的幻灯片内容生成和语法适配；构建了简化的版本控制系统，提供版本历史查看、差异对比和回滚功能。
 
-		\noindent{}需要注意的是，既然是全文的浓缩，就不要出现类似“本项目将要做
-		到”或者“详情见正文”等此类语句，因其并非正文中应出现的说法（既然已经是正
-		文的浓缩，再说详情见正文就产生了矛盾）。此外，语言上应注意言简意赅，语气
-		上应平实无感。
-	\end{leftbar}
+APPT平台具有创新性的协作架构设计，通过Yjs CRDT算法实现无冲突的实时协作编辑，降低非技术用户的使用门槛。平台在实际应用中表现出良好的稳定性和用户体验，能够显著提高团队协作效率，降低技术使用门槛，增强内容创作能力，促进知识共享与管理。该研究成果为智能幻灯片协作平台的设计与开发提供了理论参考和实践指导。
+
 \end{chineseabstract}
 %---------------------------------------------------------------------------%
 %-                                                                         -%
@@ -43,32 +31,10 @@
 % 4. Innovation points and significance of the research
 
 \begin{englishabstract}
-	{Communication University of Zhejiang (CUZ); Thesis; \LaTeX{} Template;
-		Typesetting Tool; Academic Writing} This documentation serves as a comprehensive
-	guide for the \LaTeX{} class \texttt{cuzthesis}, which is a specialized thesis
-	template for the Communication University of Zhejiang. The main content covers
-	how to effectively use the \texttt{cuzthesis} template, along with valuable
-	suggestions and guidance for writing an academic thesis.
+		{APPT; AI-driven Slideshow Collaboration Platform; Real-time Collaboration; Yjs; Slidev; Permission Management}With the rapid development of information technology and the popularization of digital office, traditional slideshow creation tools have significant limitations in team collaboration, version control, and intelligent assistance. To address these issues, this research designs and implements APPT (AI-driven Slideshow Collaboration Platform), a modern web technology-based platform that integrates real-time collaboration technology, permission management systems, AI-assisted features, and simplified version control, providing efficient slideshow creation and collaboration solutions for technical teams and educators.
 
-	\begin{leftbar}
-		\noindent\textbf{Suggestions:} Abstract is the abstraction of the whole
-		thesis, which should cover the main aspects of the thesis, and should
-		contain no less than 300 words, involving 3 aspects: what is done, how
-		to do it, and what about the result. Specifically, \textbf{1st
-			paragraph}, introduce the background by 1 sentence, and what is done by
-		1 or 2 sentence(s). \textbf{2nd paragraph}, describe how to do it by 3
-		to 5 sentences, including how many steps (modules) are used, what each
-		step (module) does, and the relationship between adjacent steps (related
-		modules). \textbf{Last paragraph}, extract the most important features
-		of the work and its effect by 2 or 3 sentences, including possible
-		responses of markets, user experiences, etc..
+The platform adopts React 19 + TypeScript + Vite for front-end development, integrating CodeMirror 6 editor and Yjs collaboration library; the back-end uses NestJS framework to provide RESTful API and Hocuspocus-based WebSocket collaboration services. The system implements real-time collaborative editing functionality, supporting multi-user simultaneous editing and real-time cursor tracking; designs an RBAC-based four-level permission management system for fine-grained document access control; integrates AI-assisted features supporting large language model-based slideshow content generation and syntax adaptation; constructs a simplified version control system providing version history viewing, difference comparison, and rollback functionality.
 
-		\noindent Note that, since it is the abstraction of the whole thesis,
-		expressions such as ``this project will'' or ``readers are referred to
-		the body of thesis for details'' should be avoided, for this saying
-		should not appear in the body of thesis (now that this is the
-		abstraction, a refering to the body of thesis generates a conflict).
-		Besides, the language should be neat, and the tone should be plain and
-		without emotions.
-	\end{leftbar}
+APPT platform features innovative collaboration architecture design, implementing conflict-free real-time collaborative editing through Yjs CRDT algorithms, lowering the barrier for non-technical users. The platform demonstrates good stability and user experience in practical applications, significantly improving team collaboration efficiency, lowering technical barriers, enhancing content creation capabilities, and promoting knowledge sharing and management. This research provides theoretical reference and practical guidance for the design and development of intelligent slideshow collaboration platforms.
+
 \end{englishabstract}

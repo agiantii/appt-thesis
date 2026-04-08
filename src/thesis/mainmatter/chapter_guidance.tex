@@ -1,892 +1,375 @@
-    \section{环境配置与安装}\label{sec:installation}
-
-    在开始使用 cuzthesis 模板之前，需要先配置 \LaTeX{} 环境并安装必要的软件。本节将介绍环境配置和模板安装的步骤。
-
-    \subsection{\LaTeX{} 环境配置}\label{sub:latex-environment}
-
-    \LaTeX{} 是一种基于 \TeX{} 的排版系统，用于生成高质量的科技和学术文档。要使用 cuzthesis 模板，首先需要安装 \LaTeX{} 发行版。
-
-    \begin{itemize}
-        \item \textbf{Windows 系统}：推荐安装 TeX Live 或 MiKTeX。
-            \begin{itemize}
-                \item TeX Live：访问 \url{https://tug.org/texlive/} 下载并安装完整版 TeX Live。
-                \item MiKTeX：访问 \url{https://miktex.org/} 下载并安装 MiKTeX。
-            \end{itemize}
-
-        \item \textbf{macOS 系统}：推荐安装 MacTeX。
-            \begin{itemize}
-                \item 访问 \url{https://tug.org/mactex/} 下载并安装 MacTeX。
-                \item 也可以通过 Homebrew 安装：\verb|brew install --cask mactex|
-            \end{itemize}
-
-        \item \textbf{Linux 系统}：推荐安装 TeX Live。
-            \begin{itemize}
-                \item Ubuntu/Debian：\verb|sudo apt install texlive-full|
-                \item Fedora：\verb|sudo dnf install texlive-scheme-full|
-                \item Arch Linux：\verb|sudo pacman -S texlive-most texlive-lang|
-            \end{itemize}
-    \end{itemize}
-
-    \subsection{编辑器选择}\label{sub:editor-choice}
-
-    \LaTeX{} 文档可以使用任何文本编辑器编写，但使用专门的 \LaTeX{} 编辑器或配置好的代码编辑器可以提高工作效率。以下是一些推荐的编辑器：
-
-    \begin{itemize}
-        \item \textbf{VS Code}：搭配 \LaTeX{} Workshop 插件，提供语法高亮、自动补全、实时预览等功能。
-        \item \textbf{TeXstudio}：集成开发环境，提供丰富的编辑功能和内置预览。
-        \item \textbf{Overleaf/TeXPage}：基于网页的在线 \LaTeX{} 编辑器，支持协作编辑。
-        \item \textbf{Texmaker/TeXworks}：轻量级编辑器，适合初学者使用。
-    \end{itemize}
-
-    \subsection{获取模板}\label{sub:get-template}
-
-    cuzthesis 模板可以从 GitHub 仓库获取：
-
-    \begin{itemize}
-        \item 访问 \url{https://github.com/xiehao/CUZThesis} 下载最新版本的模板。
-        \item 点击 "Code" 按钮，然后选择 "Download ZIP"，或者使用 Git 克隆仓库：
-        \begin{verbatim}
-    git clone https://github.com/xiehao/CUZThesis.git
-        \end{verbatim}
-        \item 解压下载的文件到本地目录。
-    \end{itemize}
-
-    \begin{leftbar}
-        \noindent\textbf{注意：}建议下载整个 cuzthesis 文件夹，而不是单独的文档类文件。cuzthesis 模板不仅提供了相应的类文件，还包括参考文献样式、示例图片等完成学位论文所需的所有组件。
-    \end{leftbar}
-\begin{cuzchapter}{使用指南与示例}{chap:guide}
+\begin{cuzchapter}{使用指南}{chap:guide}
 
     %---------------------------------------------------------------------------%
-    %->> 使用指南章节写作指南
+    %->> APPT平台使用指南
     %---------------------------------------------------------------------------%
-    % 本章主要提供模板的使用指南和示例，帮助用户快速上手
+    % 本章主要提供APPT平台的使用指南和示例，帮助用户快速上手
     % 一个完整的使用指南章节应包含以下几个部分：
-    % 1. 环境配置：介绍模板的安装和环境配置
-    % 2. 基本用法：介绍模板的基本使用方法
-    % 3. 高级功能：介绍模板的高级功能和定制方法
-    % 4. 常见问题：解答用户可能遇到的常见问题
-    % 5. 使用示例：提供各种排版元素的使用示例
+    % 1. 平台概述与快速入门：介绍平台基本概念和快速开始方法
+    % 2. 核心功能使用指南：详细说明实时协作、权限管理、AI辅助等核心功能的使用方法
+    % 3. 高级功能详解：介绍版本控制、代码片段、空间管理等高级功能
+    % 4. 最佳实践与技巧：提供使用技巧和常见问题的解决方案
 
-    \section{模板概述}\label{sec:overview}
+    \section{平台概述与快速入门}\label{sec:overview-quickstart}
 
-    cuzthesis 是为浙江传媒学院本科生设计的毕业论文 \LaTeX{} 模板，旨在帮助学生高效、规范地完成毕业论文的排版工作。本章将详细介绍模板的使用方法和各种功能，帮助用户快速上手并充分利用模板的各项特性。
+    APPT（AI驱动的幻灯片协作编辑平台）是基于现代Web技术构建的智能幻灯片协作平台，旨在为技术团队和教育工作者提供高效的幻灯片制作与协作解决方案。本章将详细介绍平台的使用方法和各项功能，帮助用户快速上手并充分利用平台的协作与创作能力。
 
-    为方便使用及更好地展示 \LaTeX{} 排版的优秀特性，cuzthesis 对框架和文件体系进行了细致地处理，尽可能地对各个功能和板块进行了模块化和封装。对于初学者来说，众多的文件目录也许一开始让人觉得有些无所适从，但阅读完本章的使用说明后，会发现原来使用思路是简单而清晰的。
+    APPT平台采用前后端分离的微服务架构，前端基于React 19 + TypeScript + Vite构建，集成CodeMirror 6编辑器和Yjs协作库；后端采用NestJS框架，提供RESTful API和基于Hocuspocus的WebSocket协作服务。平台支持实时协作编辑、细粒度权限管理、AI辅助创作和简化版本控制等核心功能。
 
-    当对 \LaTeX{} 有一定的认识和了解后，用户会发现其相对 Word 类排版系统极具吸引力的优秀特性。若是初学者，请不要退缩，请稍加尝试和坚持，以领略到 \LaTeX{} 的非凡魅力，并可以通过阅读相关资料如 \LaTeX{} Wikibook\citep{wikibook2014latex}来完善自己的使用知识。
+    \subsection{注册与登录}
 
-
-    \section{快速入门}\label{sec:quickstart}
-
-    本节将介绍如何快速开始使用 cuzthesis 模板撰写论文。
-
-    \subsection{编译模板}
-
-    首次使用模板时，建议先编译一次模板，确保环境配置正确。编译模板的方法有以下几种：
+    首次使用APPT平台需要进行用户注册和登录：
 
     \begin{itemize}
-        \item \textbf{使用编译脚本}：
-        \begin{itemize}
-            \item \textbf{Windows}：双击运行 scripts/run.bat 脚本。
-            \item \textbf{Linux 或 macOS}：在终端中执行以下命令：
-            \begin{verbatim}
-chmod +x ./scripts/run.sh
-./scripts/run.sh -xa cuzthesis.tex
-            \end{verbatim}
-            其中，第一个参数 -xa 指定编译模式（x 表示使用 \hologo{XeLaTeX}，a 表
-            示使用 \hologo{BibTeX}），第二个参数 cuzthesis.tex 指定要编译的文件
-            名（包含 .tex 扩展名）。
-        \end{itemize}
+        \item \textbf{注册账号}：访问平台网址，点击注册按钮，输入邮箱地址、用户名和密码完成注册。平台采用注册码机制，需要有效的注册码才能完成注册流程。
 
-        \item \textbf{使用 \LaTeX{} 编辑器}：
-        \begin{itemize}
-            \item 打开 cuzthesis.tex 文件。
-            \item 选择 \hologo{XeLaTeX} 编译引擎。
-            \item 点击编译按钮或使用快捷键（VS Code 中为 Ctrl+Alt+B）。
-        \end{itemize}
+        \item \textbf{登录系统}：注册成功后，使用用户名和密码登录系统。平台采用JWT认证机制，登录成功后系统会保存认证令牌，无需重复登录。
+
+        \item \textbf{工作台界面}：登录后进入工作台界面，工作台显示用户的幻灯片空间、最近编辑的文档、协作邀请等信息，是用户的主要操作入口。
     \end{itemize}
 
-    编译成功后，将在 cache 文件夹中生成 PDF 文档。如果编译过程中遇到问题，请参考本章后面的"常见问题"部分。
+    \subsection{创建第一个幻灯片}
 
-    \subsection{修改论文信息}
+    快速创建第一个幻灯片的步骤如下：
 
-    编译成功后，下一步是修改论文的基本信息。打开 src/common/initialization.tex 文件，修改以下信息：
-
-    \begin{itemize}
-        \item 论文标题：修改 \verb|\title{}| 和 \verb|\englishtitle{}|
-        \item 作者信息：修改 \verb|\author{}| 和 \verb|\authorid{}|
-        \item 指导教师信息：修改 \verb|\advisor{}| 和 \verb|\advisortitle{}|
-        \item 学院和专业信息：修改 \verb|\major{}|、\verb|\class{}| 和 \verb|\institute{}|
-        \item 毕业年份：修改 \verb|\graduateyear{}|
-    \end{itemize}
-
-    修改完成后，重新编译模板，查看修改效果。
-
-    \subsection{生成盲审版本}
-
-    在提交论文进行盲审时，需要隐去作者、指导教师、学校等相关信息。cuzthesis 模板提供了盲审选项，只需在 cuzthesis.tex 文件中添加 blinded 选项即可：
-
-    \begin{listing}[htbp]
-        \caption{添加盲审选项}
-        \label{code:blinded-option}
-        \begin{texcode}
-            % 正式版本
-            \documentclass[singlesided,cuzhdr]{styles/cuzthesis}
-
-            % 盲审版本
-            \documentclass[singlesided,cuzhdr,blinded]{styles/cuzthesis}
-        \end{texcode}
-    \end{listing}
-
-    添加盲审选项后，重新编译模板，生成的 PDF 文档将隐去作者、指导教师、学校等相关信息。
-
-    \section{文档目录简介}\label{sec:directory}
-
-    本部分主要介绍 cuzthesis 工程的目录结构，以帮助读者理解各部分的含义和用途。了解文档的组织结构对于高效使用模板和维护论文至关重要。
-
-    \subsection{目录结构概览}\label{sub:directory-overview}
-
-    cuzthesis 模板采用模块化的目录结构，将不同功能的文件分门别类地组织在不同的文件夹中，使得整个工程结构清晰、易于维护。总体结构如下所示：
-
-    \begingroup
-    \small\linespread{1}
-    \begin{center}
-        \begin{verbatim}
-            ├── bibliography
-            │   ├── gbt7714-plain.bst
-            │   ├── gbt7714-unsrt.bst
-            │   └── references.bib
-            ├── cache
-            │   └── ...
-            ├── cuzassignment.tex
-            ├── cuzopening.tex
-            ├── cuzreview.tex
-            ├── cuzthesis.tex
-            ├── guidance.pdf
-            ├── figures
-            │   └── ...
-            ├── latexmkrc
-            ├── README.md
-            ├── scripts
-            │   ├── clean.sh
-            │   ├── run.bat
-            │   └── run.sh
-            ├── src
-            │   ├── assignment
-            │   │   └── assignmentbody.tex
-            │   ├── common
-            │   │   └── initialization.tex
-            │   ├── opening
-            │   │   └── openingbody.tex
-            │   ├── review
-            │   │   └── reviewbody.tex
-            │   └── thesis
-            │       ├── backmatter
-            │       │   ├── acknowledgement.tex
-            │       │   └── appendices.tex
-            │       ├── frontmatter
-            │       │   └── abstracts.tex
-            │       └── mainmatter
-            │           ├── chapter_conclusions.tex
-            │           ├── chapter_design.tex
-            │           ├── chapter_guidance.tex
-            │           ├── chapter_introduction.tex
-            │           ├── chapter_literature.tex
-            │           └── mainbody.tex
-            └── styles
-                ├── artracom.sty
-                ├── artratex.sty
-                ├── cuzassignment.cls
-                ├── cuzbase.cls
-                ├── cuzopening.cls
-                ├── cuzreview.cls
-                ├── cuzthesis.cfg
-                └── cuzthesis.cls
-        \end{verbatim}
-    \end{center}
-    \endgroup
-
-    这种目录结构设计遵循了关注点分离的原则，将内容、样式和配置分开，使得用户可以专注于内容创作，而不必过多关注格式和排版细节。下面将详细介绍各个文件夹和关键文件的功能和用途。
-
-    \subsection{主文档 (cuzthesis.tex)}\label{sub:cuzthesis}
-
-    cuzthesis.tex 是整个论文的主文档，它设计和规划了论文的整体框架，通过阅读这个文件可以了解整个论文的结构和组织方式。主文档主要负责以下几个方面：
-
-    \begin{itemize}
-        \item \textbf{文档类声明}：指定使用 cuzthesis 文档类及其选项，如单面/双面打印、页眉页脚样式等。
-        \item \textbf{宏包加载}：加载论文所需的各种宏包，如 artratex.sty、artracom.sty 等。
-        \item \textbf{文档结构组织}：通过 \verb|\input| 命令导入各个章节文件，组织论文的整体结构。
-        \item \textbf{特殊页面生成}：生成封面、声明页、目录等特殊页面。
-    \end{itemize}
-
-    一般情况下，用户只需要根据需要修改文档类选项和宏包选项，无需修改文档的整体结构。如果需要添加或删除章节，只需在主文档中添加或注释相应的 \verb|\input| 命令即可。
-
-    \subsection{编译脚本 (scripts)}\label{sub:scripts}
-
-    为了简化 \LaTeX{} 文档的编译过程，模板在 scripts 目录下提供了编译脚本，支持 Windows 和 Linux/macOS 系统：
-
-    \begin{itemize}
-        \item \textbf{Windows (run.bat)}：位于 scripts 目录下，双击此批处理文件可以一键编译生成 PDF 文档。此脚本的主要目的是帮助不熟悉 \LaTeX{} 编译过程的初学者快速上手。\textbf{注意：请勿通过邮件传播和接收此脚本，以防范 DOS 脚本的潜在安全风险。}
-
-        \item \textbf{Linux/macOS (run.sh)}：位于 scripts 目录下，在终端中运行以下命令：
-              \begin{itemize}
-                  \item \verb|./scripts/run.sh -xa cuzthesis.tex|：执行完整编译流程，生成最终 PDF 文档
-                  \item \verb|./scripts/run.sh -x cuzthesis.tex|：执行快速编译模式，适用于内容修改但无新引用的情况
-              \end{itemize}
-
-              其中，第一个参数指定编译模式（x 表示使用 \hologo{XeLaTeX}，a 表示使用 \hologo{BibTeX}），第二个参数指定要编译的文件名（包含 .tex 扩展名）。
-    \end{itemize}
-
-    \subsubsection{编译模式说明}
-
-    \begin{itemize}
-        \item \textbf{完整编译}：执行 \verb|xelatex + bibtex + xelatex + xelatex| 编译流程，确保所有交叉引用、目录、参考文献等都正确生成。首次编译或添加新引用时应使用此模式。
-
-        \item \textbf{快速编译}：仅执行一次 \verb|xelatex| 编译，适用于仅修改文本内容而未添加新引用的情况，可大幅减少编译时间。
-    \end{itemize}
-
-    对于使用集成开发环境（如 VS Code、TeXstudio 等）的用户，可以配置编辑器使用相同的编译流程，无需依赖这些脚本。
-
-    \subsection{缓存目录 (cache)}\label{sub:cache}
-
-    cache 文件夹是用于存放编译过程中生成的中间文件和最终 PDF 文档的目录。使用专门的缓存目录有以下几个优点：
-
-    \begin{itemize}
-        \item \textbf{保持工作空间整洁}：将大量的临时文件（如 .aux、.log、.toc 等）集中存放，避免它们与源文件混杂在一起，使项目目录结构更加清晰。
-
-        \item \textbf{便于清理}：需要清理临时文件时，只需删除 cache 目录中的内容，而不必担心误删源文件。
-
-        \item \textbf{提高工作效率}：整洁的工作环境有助于提高工作效率和心情，特别是在长期编写大型文档时。
-    \end{itemize}
-
-    需要注意的是，如果不使用提供的编译脚本，而是直接通过 \LaTeX{} 编译器或编辑器编译文档，则临时文件会生成在当前工作目录中，而不是 cache 目录中。在这种情况下，可以考虑使用编辑器的清理功能或手动清理临时文件。
-
-    \subsection{样式文件 (styles)}\label{sub:styles}
-
-    styles 文件夹包含 cuzthesis 文档类的定义文件和配置文件，这些文件控制论文的整体格式和样式。这部分主要由模板开发者维护，一般用户无需修改。但了解这些文件的功能有助于在需要时进行有针对性的定制。
-
-    \begin{itemize}
-        \item \textbf{cuzthesis.cls}：文档类定义文件，是整个模板的核心。它定义了论文的基本格式，包括页面布局、字体设置、章节样式、页眉页脚等。该文件基于标准的 \LaTeX{} 文档类（如 book、report 等）进行扩展，添加了符合浙江传媒学院学位论文要求的特定格式。
-
-        \item \textbf{cuzthesis.cfg}：文档类配置文件，包含各种常量标签和配置信息，如论文类型名称、学位级别、学校名称等。将这些配置信息单独放在一个文件中，便于在不修改核心文档类的情况下进行定制。
-
-        \item \textbf{artratex.sty}：常用宏包及文档设定文件，负责加载论文所需的各种宏包，并设置参考文献样式、文献引用样式、页眉页脚等。这些功能通常具有开关选项，可以在主文档中通过以下命令进行启用或禁用：
-
-              \path{\usepackage[options]{artratex}}
-
-              其中 options 可以是 numbers（顺序编码制）、super（上标顺序编码制）、authoryear（著者-出版年制）等。
-
-        \item \textbf{artracom.sty}：自定义命令文件，包含各种自定义的命令和环境，如矢量符号、张量符号、特殊环境等。这是添加新命令和宏包的推荐位置，可以在不修改核心文档类的情况下扩展功能。
-    \end{itemize}
-
-    如果需要更新模板，通常只需替换这些样式文件即可，而不必修改论文的内容文件。对于有特殊排版需求的用户，可以在了解这些文件的基础上进行有针对性的修改，但建议在修改前备份原始文件，并详细记录所做的更改。
-
-    \subsection{源文件目录 (src)}\label{sub:src}
-
-    src 目录包含论文的所有源文件，是用户在撰写论文时主要关注和修改的位置。该目录采用模块化的结构，将不同类型的内容分别放在不同的子目录中，使得整个论文结构更加清晰。
-
-    \subsubsection{公共文件 (common)}\label{subsub:common}
-
-    common 目录包含论文的公共文件，主要是 initialization.tex，它负责初始化论文中的各种信息：
-
-    \begin{itemize}
-        \item \textbf{initialization.tex}：定义论文的基本信息，如中英文标题、作者姓名、学号、专业、学院、毕业年份等。这些信息只需设置一次，后续在论文的各个部分（如封面、声明页、页眉等）都可以直接调用，确保信息的一致性。
-    \end{itemize}
-
-    \subsubsection{论文内容 (thesis)}\label{subsub:thesis}
-
-    thesis 目录包含论文的主体内容，按照论文的结构分为三个子目录：
-
-    \begin{itemize}
-        \item \textbf{frontmatter}：前置部分，包含摘要等内容
-            \begin{itemize}
-                \item \textbf{abstracts.tex}：中英文摘要，包括关键词
-            \end{itemize}
-
-        \item \textbf{mainmatter}：主体部分，包含论文的各个章节
-            \begin{itemize}
-                \item \textbf{mainbody.tex}：主体结构文件，用于组织和引用各个章节文件
-                \item \textbf{chapter\_introduction.tex}：绪论章节
-                \item \textbf{chapter\_literature.tex}：文献综述章节
-                \item \textbf{chapter\_design.tex}：设计与实现章节
-                \item \textbf{chapter\_guidance.tex}：使用指南章节
-                \item \textbf{chapter\_conclusions.tex}：结论与展望章节
-            \end{itemize}
-
-        \item \textbf{backmatter}：后置部分，包含致谢和附录等内容
-            \begin{itemize}
-                \item \textbf{acknowledgement.tex}：致谢内容
-                \item \textbf{appendices.tex}：附录内容，如源代码、数据表格等
-            \end{itemize}
-    \end{itemize}
-
-    \begin{leftbar}
-        \noindent\textbf{注意：}所有文件都必须采用 UTF-8 编码，否则编译后将出现乱码。在开始写作时，可以只在 mainbody.tex 中引用当前正在编写的章节，以加快编译速度；当论文完成后，再引用所有章节进行完整编译。
-    \end{leftbar}
-
-    \subsection{图片目录 (figures)}\label{sub:figures}
-
-    figures 目录用于存放论文中所需的各种图片和媒体文件。合理组织和管理图片文件对于保持论文的整洁和提高工作效率非常重要。
-
-    \subsubsection{支持的图片格式}\label{subsub:image-formats}
-
-    模板支持以下几种常见的图片格式：
-    \begin{itemize}
-        \item \textbf{.pdf}：适用于矢量图，如流程图、框架图、模块图等
-        \item \textbf{.png}：适用于位图，特别是需要透明背景的图片
-        \item \textbf{.jpg}：适用于照片等不需要透明背景的位图
-    \end{itemize}
-
-    其中，cuz\_logo.png 是浙江传媒学院的校徽文件，用于创建论文封面。
-
-    \subsubsection{图片管理建议}\label{subsub:image-management}
-
-    \begin{leftbar}
-        \noindent\textbf{图片格式选择建议：}
-        \begin{itemize}
-            \item 对于流程图、框架图、模块图等结构性图形，建议使用矢量格式（.pdf），以保证在任何缩放比例下都能清晰显示。
-            \item 对于屏幕截图、界面展示等，建议使用 .png 格式，特别是当需要透明背景时。
-            \item 对于照片等真实图像，可以使用 .jpg 格式以节省空间。
-            \item 原则上，能用矢量图的尽量不要用位图，以保证论文的专业性和清晰度。
-        \end{itemize}
-
-        \noindent\textbf{图片组织建议：}
-        \begin{itemize}
-            \item 不建议为各章节图片创建子目录，即使图片众多，只要采用合理的命名规则，也能方便查找。
-            \item 图片命名可以采用"章节\_内容\_序号"的方式，如"intro\_framework\_1.pdf"，这样可以直观地了解图片的归属和内容。
-            \item 对于需要多次修改的图片，建议保留原始文件（如 .ai、.psd、.vsdx 等）在单独的目录中，以便日后修改。
-        \end{itemize}
-    \end{leftbar}
-
-    \subsection{参考文献目录 (bibliography)}\label{sub:bibliography}
-
-    bibliography 目录用于存放参考文献相关的文件，包括参考文献数据库和样式文件。参考文献是学术论文的重要组成部分，正确管理和引用参考文献对于提高论文的学术性和可信度至关重要。
-
-    \subsubsection{文件说明}\label{subsub:bibliography-files}
-
-    \begin{itemize}
-        \item \textbf{references.bib}：参考文献数据库文件，用于存储所有引用文献的详细信息，如作者、标题、出版年份、期刊名称等。这是一个纯文本文件，采用 \hologo{BibTeX} 格式，可以使用文本编辑器或专门的参考文献管理软件（如 JabRef、Zotero、Mendeley 等）进行编辑。
-
-        \item \textbf{gbt7714-plain.bst}：符合 GB/T 7714-2015 国标的参考文献样式文件，用于生成"著者-出版年"制的参考文献列表。
-
-        \item \textbf{gbt7714-unsrt.bst}：符合 GB/T 7714-2015 国标的参考文献样式文件，用于生成按引用顺序排列的参考文献列表。
-    \end{itemize}
-
-    这些样式文件由 \href{https://github.com/zepinglee/gbt7714-bibtex-style}{zepinglee} 开发，满足最新的中国国家标准 GB/T 7714-2015《信息与文献 参考文献著录规则》的要求。关于参考文献样式的详细问题，请查阅开发者提供的文档，并建议适当追踪其更新。
-
-    \subsubsection{参考文献管理建议}\label{subsub:bibliography-management}
-
-    \begin{leftbar}
-        \noindent\textbf{参考文献收集与管理：}
-        \begin{itemize}
-            \item 使用专业的参考文献管理软件（如 JabRef、Zotero、Mendeley 等）可以大大简化参考文献的收集、组织和引用过程。
-            \item 从学术搜索引擎（如 Google Scholar、百度学术等）导出 \hologo{BibTeX} 格式的引用信息，可以避免手动输入错误。
-            \item 定期备份 references.bib 文件，以防数据丢失。
-        \end{itemize}
-
-        \noindent\textbf{\hologo{BibTeX} 条目命名规范：}
-        \begin{itemize}
-            \item 英文文献建议使用"第一作者姓氏+年份+首词"的格式，如"smith2020analysis"。
-            \item 中文文献建议使用"第一作者拼音+年份+首词拼音"的格式，如"zhang2019yanjiu"。
-            \item 保持命名的一致性和可读性，避免使用特殊字符和空格。
-        \end{itemize}
-    \end{leftbar}
-
-    \section{排版元素}\label{sec:elements}
-
-    学位论文中的排版元素有很多，本模板无法逐一介绍，只就公式、图表等几种常用的排
-    版元素的用法及注意事项简要说明如下，详细用法请参考相应资料。
-
-    \subsection{数学公式}\label{sub:equations}
-
-    比如Navier-Stokes方程，如式\eqref{eq:ns}和式\eqref{eq:ns-}所示：
-    \begin{equation}
-        \label{eq:ns}
-        \begin{cases}
-            \frac{\partial \rho}{\partial t} + \nabla\cdot(\rho\Vector{V}) = 0 \ \mathrm{times\ font\ test}                                            \\
-            \frac{\partial (\rho\Vector{V})}{\partial t} + \nabla\cdot(\rho\Vector{V}\Vector{V}) = \nabla\cdot\Tensor{\sigma} \ \text{times font test} \\
-            \frac{\partial (\rho E)}{\partial t} + \nabla\cdot(\rho E\Vector{V}) = \nabla\cdot(k\nabla T) + \nabla\cdot(\Tensor{\sigma}\cdot\Vector{V})
-        \end{cases}
-    \end{equation}
-    \begin{equation}
-        \label{eq:ns-}
-        \frac{\partial }{\partial t}\int\limits_{\Omega} u \, \mathrm{d}\Omega + \int\limits_{S} \unitVector{n}\cdot(u\Vector{V}) \, \mathrm{d}S = \dot{\phi}
-    \end{equation}
-
-    数学公式常用命令请见
-    \href{https://en.wikibooks.org/wiki/LaTeX/Mathematics}{WiKibook
-        Mathematics}。 artracom.sty中对一些常用数据类型如矢量矩阵等进行了封装，这样
-    的好处是如有一天需要修改矢量的显示形式，只需单独修改artracom.sty中的矢量定义
-    即可实现全文档的修改。
-
-    \subsection{表格}\label{sub:tables}
-
-    请见表~\ref{tab:sample}。制表的更多范例，请见
-    \href{https://en.wikibooks.org/wiki/LaTeX/Tables}{WiKibook Tables}。
-    \begin{table}[!htbp]
-        \caption[样表]{这是一个样表。}
-        \label{tab:sample}
-        \centering
-        \smaller[1]
-        \begin{tabular}{r|cccccccc}
-            \toprule
-            \textbf{行数} & \multicolumn{8}{c}{\textbf{这是一个跨列居中标题}} \\
-            %\cline{2-9}% partial hline from column i to column j
-            \midrule
-            第1行 & $1$ & $2$ & $3$ &$4$ & $5$ & $6$ & $7$ & $8$ \\
-            第2行 & $1$ & $2$ & $3$ &$4$ & $5$ & $6$ & $7$ & $8$ \\
-            第3行 & $1$ & $2$ & $3$ &$4$ & $5$ & $6$ & $7$ & $8$ \\
-            第4行 & $1$ & $2$ & $3$ &$4$ & $5$ & $6$ & $7$ & $8$ \\
-            \bottomrule
-        \end{tabular}
-    \end{table}
-
-    \subsection{图片}\label{sub:images}
-
-    一图胜千言，图片的插入在论文中往往能起到点睛的作用。在插入图片时，须在正文中
-    加以引用，并配上相应的解释说明。同时，应将代码放置在引用处的后方合适位置（勿
-    相距甚远）。论文中图片的插入通常分为单图和多图，下面分别加以介绍：
-
-    单图插入：假设插入名为\verb|cuz_logo.png|（后缀可以为.jpg、.png、.pdf，下
-    同）的图片，其效果如图~\ref{fig:cuz_logo}。注意，应在图的下方给出图例
-    （\verb|\caption|）。
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.5\textwidth]{cuz_logo}
-        \caption[浙传校徽]{浙传校徽，同时测试一下一个很长的标题，比如这真的是一个很长很长很长很长很长很长很长很长的标题。}
-        \label{fig:cuz_logo}
-    \end{figure}
-
-    若插图的空白区域过大，以图片\verb|shock_cyn|为例，自动裁剪如图
-    ~\ref{fig:shock_cyn}。
-    \begin{figure}[h]
-        \centering
-        % trim option's parameter order: left bottom right top
-        \includegraphics[trim = 30mm 0mm 30mm 0mm, clip, width=0.40\textwidth]{shock_cyn}
-        \caption[激波圆柱作用]{激波圆柱作用。}
-        \label{fig:shock_cyn}
-    \end{figure}
-
-    多图的插入如图~\ref{fig:oaspl}，多图不应在子图中给文本子标题，只要给序号，并
-    在主标题中进行引用说明。
-    \begin{figure}[h]
-        \centering
-        \begin{subfigure}[b]{0.35\textwidth}
-            \includegraphics[width=\textwidth]{oaspl_a}
-            \caption{}
-            \label{fig:oaspl_a}
-        \end{subfigure}%
-        ~% add desired spacing
-        \begin{subfigure}[b]{0.35\textwidth}
-            \includegraphics[width=\textwidth]{oaspl_b}
-            \caption{}
-            \label{fig:oaspl_b}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.35\textwidth}
-            \includegraphics[width=\textwidth]{oaspl_c}
-            \caption{}
-            \label{fig:oaspl_c}
-        \end{subfigure}%
-        ~% add desired spacing
-        \begin{subfigure}[b]{0.35\textwidth}
-            \includegraphics[width=\textwidth]{oaspl_d}
-            \caption{}
-            \label{fig:oaspl_d}
-        \end{subfigure}
-        \caption[总声压级]{总声压级。(a) 这是子图说明信息，(b) 这是子图说明信息，(c) 这是子图说明信息，(d) 这是子图说明信息。}
-        \label{fig:oaspl}
-    \end{figure}
-
-    \subsection{算法}\label{sub:algorithms}
-
-    算法环境在浙传毕设论文官方Word模板中未作明确要求，故暂采用通用样式，如算法
-    \ref{alg:euclid}所示，详细使用方法请参见文档
-    \href{https://ctan.org/pkg/algorithmicx?lang=en}{algorithmicx}。
-
-    \begin{algorithm}[h]
-        \small
-        \caption{Euclid算法}\label{alg:euclid}
-        \begin{algorithmic}[1]
-            \Procedure{Euclid}{$a,b$}\Comment{$a$与$b$的最大公约数}
-            \State $r\gets a\bmod b$
-            \While{$r\not=0$}\Comment{若$r$为0则可跳出循环并返回答案}
-            \State $a\gets b$
-            \State $b\gets r$
-            \State $r\gets a\bmod b$
-            \EndWhile\label{euclidendwhile}
-            \State \textbf{return} $b$\Comment{最大公约数为$b$}
-            \EndProcedure
-        \end{algorithmic}
-    \end{algorithm}
-
-    \subsection{代码段}\label{sub:listings}
-
-    在正文中引用一段代码，可使用lstlisting设置代码环境。本模板的代码环境默认配置
-    在artratex.sty，搜索关键字“\verb|\lstset|”即可找到相应配置。
-
-    观察代码段~\ref{code:samp-code}，结合前述图表设置，试图理解代码环境的编写。
-
-    % \begin{lstlisting}[
-    %         language=C++,
-    %         label=code:samp-code,
-    %         caption=一段Chromium的源代码
-    %     ]
-    %     // Start tasks to take all the threads and block them.
-    %     const int kNumBlockTasks = static_cast<int>(kNumWorkerThreads);
-    %     for (int i = 0; i < kNumBlockTasks; ++i) {
-    %         EXPECT_TRUE(pool()->PostWorkerTask(
-    %             FROM_HERE,
-    %             base::Bind(&TestTracker::BlockTask, tracker(), i, &blocker)));
-    %     }
-    %     tracker()->WaitUntilTasksBlocked(kNumWorkerThreads);
-
-    %     // Setup to open the floodgates from within Shutdown().
-    %     SetWillWaitForShutdownCallback(
-    %         base::Bind(&TestTracker::PostBlockingTaskThenUnblockThreads,
-    %                     scoped_refptr<TestTracker>(tracker()), pool(), &blocker,
-    %                     kNumWorkerThreads));
-    %     pool()->Shutdown(kNumWorkerThreads + 1);
-
-    %     // Ensure that the correct number of tasks actually got run.
-    %     tracker()->WaitUntilTasksComplete(static_cast<size_t>(kNumWorkerThreads + 1));
-    %     tracker()->ClearCompleteSequence();
-    % \end{lstlisting}
-    \begin{listing}[H]
-        \centering
-        \caption{一段Chromium的源代码}
-        \label{code:samp-code}
-        \begin{cppcode}
-            // Start tasks to take all the threads and block them.
-            const int kNumBlockTasks = static_cast<int>(kNumWorkerThreads);
-            for (int i = 0; i < kNumBlockTasks; ++i) {
-                EXPECT_TRUE(pool()->PostWorkerTask(
-                    FROM_HERE,
-                    base::Bind(&TestTracker::BlockTask, tracker(), i, &blocker)));
-            }
-            tracker()->WaitUntilTasksBlocked(kNumWorkerThreads);
-
-            // Setup to open the floodgates from within Shutdown().
-            SetWillWaitForShutdownCallback(
-                base::Bind(&TestTracker::PostBlockingTaskThenUnblockThreads,
-                            scoped_refptr<TestTracker>(tracker()), pool(), &blocker,
-                            kNumWorkerThreads));
-            pool()->Shutdown(kNumWorkerThreads + 1);
-
-            // Ensure that the correct number of tasks actually got run.
-            tracker()->WaitUntilTasksComplete(static_cast<size_t>(kNumWorkerThreads + 1));
-            tracker()->ClearCompleteSequence();
-        \end{cppcode}
-    \end{listing}
-
-    引用一两行代码，可以直接使用\texttt{verbatim}环境完成；若想调整环境中字体大
-    小，可先用\verb|\begingroup|和\verb|\endgroup|将其包住，后加入字体大小命令。
-    注意，此环境不会采取任何主动断行策略。
-
-    \begingroup
-    \small
-    \begin{verbatim}
-Error: Command failed: /bin/sh -c rsync -arvq --exclude cache
---exclude .git
-    \end{verbatim}
-    \endgroup
-
-    \begin{leftbar}
-        \noindent\textbf{建议：}原则上，论文正文中应尽可能少出现工程代码片段，建
-        议每段代码不超过一页（半页以内尤佳），并在正文中配有相应解释说明；超过一
-        页的代码片段可拆分成多个模块（函数）分别列出并解释，若实在无法拆分，可将
-        其放到附录中。
-    \end{leftbar}
-
-    \subsection{参考文献引用}\label{sub:references}
-
-    参考文献引用过程以实例进行介绍，假设需要引用名为``Document Preparation
-    System''的文献，步骤如下：
     \begin{enumerate}
-        \item 使用Google Scholar搜索Document Preparation System，在目标条目下点
-              击Cite，展开后选择Import into BibTeX打开此文章的\hologo{BibTeX}索
-              引信息，将它们copy添加到references.bib文件中（此文件位于
-              bibliography文件夹下）。
-        \item 索引第一行 \verb|@article{lamport1986document,|中
-              \verb|lamport1986document|即为此文献的label (\textbf{中文文献也必
-                  须使用英文label}，一般遵照：姓氏拼音+年份+标题第一字拼音的格式)，
-              想要在论文中索引此文献，有两种索引类型：
-              \begin{itemize}
-                  \item 文本类型：\verb|\citet{lamport1986document}|，正如此处所
-                        示\citet{lamport1986document};
-                  \item 括号类型：\verb|\citep{lamport1986document}|。正如此处所
-                        示\citep{lamport1986document}。
-              \end{itemize}
-              \textbf{多文献索引用须用英文逗号隔开}：
-              \begin{itemize}
-                  \item \verb|\citep{lamport1986document, chu2004tushu, chen2005zhulu}|，
-                        正如此处所示\citep{lamport1986document, chu2004tushu, chen2005zhulu}。
-              \end{itemize}
+        \item \textbf{选择空间}：在工作台界面点击"创建幻灯片"按钮，选择一个幻灯片空间（SlideSpace）作为文档存放位置。如果没有可用空间，可以先创建一个新空间。
+
+        \item \textbf{设置基本信息}：输入幻灯片标题，选择可见性设置（公开或私有），设置初始权限。
+
+        \item \textbf{开始编辑}：进入编辑器界面，左侧为Markdown编辑器，右侧为实时预览窗口。编辑器支持标准的Markdown语法，使用`---`分隔符创建多个幻灯片页面。
+
+        \item \textbf{保存文档}：编辑过程中系统会自动保存内容，也可使用Ctrl+S快捷键手动保存。重要修改可以使用Ctrl+Shift+S创建新的版本并添加提交消息。
     \end{enumerate}
 
-    更多例子如：\citet{walls2013drought}根据...的研究，首次提出...。其中关于
-    ...\citep{walls2013drought}，是当前中国...得到迅速发展的研究领域
-    \citep{chen1980zhongguo}。引用同一著者在同一年份出版的多篇文献时,在出版年份
-    之后用英文小写字母区别，如：\citep{yuan2012lana, yuan2012lanb,
-        yuan2012lanc}。同一处引用多篇文献时，按出版年份由近及远依次标注，中间用分号
-    分开，例如\citep{chen1980zhongguo, stamerjohanns2009mathml, hls2012jinji,
-        niu2013zonghe}。
+    \subsection{平台界面概览}
 
-    使用著者-出版年制（authoryear）式参考文献样式时，中文文献必须在
-    \hologo{BibTeX}索引信息的\textbf{key} 域（请参考references.bib文件）填写作者
-    姓名的拼音，才能使得文献列表按照拼音排序。参考文献表中的条目（不排序号），先
-    按语种分类排列，语种顺序是：中文、日文、英文、俄文、其他文种。然后，中文按汉
-    语拼音字母顺序排列，日文按第一著者的姓氏笔画排序，西文和 俄文按第一著者姓氏
-    首字母顺序排列。如中\citep{niu2013zonghe}、日\citep{Bohan1928}、英
-    \citep{stamerjohanns2009mathml}、俄\citep{Dubrovin1906}。
-
-    不同文献样式和引用样式，如著者-出版年制（authoryear）、顺序编码制
-    （numbers）、上标顺序编码制（super）可在cuzthesis.tex中修改调用artratex.sty
-    的参数实现，如：
-    \begin{itemize}
-        \item \verb+\usepackage[numbers]{artratex}+ $\%$ 文本: Jones [1]; 括号: [1]
-        \item \verb+\usepackage[super]{artratex}+ $\%$ 文本: Jones 上标[1]; 括号: 上标[1]
-        \item \verb+\usepackage[authoryear]{artratex}+ $\%$ 文本: Jones (1995); 括号: (Jones, 1995)
-        \item \verb+\usepackage[alpha]{artratex}+ $\%$ 文本: 不可用; 括号: [Jon95]
-    \end{itemize}
-
-    当前文档的默认参考文献样式为\textbf{super}。在该模式下，若希望在特定位置将上
-    标改为嵌入式标，可使用：
+    APPT平台的主要界面包括：
 
     \begin{itemize}
-        \item 文本类型：\verb|\citetns{lamport1986document,chen2005zhulu}|，正如此处
-              所示\citetns{lamport1986document,chen2005zhulu}；
-        \item 括号类型：\verb|\citepns{lamport1986document,chen2005zhulu}|；正如此处
-              所示\citepns{lamport1986document,chen2005zhulu}。
+        \item \textbf{工作台}：用户登录后的主界面，显示幻灯片空间、最近文档和快捷操作入口。
+
+        \item \textbf{编辑器}：幻灯片编辑界面，分为编辑器区域、预览区域和侧边栏功能面板。
+
+        \item \textbf{空间管理}：管理幻灯片空间（SlideSpace）的界面，支持空间创建、成员管理和文档组织。
+
+        \item \textbf{设置页面}：用户个人设置和系统配置界面，包括账户信息、主题偏好和通知设置。
+
+        \item \textbf{协作面板}：显示当前在线协作者、权限设置和评论系统的功能面板。
     \end{itemize}
 
-    参考文献索引更为详细的信息，请见
-    \href{https://github.com/zepinglee/gbt7714-bibtex-style}{zepinglee} 和
-    \href{https://en.wikibooks.org/wiki/LaTeX/Bibliography_Management}{WiKibook
-        Bibliography}。
+    \section{核心功能使用指南}\label{sec:core-features-guide}
 
-    % \nocite{*}
+    \subsection{实时协作编辑}
 
-    \section{现代 \LaTeX{} 功能}\label{sec:modern-latex}
+    APPT平台基于Yjs CRDT算法实现无冲突的实时协作编辑，支持多用户同时编辑同一文档：
 
-    \LaTeX{} 生态系统不断发展，提供了许多现代化的功能和宏包，可以大大提高论文的质量和写作效率。本节介绍一些现代 \LaTeX{} 功能的使用示例。
+    \begin{itemize}
+        \item \textbf{邀请协作者}：在编辑器右上角的协作面板中点击"邀请成员"按钮，输入协作者的邮箱地址并选择角色权限（Owner/Editor/Commenter/Viewer）。系统会自动发送邀请邮件。
 
-    \subsection{TikZ 绘图}\label{sub:tikz}
+        \item \textbf{实时光标追踪}：协作者在编辑文档时，其他用户可以在编辑器中看到其实时光标位置和选中内容，不同用户以不同颜色区分。
 
-    TikZ 是一个强大的绘图工具，可以创建高质量的矢量图形。以下是一个简单的 TikZ 绘图示例，展示了一个流程图：
+        \item \textbf{在线状态显示}：协作面板实时显示当前在线的协作者列表，包括头像、用户名和编辑状态。
+
+        \item \textbf{协同编辑操作}：多个用户可以同时编辑文档的不同部分，系统自动解决编辑冲突，确保最终一致性。所有编辑操作实时同步到所有在线用户。
+    \end{itemize}
+
+    \begin{leftbar}
+        \noindent\textbf{使用建议：}实时协作编辑特别适合团队会议、远程协作和共同创作场景。建议在开始协作前明确文档结构和编辑分工，避免多个用户同时修改同一段落造成混淆。
+    \end{leftbar}
+
+    \subsection{权限管理系统}
+
+    平台基于RBAC模型设计四级权限体系，确保文档的安全访问和合理使用：
+
+    \begin{itemize}
+        \item \textbf{角色权限定义}：
+        \begin{itemize}
+            \item \textbf{Owner}：拥有者，具有所有权限，包括删除文档、管理成员、修改权限等。
+            \item \textbf{Editor}：编辑者，可以查看、编辑文档内容，添加评论，查看版本历史。
+            \item \textbf{Commenter}：评论者，可以查看文档内容，添加评论，但不能编辑内容。
+            \item \textbf{Viewer}：查看者，只能查看文档内容和版本历史，不能进行任何修改。
+        \end{itemize}
+
+        \item \textbf{权限设置方法}：在协作面板中点击用户角色卡片，可以通过开关按钮灵活调整具体权限。平台提供了图形化的权限管理界面，简化了权限配置流程。
+
+        \item \textbf{文档可见性控制}：文档支持公开和私有两种可见性设置。公开文档可以被所有用户查看（根据权限），私有文档只有被授权的用户才能访问。
+
+        \item \textbf{权限继承机制}：在幻灯片空间（SlideSpace）中设置的权限可以继承到空间内的所有幻灯片文档，简化了批量权限管理。
+    \end{itemize}
+
+    \subsection{AI辅助创作}
+
+    APPT平台集成大语言模型API，提供智能内容生成和创作辅助：
+
+    \begin{itemize}
+        \item \textbf{AI面板调用}：使用Ctrl+I快捷键或点击编辑器侧边栏的AI图标打开AI辅助面板。AI面板提供内容生成、语法优化和创意建议等功能。
+
+        \item \textbf{内容生成功能}：在AI面板中输入需求描述（如"生成一个关于React Hooks的幻灯片大纲"），AI会自动生成符合Slidev语法的Markdown内容。生成的內容可以直接插入到编辑器中。
+
+        \item \textbf{语法适配优化}：AI生成的内容会经过语法适配处理，确保符合Slidev幻灯片语法规范，减少用户手动调整的工作量。
+
+        \item \textbf{智能建议系统}：基于当前编辑内容和上下文，AI会提供排版建议、设计优化和内容扩展建议，帮助用户提升幻灯片质量。
+
+        \item \textbf{图像生成功能}：平台集成AI图像生成能力，可以根据文本描述生成配图，支持技术图表、概念图示和装饰性图片等多种类型。
+    \end{itemize}
+
+    \begin{leftbar}
+        \noindent\textbf{使用建议：}AI辅助功能适合快速生成初稿、获取创意灵感和优化表达方式。建议用户先提供清晰的上下文和具体要求，生成结果后根据需要进行调整和优化。
+    \end{leftbar}
+
+    \subsection{幻灯片编辑基础}
+
+    平台基于CodeMirror 6提供专业的Markdown编辑体验：
+
+    \begin{itemize}
+        \item \textbf{Markdown语法支持}：支持标准的Markdown语法，包括标题、列表、链接、图片、代码块等。幻灯片页面使用`---`分隔符创建。
+
+        \item \textbf{实时预览功能}：右侧预览窗口提供Dev/Build双模式预览。Dev模式实时显示编辑效果，Build模式展示最终渲染效果。
+
+        \item \textbf{语法高亮}：编辑器支持多种编程语言的语法高亮，包括JavaScript、TypeScript、Python、Java等，适合技术演示场景。
+
+        \item \textbf{大纲导航}：左侧大纲面板显示文档结构，点击大纲节点可以快速定位到对应内容，编辑器与预览窗口同步滚动。
+
+        \item \textbf{快捷键操作}：
+        \begin{itemize}
+            \item \textbf{Ctrl+S}：保存当前文档
+            \item \textbf{Ctrl+Shift+S}：创建新版本
+            \item \textbf{Ctrl+K}：显示/隐藏左侧菜单
+            \item \textbf{Ctrl+Alt+K}：显示/隐藏右侧预览
+            \item \textbf{Ctrl+I}：显示/隐藏AI面板
+            \item \textbf{Ctrl+V}：插入图片（自动上传到OSS）
+        \end{itemize}
+    \end{itemize}
+
+    \section{高级功能详解}\label{sec:advanced-features}
+
+    \subsection{版本控制系统}
+
+    平台提供简化的版本控制功能，降低Git等专业工具的使用门槛：
+
+    \begin{itemize}
+        \item \textbf{自动保存机制}：系统定期自动保存文档内容，防止数据丢失。用户也可以使用Ctrl+S快捷键手动保存。
+
+        \item \textbf{手动版本创建}：使用Ctrl+Shift+S快捷键或点击版本控制面板中的"创建版本"按钮，可以手动创建重要版本并添加提交消息说明。
+
+        \item \textbf{版本历史查看}：在版本控制面板中查看文档的所有历史版本，包括版本号、创建时间、创建者和提交消息。
+
+        \item \textbf{差异对比功能}：选择两个版本进行差异对比，系统以可视化方式显示内容变化，包括添加、删除和修改的部分。
+
+        \item \textbf{一键回滚操作}：选择任意历史版本，点击"回滚到此版本"按钮可以将文档内容恢复到指定版本状态。回滚操作会创建新的版本记录，不影响历史版本数据。
+    \end{itemize}
 
     \begin{figure}[htbp]
         \centering
         \begin{tikzpicture}[
-            node distance=2cm,
-            box/.style={rectangle, draw, text width=3cm, text centered, minimum height=1cm, rounded corners},
-            arrow/.style={thick, ->, >=stealth}
-            ]
+            timeline/.style={rectangle, draw, fill=blue!5, align=left, minimum width=8cm, minimum height=0.8cm},
+            diffbox/.style={rectangle, draw, fill=green!5, align=left, minimum width=8cm, minimum height=2.5cm},
+            button/.style={rectangle, draw, fill=orange!20, rounded corners, align=center, minimum width=1.5cm, minimum height=0.6cm},
+            arrow/.style={->, >=stealth, thick},
+            label/.style={font=\small}
+        ]
 
-            % 定义节点
-            \node[box] (start) {开始};
-            \node[box, below of=start] (input) {输入数据};
-            \node[box, below of=input] (process) {处理数据};
-            \node[box, below of=process] (output) {输出结果};
-            \node[box, below of=output] (end) {结束};
+        % 时间轴区域
+        \node[timeline] (timeline) at (0, 3) {
+            \textbf{版本历史时间轴}\quad
+            \begin{tikzpicture}[scale=0.8]
+                \draw[->] (0,0) -- (6,0);
+                \foreach \x/\text in {0/初始版本, 1.5/v1.1, 3/v1.2, 4.5/v1.3, 6/当前版本}
+                    \draw (\x,0.1) -- (\x,-0.1) node[below, label] {\text};
+                \draw[fill=red] (4.5,0) circle (0.08);
+                \node[label, above] at (4.5,0.1) {选中};
+            \end{tikzpicture}
+        };
 
-            % 连接节点
-            \draw[arrow] (start) -- (input);
-            \draw[arrow] (input) -- (process);
-            \draw[arrow] (process) -- (output);
-            \draw[arrow] (output) -- (end);
+        % 版本列表
+        \node[timeline, below=0.5cm of timeline, minimum height=2.2cm] (versionlist) {
+            \begin{tabular}{llll}
+                \textbf{版本号} & \textbf{创建时间} & \textbf{创建者} & \textbf{提交消息} \\
+                v1.3 & 2025-12-28 10:30 & 张三 & 添加AI辅助功能 \\
+                v1.2 & 2025-12-27 15:20 & 李四 & 修复权限管理bug \\
+                v1.1 & 2025-12-26 09:15 & 王五 & 优化实时协作性能 \\
+                v1.0 & 2025-12-25 14:00 & 张三 & 初始版本 \\
+            \end{tabular}
+        };
+
+        % 差异对比区域
+        \node[diffbox, below=0.5cm of versionlist] (diff) {
+            \textbf{差异对比视图}\\
+            \begin{tikzpicture}[scale=0.9]
+                \draw[fill=green!20] (0,0) rectangle (7,1.2);
+                \node[label, anchor=north west] at (0,1.2) {\texttt{+ 添加AI辅助面板功能}};
+                \node[label, anchor=north west] at (0,0.9) {\texttt{- 移除旧版编辑器代码}};
+                \node[label, anchor=north west] at (0,0.6) {\texttt{* 优化权限验证逻辑}};
+                \node[label, anchor=north west] at (0,0.3) {\texttt{+ 新增Slidev主题支持}};
+            \end{tikzpicture}
+        };
+
+        % 操作按钮
+        \node[button] (rollback) at (-2, -2.5) {一键回滚};
+        \node[button] (compare) at (0, -2.5) {对比版本};
+        \node[button] (create) at (2, -2.5) {创建版本};
+
+        % 连接线
+        \draw[arrow, dashed] (versionlist.south) -- node[right, label] {选择版本} (diff.north);
+        \draw[arrow] (rollback) -- (-2, -2) -- (diff.south);
+        \draw[arrow] (compare) -- (0, -2) -- (diff.south);
+        \draw[arrow] (create) -- (2, -2) -- (diff.south);
+
+        % 标签
+        \node[label, above=0.1cm of timeline] {\textbf{版本历史浏览}};
+        \node[label, above=0.1cm of diff] {\textbf{内容变化可视化}};
+        \node[label, below=0.1cm of diff] {\textbf{操作控制区}};
 
         \end{tikzpicture}
-        \caption{使用 TikZ 创建的简单流程图}
-        \label{fig:tikz-flowchart}
+        \caption{APPT平台版本控制界面示意图}
+        \label{fig:version-control-ui}
     \end{figure}
 
-    TikZ 还可以绘制更复杂的图形，如数学图表、网络拓扑图、状态机等。详细用法请参考 TikZ 文档。
+    \subsection{代码片段管理}
 
-    \subsection{Beamer 演示文稿}\label{sub:beamer}
-
-    Beamer 是一个用于创建演示文稿的 \LaTeX{} 文档类，可以生成高质量的 PDF 幻灯片。以下是一个简单的 Beamer 演示文稿示例：
-
-    \begin{listing}[htbp]
-        \caption{Beamer 演示文稿示例}
-        \label{code:beamer-example}
-        \begin{texcode}
-            \documentclass{beamer}
-            \usetheme{Madrid}
-            \usecolortheme{beaver}
-
-            \title{\LaTeX{} 演示文稿}
-            \author{张三}
-            \institute{浙江传媒学院}
-            \date{\today}
-
-            \begin{document}
-
-            \begin{frame}
-                \titlepage
-            \end{frame}
-
-            \begin{frame}{目录}
-                \tableofcontents
-            \end{frame}
-
-            \section{引言}
-
-            \begin{frame}{引言}
-                \begin{itemize}
-                    \item 第一点
-                    \item 第二点
-                    \item 第三点
-                \end{itemize}
-            \end{frame}
-
-            \section{方法}
-
-            \begin{frame}{方法}
-                \begin{enumerate}
-                    \item 步骤一
-                    \item 步骤二
-                    \item 步骤三
-                \end{enumerate}
-            \end{frame}
-
-            \end{document}
-        \end{texcode}
-    \end{listing}
-
-    Beamer 提供了多种主题和颜色方案，可以根据需要进行定制。
-
-    \subsection{Bib\LaTeX{} 参考文献管理}\label{sub:biblatex}
-
-    Bib\LaTeX{} 是一个现代化的参考文献管理工具，比传统的 \hologo{BibTeX} 提供了更多的功能和更灵活的定制选项。以下是使用 Bib\LaTeX{} 的示例：
-
-    \begin{listing}[htbp]
-        \caption{Bib\LaTeX{} 使用示例}
-        \label{code:biblatex-example}
-        \begin{texcode}
-            % 在导言区加载 biblatex 宏包
-            \usepackage[
-                backend=biber,
-                style=gb7714-2015,
-                sorting=nyt,
-                giveninits=true
-            ]{biblatex}
-
-            % 指定参考文献数据库
-            \addbibresource{references.bib}
-
-            % 在文档中引用文献
-            \cite{lamport1986document}
-            \textcite{chen1980zhongguo}
-            \parencite{stamerjohanns2009mathml}
-
-            % 在文档末尾打印参考文献列表
-            \printbibliography[title=参考文献]
-        \end{texcode}
-    \end{listing}
-
-    Bib\LaTeX{} 支持多种引用样式和参考文献格式，可以满足不同学科和期刊的要求。
-
-    \subsection{Markdown 与 \LaTeX{} 集成}\label{sub:markdown}
-
-    对于不熟悉 \LaTeX{} 的用户，可以使用 Markdown 编写内容，然后转换为 \LaTeX{}。Pandoc 是一个强大的文档转换工具，可以将 Markdown 转换为 \LaTeX{}。以下是一个简单的 Markdown 示例：
-
-    \begin{listing}[htbp]
-        \caption{Markdown 示例}
-        \label{code:markdown-example}
-        \begin{mdcode}
-            # 标题
-
-            ## 小标题
-
-            这是一段普通文本，包含**粗体**和*斜体*。
-
-            - 列表项 1
-            - 列表项 2
-            - 列表项 3
-
-            1. 有序列表项 1
-            2. 有序列表项 2
-            3. 有序列表项 3
-
-            > 这是一段引用文本。
-
-            ```python
-            def hello_world():
-                print("Hello, World!")
-            ```
-
-            [链接文本](https://example.com)
-
-            ![图片描述](image.png)
-        \end{mdcode}
-    \end{listing}
-
-    使用 Pandoc 将 Markdown 转换为 \LaTeX{} 的命令如下：
-
-    \begin{verbatim}
-pandoc -f markdown -t latex -o output.tex input.md
-    \end{verbatim}
-
-    \section{常见使用问题}\label{sec:qa}
+    平台提供代码片段管理系统，支持可复用代码块的存储和插入：
 
     \begin{itemize}
-        \item 模板每次发布前，都已在Windows，Linux，macOS系统上测试通过。下载模
-              板后，若编译出现错误，则请参考国科大模板附带的
-              \href{https://github.com/mohuangrui/ucasthesis/wiki}{\LaTeX{}知识
-                  小站} 中的
-              \href{https://github.com/mohuangrui/ucasthesis/wiki/%E7%BC%96%E8%AF%91%E6%8C%87%E5%8D%97}{编
-                  译指南}。
-        \item 模板文档的编码为UTF-8编码。所有文件都必须采用UTF-8编码，否则编译后
-              生成的文档将出现乱码文本。若出现文本编辑器无法打开文档或打开文档乱
-              码的问题，请检查编辑器对UTF-8编码的支持。
-        \item 推荐选择 \hologo{XeLaTeX} 编译引擎编译中文文档。编译脚本的默认设定为
-              \hologo{XeLaTeX} 编译引擎。你也可以选择不使用脚本编译，如直接使用
-              \LaTeX{} 文本编辑器编译。注：\LaTeX{} 文本编辑器编译的默认设定为
-              \hologo{pdfLaTeX} 编译引擎，若选择 \hologo{XeLaTeX} 编译引擎，请进入
-              下拉菜单选择。为正确生成引用链接，需要进行全编译。由于
-              \hologo{LuaLaTeX} 编译引擎尚不成熟，故暂不推荐。
-        \item VS Code 中关于 \LaTeX{} 方面建议安装的插件：
-              \begin{itemize}
-                  \item \LaTeX{} Workshop：提供了绝大多数 \LaTeX{} 的
-                        辅助功能；
-                  \item Rewrap：可使用\verb|Alt+Q|进行硬换行（即自动重排段落使得
-                        每行不超过指定宽度）。
-              \end{itemize}
-              其他一些有用的插件有：
-              \begin{itemize}
-                  \item Git Graph；以更形象的方式查看Git提交记录，并可做出一些简
-                        单Git操作；
-                  \item gitignore：对.gitignore文件进行操作；
-                  \item Markdown Preview Enhanced：提供了Markdown语法支持与预
-                        览。
-              \end{itemize}
-        \item 设置文档样式: 在artratex.sty中搜索关键字定位相应命令，然后修改：
-              \begin{itemize}
-                  \item 正文行距：启用和设置 \verb|\linespread{1.5}|，默认1.5倍
-                        行距。
-                  \item 参考文献行距：修改 \verb|\setlength{\bibsep}{0.0ex}|
-                  \item 目录显示级数：修改 \verb|\setcounter{tocdepth}{2}|
-                  \item 文档超链接的颜色及其显示：修改 \verb|\hypersetup|
-              \end{itemize}
-        \item 文档内字体切换方法：
-              \begin{itemize}
-                  \item 宋体：浙传论文模板cuzthesis 或 \textrm{浙传论文模板
-                            cuzthesis}
-                  \item 粗宋体：{\bfseries 浙传论文模板cuzthesis} 或 \textbf{浙
-                            传论文模板cuzthesis}
-                  \item 黑体：{\sffamily 浙传论文模板cuzthesis} 或 \textsf{浙传
-                            论文模板cuzthesis}
-                  \item 粗黑体：{\bfseries\sffamily 浙传论文模板cuzthesis} 或
-                        \textsf{\bfseries 浙传论文模板cuzthesis}
-                  \item 仿宋：{\ttfamily 浙传论文模板cuzthesis} 或 \texttt{浙传
-                            论文模板cuzthesis}
-                  \item 粗仿宋：{\bfseries\ttfamily 浙传论文模板cuzthesis} 或
-                        \texttt{\bfseries 浙传论文模板cuzthesis}
-                  \item 楷体：{\itshape 浙传论文模板cuzthesis} 或 \textit{浙传论
-                            文模板cuzthesis}
-                  \item 粗楷体：{\bfseries\itshape 浙传论文模板cuzthesis} 或
-                        \textit{\bfseries 浙传论文模板cuzthesis}
-              \end{itemize}
+        \item \textbf{创建代码片段}：在编辑器中选中代码内容，右键选择"保存为代码片段"，输入片段名称和描述信息。代码片段会保存到用户的个人片段库中。
+
+        \item \textbf{插入代码片段}：在编辑器中点击插入菜单的"代码片段"选项，从片段库中选择需要的代码片段插入到当前光标位置。支持按名称搜索和按语言分类筛选。
+
+        \item \textbf{管理片段库}：在设置页面的代码片段管理界面中，用户可以查看、编辑、删除和分类管理所有个人代码片段。
+
+        \item \textbf{共享代码片段}：支持将代码片段分享到团队片段库，团队成员可以共同使用和管理技术代码示例、常用配置模板等。
     \end{itemize}
+
+    \subsection{评论与讨论系统}
+
+    平台集成评论功能，支持文档内容的讨论和反馈：
+
+    \begin{itemize}
+        \item \textbf{添加评论}：在编辑器中选中文本内容，点击出现的评论图标或使用右键菜单添加评论。评论支持Markdown格式，可以包含代码块和链接。
+
+        \item \textbf{回复评论}：在现有评论下方可以添加回复，形成讨论线程。评论系统支持树形结构，便于跟踪讨论脉络。
+
+        \item \textbf{评论定位}：点击评论列表中的评论项，编辑器会自动定位到对应的文本内容，便于查看上下文。
+
+        \item \textbf{评论通知}：当用户被@提及或有新回复时，系统会发送通知提醒，确保及时参与讨论。
+
+        \item \textbf{评论状态管理}：评论可以标记为"已解决"、"待处理"等状态，便于问题跟踪和任务管理。
+    \end{itemize}
+
+    \subsection{幻灯片空间管理}
+
+    幻灯片空间（SlideSpace）是组织和管理幻灯片文档的知识库系统：
+
+    \begin{itemize}
+        \item \textbf{创建空间}：在工作台界面点击"创建空间"按钮，输入空间名称、描述和可见性设置。空间可以作为项目、主题或团队的文档集合。
+
+        \item \textbf{文档组织}：空间支持文档的树形结构组织，可以通过拖拽调整文档顺序和层级关系。文档支持父子关系，便于构建知识体系。
+
+        \item \textbf{标签分类}：可以为文档添加标签，支持按标签筛选和分类查看。标签系统提供了灵活的内容组织方式。
+
+        \item \textbf{成员管理}：空间所有者可以邀请团队成员加入空间，为成员分配不同的空间角色和权限。
+
+        \item \textbf{全局搜索}：平台提供全局搜索功能，可以跨空间搜索文档标题和内容，快速定位目标文档。
+    \end{itemize}
+
+    \subsection{主题与插件系统}
+
+    平台支持Slidev主题和插件，提供丰富的视觉效果和功能扩展：
+
+    \begin{itemize}
+        \item \textbf{主题选择}：在编辑器设置中选择不同的Slidev主题，改变幻灯片的整体视觉效果。平台内置多种专业主题，支持浅色和深色模式。
+
+        \item \textbf{自定义主题}：支持上传自定义的Slidev主题包，满足特定品牌或设计需求。主题包通过package.json配置，支持CSS变量和组件覆盖。
+
+        \item \textbf{插件管理}：Slidev插件提供额外功能，如数学公式渲染、图表绘制、动画效果等。平台内置常用插件，支持插件启用/禁用管理。
+
+        \item \textbf{插件开发}：平台提供插件开发接口，开发者可以基于Slidev插件规范开发自定义功能插件，扩展平台能力。
+    \end{itemize}
+
+    \section{最佳实践与技巧}\label{sec:best-practices}
+
+    \subsection{团队协作流程建议}
+
+    基于APPT平台的团队协作最佳实践：
+
+    \begin{itemize}
+        \item \textbf{明确角色分工}：根据团队成员的专业领域和职责分配适当的文档权限。建议设立文档负责人（Owner）负责最终审核和发布。
+
+        \item \textbf{建立协作规范}：制定团队协作规范，包括文档结构标准、命名规则、评论使用规范等，提高协作效率。
+
+        \item \textbf{版本管理策略}：重要里程碑或重大修改时创建手动版本并添加详细的提交消息，便于版本追溯和内容回滚。
+
+        \item \textbf{定期同步会议}：建议定期举行文档同步会议，利用平台的实时协作功能进行集体编辑和讨论，提高决策效率。
+
+        \item \textbf{知识库维护}：利用幻灯片空间（SlideSpace）构建团队知识库，按项目或主题组织文档，促进知识积累和共享。
+    \end{itemize}
+
+    \subsection{效率提升技巧}
+
+    提高APPT平台使用效率的技巧和建议：
+
+    \begin{itemize}
+        \item \textbf{快捷键熟练使用}：熟练掌握常用快捷键（如Ctrl+S、Ctrl+K、Ctrl+I等），减少鼠标操作，提高编辑效率。
+
+        \item \textbf{代码片段重用}：将常用的代码示例、配置模板保存为代码片段，避免重复输入，保证代码准确性。
+
+        \item \textbf{AI辅助优化}：利用AI生成初稿和获取建议，重点关注内容创意和结构优化，提高创作效率。
+
+        \item \textbf{模板化创作}：为不同类型的幻灯片创建模板（如技术分享、项目汇报、教学课件），保持团队输出的一致性。
+
+        \item \textbf{评论有效使用}：使用评论功能进行异步讨论和反馈，减少会议时间，提高沟通效率。
+    \end{itemize}
+
+    \subsection{常见问题解决方案}
+
+    平台使用过程中常见问题的解决方法：
+
+    \begin{itemize}
+        \item \textbf{编辑冲突问题}：当多个用户同时编辑同一段落时，系统会自动解决冲突。如有疑问，可以通过版本历史查看具体修改内容。
+
+        \item \textbf{权限访问问题}：如果无法访问文档或执行某些操作，检查自己的角色权限。联系文档所有者或管理员调整权限设置。
+
+        \item \textbf{图片上传失败}：检查网络连接和图片格式（支持PNG、JPG、GIF等常见格式）。图片大小建议不超过5MB。
+
+        \item \textbf{AI生成不准确}：提供更详细的上下文和具体要求，重新生成内容。也可以手动调整AI生成的内容以满足需求。
+
+        \item \textbf{版本回滚恢复}：如果不慎回滚到错误版本，可以从版本历史中选择正确的版本再次回滚。所有版本记录都会保留。
+
+        \item \textbf{浏览器兼容问题}：建议使用最新版本的Chrome、Firefox、Edge或Safari浏览器。清除浏览器缓存可以解决部分显示问题。
+    \end{itemize}
+
+    \subsection{高级功能进阶使用}
+
+    进阶用户的高级功能使用建议：
+
+    \begin{itemize}
+        \item \textbf{API集成开发}：平台提供RESTful API接口，支持与第三方系统集成。可以开发自动化脚本进行批量文档处理。
+
+        \item \textbf{自定义主题开发}：基于Slidev主题规范开发定制主题，满足特定视觉品牌需求。主题开发需要CSS和Vue.js基础知识。
+
+        \item \textbf{协作流程自动化}：利用Webhook和API接口实现协作流程自动化，如文档状态变更通知、权限自动调整等。
+
+        \item \textbf{数据导出与分析}：平台支持文档内容导出为Markdown、PDF等格式。可以通过API获取使用数据进行分析和统计。
+
+        \item \textbf{企业级部署优化}：对于企业用户，可以考虑私有化部署方案，配置自定义域名、SSL证书和企业用户管理系统。
+    \end{itemize}
+
+    \section{总结}\label{sec:guide-summary}
+
+    本章详细介绍了APPT平台的使用指南，涵盖了平台概述、核心功能使用、高级功能详解和最佳实践等内容。通过本章的学习，用户可以：
+
+    \begin{itemize}
+        \item 了解APPT平台的基本概念和功能特点，掌握快速入门方法。
+
+        \item 熟练使用实时协作、权限管理、AI辅助等核心功能，提高团队协作效率。
+
+        \item 掌握版本控制、代码片段、空间管理等高级功能，满足复杂使用场景需求。
+
+        \item 运用最佳实践和技巧，优化工作流程，提升幻灯片创作质量和效率。
+    \end{itemize}
+
+    APPT平台作为AI驱动的幻灯片协作编辑平台，不仅提供了强大的技术功能，还注重用户体验和协作效率。平台的设计理念是通过技术手段降低使用门槛，让用户能够专注于内容创作和团队协作，而非技术细节。
+
+    随着平台的不断发展和完善，将会提供更多创新的功能和优化的用户体验。用户可以通过平台帮助文档、社区论坛和客户支持获取最新的使用信息和问题解决方案。我们鼓励用户积极反馈使用体验，共同推动平台的改进和发展，使APPT平台成为更加强大和易用的幻灯片协作工具。
 
 \end{cuzchapter}
