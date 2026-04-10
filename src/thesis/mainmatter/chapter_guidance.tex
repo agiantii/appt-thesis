@@ -95,7 +95,6 @@
 
         \item \textbf{文档可见性控制}：文档支持公开和私有两种可见性设置。公开文档可以被所有用户查看（根据权限），私有文档只有被授权的用户才能访问。
 
-        \item \textbf{权限继承机制}：在幻灯片空间（SlideSpace）中设置的权限可以继承到空间内的所有幻灯片文档，简化了批量权限管理。
     \end{itemize}
 
     \subsection{AI辅助创作}
@@ -160,71 +159,71 @@
         \item \textbf{一键回滚操作}：选择任意历史版本，点击"回滚到此版本"按钮可以将文档内容恢复到指定版本状态。回滚操作会创建新的版本记录，不影响历史版本数据。
     \end{itemize}
 
-    \begin{figure}[htbp]
-        \centering
-        \begin{tikzpicture}[
-            timeline/.style={rectangle, draw, fill=blue!5, align=left, minimum width=8cm, minimum height=0.8cm},
-            diffbox/.style={rectangle, draw, fill=green!5, align=left, minimum width=8cm, minimum height=2.5cm},
-            button/.style={rectangle, draw, fill=orange!20, rounded corners, align=center, minimum width=1.5cm, minimum height=0.6cm},
-            arrow/.style={->, >=stealth, thick},
-            label/.style={font=\small}
-        ]
+    % \begin{figure}[htbp]
+    %     \centering
+    %     \begin{tikzpicture}[
+    %         timeline/.style={rectangle, draw, fill=blue!5, align=left, minimum width=7.5cm, minimum height=1cm},
+    %         diffbox/.style={rectangle, draw, fill=green!5, align=left, minimum width=7.5cm, minimum height=2.8cm},
+    %         button/.style={rectangle, draw, fill=orange!20, rounded corners, align=center, minimum width=1.8cm, minimum height=0.8cm},
+    %         arrow/.style={->, >=stealth, thick},
+    %         label/.style={font=\small}
+    %     ]
 
-        % 时间轴区域
-        \node[timeline] (timeline) at (0, 3) {
-            \textbf{版本历史时间轴}\quad
-            \begin{tikzpicture}[scale=0.8]
-                \draw[->] (0,0) -- (6,0);
-                \foreach \x/\text in {0/初始版本, 1.5/v1.1, 3/v1.2, 4.5/v1.3, 6/当前版本}
-                    \draw (\x,0.1) -- (\x,-0.1) node[below, label] {\text};
-                \draw[fill=red] (4.5,0) circle (0.08);
-                \node[label, above] at (4.5,0.1) {选中};
-            \end{tikzpicture}
-        };
+    %     % 时间轴区域
+    %     \node[timeline] (timeline) at (0, 3.5) {
+    %         \textbf{版本历史时间轴}\quad
+    %         \begin{tikzpicture}[scale=0.8]
+    %             \draw[->] (0,0) -- (6,0);
+    %             \foreach \x/\text in {0/初始版本, 1.5/v1.1, 3/v1.2, 4.5/v1.3, 6/当前版本}
+    %                 \draw (\x,0.1) -- (\x,-0.1) node[below, label] {\text};
+    %             \draw[fill=red] (4.5,0) circle (0.08);
+    %             \node[label, above] at (4.5,0.1) {选中};
+    %         \end{tikzpicture}
+    %     };
 
-        % 版本列表
-        \node[timeline, below=0.5cm of timeline, minimum height=2.2cm] (versionlist) {
-            \begin{tabular}{llll}
-                \textbf{版本号} & \textbf{创建时间} & \textbf{创建者} & \textbf{提交消息} \\
-                v1.3 & 2025-12-28 10:30 & 张三 & 添加AI辅助功能 \\
-                v1.2 & 2025-12-27 15:20 & 李四 & 修复权限管理bug \\
-                v1.1 & 2025-12-26 09:15 & 王五 & 优化实时协作性能 \\
-                v1.0 & 2025-12-25 14:00 & 张三 & 初始版本 \\
-            \end{tabular}
-        };
+    %     % 版本列表
+    %     \node[timeline, below=0.8cm of timeline, minimum height=2.5cm] (versionlist) {
+    %         \begin{tabular}{llll}
+    %             \textbf{版本号} & \textbf{创建时间} & \textbf{创建者} & \textbf{提交消息} \\
+    %             v1.3 & 2025-12-28 10:30 & 张三 & 添加AI辅助功能 \\
+    %             v1.2 & 2025-12-27 15:20 & 李四 & 修复权限管理bug \\
+    %             v1.1 & 2025-12-26 09:15 & 王五 & 优化实时协作性能 \\
+    %             v1.0 & 2025-12-25 14:00 & 张三 & 初始版本 \\
+    %         \end{tabular}
+    %     };
 
-        % 差异对比区域
-        \node[diffbox, below=0.5cm of versionlist] (diff) {
-            \textbf{差异对比视图}\\
-            \begin{tikzpicture}[scale=0.9]
-                \draw[fill=green!20] (0,0) rectangle (7,1.2);
-                \node[label, anchor=north west] at (0,1.2) {\texttt{+ 添加AI辅助面板功能}};
-                \node[label, anchor=north west] at (0,0.9) {\texttt{- 移除旧版编辑器代码}};
-                \node[label, anchor=north west] at (0,0.6) {\texttt{* 优化权限验证逻辑}};
-                \node[label, anchor=north west] at (0,0.3) {\texttt{+ 新增Slidev主题支持}};
-            \end{tikzpicture}
-        };
+    %     % 差异对比区域
+    %     \node[diffbox, below=0.8cm of versionlist] (diff) {
+    %         \textbf{差异对比视图}\\
+    %         \begin{tikzpicture}[scale=0.9]
+    %             \draw[fill=green!20] (0,0) rectangle (7,1.2);
+    %             \node[label, anchor=north west] at (0,1.2) {\texttt{+ 添加AI辅助面板功能}};
+    %             \node[label, anchor=north west] at (0,0.9) {\texttt{- 移除旧版编辑器代码}};
+    %             \node[label, anchor=north west] at (0,0.6) {\texttt{* 优化权限验证逻辑}};
+    %             \node[label, anchor=north west] at (0,0.3) {\texttt{+ 新增Slidev主题支持}};
+    %         \end{tikzpicture}
+    %     };
 
-        % 操作按钮
-        \node[button] (rollback) at (-2, -2.5) {一键回滚};
-        \node[button] (compare) at (0, -2.5) {对比版本};
-        \node[button] (create) at (2, -2.5) {创建版本};
+    %     % 操作按钮
+    %     \node[button] (rollback) at (-2, -3.5) {一键回滚};
+    %     \node[button] (compare) at (0, -3.5) {对比版本};
+    %     \node[button] (create) at (2, -3.5) {创建版本};
 
-        % 连接线
-        \draw[arrow, dashed] (versionlist.south) -- node[right, label] {选择版本} (diff.north);
-        \draw[arrow] (rollback) -- (-2, -2) -- (diff.south);
-        \draw[arrow] (compare) -- (0, -2) -- (diff.south);
-        \draw[arrow] (create) -- (2, -2) -- (diff.south);
+    %     % 连接线
+    %     \draw[arrow, dashed] (versionlist.south) -- node[right, label] {选择版本} (diff.north);
+    %     \draw[arrow] (rollback) -- (-2, -3) -- (diff.south);
+    %     \draw[arrow] (compare) -- (0, -3) -- (diff.south);
+    %     \draw[arrow] (create) -- (2, -3) -- (diff.south);
 
-        % 标签
-        \node[label, above=0.1cm of timeline] {\textbf{版本历史浏览}};
-        \node[label, above=0.1cm of diff] {\textbf{内容变化可视化}};
-        \node[label, below=0.1cm of diff] {\textbf{操作控制区}};
+    %     % 标签
+    %     \node[label, above=0.1cm of timeline] {\textbf{版本历史浏览}};
+    %     \node[label, above=0.1cm of diff] {\textbf{内容变化可视化}};
+    %     \node[label, below=0.1cm of diff] {\textbf{操作控制区}};
 
-        \end{tikzpicture}
-        \caption{APPT平台版本控制界面示意图}
-        \label{fig:version-control-ui}
-    \end{figure}
+    %     \end{tikzpicture}
+    %     \caption{APPT平台版本控制界面示意图}
+    %     \label{fig:version-control-ui}
+    % \end{figure}
 
     \subsection{代码片段管理}
 
@@ -248,12 +247,7 @@
         \item \textbf{添加评论}：在编辑器中选中文本内容，点击出现的评论图标或使用右键菜单添加评论。评论支持Markdown格式，可以包含代码块和链接。
 
         \item \textbf{回复评论}：在现有评论下方可以添加回复，形成讨论线程。评论系统支持树形结构，便于跟踪讨论脉络。
-
-        \item \textbf{评论定位}：点击评论列表中的评论项，编辑器会自动定位到对应的文本内容，便于查看上下文。
-
-        \item \textbf{评论通知}：当用户被@提及或有新回复时，系统会发送通知提醒，确保及时参与讨论。
-
-        \item \textbf{评论状态管理}：评论可以标记为"已解决"、"待处理"等状态，便于问题跟踪和任务管理。
+      
     \end{itemize}
 
     \subsection{幻灯片空间管理}
@@ -265,9 +259,6 @@
 
         \item \textbf{文档组织}：空间支持文档的树形结构组织，可以通过拖拽调整文档顺序和层级关系。文档支持父子关系，便于构建知识体系。
 
-        \item \textbf{标签分类}：可以为文档添加标签，支持按标签筛选和分类查看。标签系统提供了灵活的内容组织方式。
-
-        \item \textbf{成员管理}：空间所有者可以邀请团队成员加入空间，为成员分配不同的空间角色和权限。
 
         \item \textbf{全局搜索}：平台提供全局搜索功能，可以跨空间搜索文档标题和内容，快速定位目标文档。
     \end{itemize}
@@ -278,8 +269,6 @@
 
     \begin{itemize}
         \item \textbf{主题选择}：在编辑器设置中选择不同的Slidev主题，改变幻灯片的整体视觉效果。平台内置多种专业主题，支持浅色和深色模式。
-
-        \item \textbf{自定义主题}：支持上传自定义的Slidev主题包，满足特定品牌或设计需求。主题包通过package.json配置，支持CSS变量和组件覆盖。
 
         \item \textbf{插件管理}：Slidev插件提供额外功能，如数学公式渲染、图表绘制、动画效果等。平台内置常用插件，支持插件启用/禁用管理。
 
