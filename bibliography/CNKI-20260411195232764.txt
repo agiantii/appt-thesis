@@ -1,0 +1,32 @@
+[1]赵晓娜.Git版本控制系统在软件开发中的应用与实践[J].山西电子技术,2025,(05):79-82.
+[2]卢万有.基于JWT的RBAC在前后端分离项目中的设计与实现[J].电脑编程技巧与维护,2025,(01):46-48.DOI:10.16184/j.cnki.comprg.2025.01.004.
+[3]吕晓,苑佳存,贲可荣,等.移动协同编辑中基于CRDT的序列转换算法[J].华中科技大学学报(自然科学版),2022,50(02):130-135.DOI:10.13245/j.hust.220220.
+[4]蔡维纬.支持自由并发交互的协同编辑技术研究[D].武汉大学,2021.DOI:10.27379/d.cnki.gwhdu.2021.002576.
+[5]吴昌政.基于前后端分离技术的web开发框架设计[D].南京邮电大学,2020.DOI:10.27251/d.cnki.gnjdc.2020.000727.
+[6]王真.版本控制工具在软件开发项目管理中的应用——以GIT为例[J].项目管理技术,2020,18(06):131-134.
+[7]纪业,魏恒峰,黄宇,等.CRDT协议的TLA+描述与验证[J].软件学报,2020,31(05):1332-1352.DOI:10.13328/j.cnki.jos.005956.
+[8]周虎.一种基于JWT认证token刷新机制研究[J].软件工程,2019,22(12):18-20.DOI:10.19644/j.cnki.issn2096-1472.2019.12.005.
+[9]陈宇收,饶宏博,王英明,等.基于JWT的前后端分离程序设计研究[J].电脑编程技巧与维护,2019,(09):11-12.DOI:10.16184/j.cnki.comprg.2019.09.003.
+[10]周义盼.基于WebSocket的协同编辑系统的设计与实现[D].哈尔滨工业大学,2019.DOI:10.27061/d.cnki.ghgdu.2019.000954.
+[11]黄小冬.基于CodeMirror的Web在线编程实训模块设计与实现[J].软件工程,2019,22(02):45-47.DOI:10.19644/j.cnki.issn2096-1472.2019.02.014.
+[12]Sun D ,Sun C ,Agustina , et al.Real Differences between OT and CRDT in Correctness and Complexity for Consistency Maintenance in Co-Editors.[J].CoRR,2019,abs/1905.01302
+[13]项武铭,鲍亮,俞少华.基于JWT的RESTful API角色权限验证方案设计[J].现代计算机(专业版),2018,(34):82-85.
+[14]张志,胡志勇.RESTful架构在Web Service中的应用[J].自动化技术与应用,2018,37(10):33-37.
+[15]Lv X ,He F ,Cai W , et al.Supporting selective undo of string-wise operations for collaborative editing systems[J].Future Generation Computer Systems,2018,8241-62.DOI:10.1016/j.future.2017.11.046.
+[16]刘俊轩,刘春鹏,许伟伟,等.基于HTML5的幻灯片设计及实现智能手机的播放[J].黑龙江八一农垦大学学报,2018,30(02):72-77.
+[17]Algorithms; Studies from Wuhan University Have Provided New Data on Algorithms (A string-wise CRDT algorithm for smart and large-scale collaborative editing systems)[J].Computers, Networks & Communications,2017,
+[18]何发智,吕晓,蔡维纬,等.支持操作意图一致性的实时协同编辑算法综述[J].计算机学报,2018,41(04):840-867.
+[19]Mechaoui D M ,Guetmi N ,Imine A .MiCa: Lightweight and mobile collaboration across a collaborative editing service in the cloud[J].Peer-to-Peer Networking and Applications,2016,9(6):1242-1269.DOI:10.1007/s12083-016-0439-2.
+[20]冷国华,蔡志东,许翊.HTML5互动微课开发与应用[J].镇江高专学报,2016,29(03):37-41.
+[21]周密.基于HTML5技术的在线课程的设计与制作[J].信息与电脑(理论版),2016,(13):236-238.
+[22]Lv X ,He F ,Cai W , et al.A string-wise CRDT algorithm for smart and large-scale collaborative editing systems[J].Advanced Engineering Informatics,2016,33397-409.DOI:10.1016/j.aei.2016.10.005.
+[23]范展源,罗福强.JWT认证技术及其在WEB中的应用[J].数字技术与应用,2016,(02):114.DOI:10.19695/j.cnki.cn12-1369.2016.02.087.
+[24]胡敏.Web系统下提高MySQL数据库安全性的研究与实现[D].北京邮电大学,2015.
+[25]张玉晴,黄瑾娉.基于HTML5的跨平台移动应用关键技术的研究与实现[J].工业控制计算机,2013,26(03):56-58.
+[26]王非,蔡勇,贺志军.RESTful Web Services在信息系统中的应用[J].计算机系统应用,2013,22(02):221-225.
+[27]李代立,陈榕.WebSocket在Web实时通信领域的研究[J].电脑知识与技术,2010,6(28):7923-7925+7935.
+[28]潘冰.面向资源的RESTful Web应用研究[J].微计算机应用,2010,31(07):38-43.
+[29]兰旭辉,熊家军,邓刚.基于MySQL的应用程序设计[J].计算机工程与设计,2004,(03):442-443+468.DOI:10.16208/j.issn1000-7024.2004.03.037.
+[30]徐保民,徐爱琴,李峰.协同编辑器中版本管理的设计与实现[J].计算机工程与应用,2002,(05):134-136.
+[31]李人厚,郑庆华,鲍家元.CSCW的概念、结构、理论与应用[J].计算机工程与应用,1997,(02):30-36.
+[32]史美林.CSCW:计算机支持的协同工作[J].通信学报,1995,(01):55-61.
