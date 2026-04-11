@@ -1,4 +1,5 @@
 \begin{cuzchapter}{系统设计与实现}{chap:design}
+\usetikzlibrary{calc}
 
     %---------------------------------------------------------------------------%
     %->> 系统设计与实现章节写作指南
@@ -418,6 +419,205 @@
         \item \textbf{性能优化}：使用操作批处理和压缩算法优化网络传输性能，提高响应速度。
     \end{itemize}
 
+    \subsection{协同算法原理}
+
+    APPT平台采用基于CRDT（Conflict-Free Replicated Data Type，无冲突复制数据类型）的协同算法实现实时协作编辑。CRDT是一种分布式数据结构的数学理论，能够确保在异步网络环境下，多个副本之间的数据最终保持一致，无需中央协调器解决冲突。
+
+    \subsubsection{CRDT基本概念}
+
+    CRDT算法主要分为两种类型：
+    \begin{itemize}
+        \item \textbf{基于操作的CRDT（Op-based CRDT）}：通过同步操作序列实现一致性，每个操作都是可交换、可结合和幂等的。
+        \item \textbf{基于状态的CRDT（State-based CRDT）}：通过同步完整状态或状态差异实现一致性，状态合并操作满足交换律、结合律和幂等律。
+    \end{itemize}
+
+    APPT平台采用Yjs库实现的基于操作的CRDT算法，具体特点如下：
+    \begin{itemize}
+        \item \textbf{交换性}：操作顺序不影响最终结果，无论操作到达顺序如何，最终状态一致。
+        \item \textbf{结合性}：操作组合方式不影响最终结果，支持分组传输和批处理优化。
+        \item \textbf{幂等性}：重复执行同一操作不会改变状态，确保网络重传和重复消息不会导致数据不一致。
+    \end{itemize}
+
+    \subsubsection{Yjs文档模型设计}
+
+    Yjs采用分层文档模型设计，核心数据结构包括：
+    \begin{itemize}
+        \item \textbf{YText}：富文本数据类型，支持字符级别的插入、删除和格式属性设置，用于表示幻灯片内容。
+        \item \textbf{YArray}：有序数组类型，支持元素的插入、删除和移动，用于管理幻灯片页面顺序。
+        \item \textbf{YMap}：键值对类型，支持属性的增删改查，用于存储幻灯片元数据和用户配置。
+        \item \textbf{Transaction}：事务机制，将多个操作打包为原子操作单元，确保操作的完整性。
+    \end{itemize}
+
+    文档状态通过逻辑时钟（Lamport Timestamp）进行版本控制，每个操作附带唯一的操作ID（客户端ID + 逻辑时钟），确保全局有序性。
+
+    \subsubsection{冲突解决机制}
+
+    当多个用户同时编辑同一文档位置时，CRDT算法通过以下机制自动解决冲突：
+    \begin{enumerate}
+        \item \textbf{位置标识算法}：使用唯一标识符（ID）标记每个字符位置，而不是传统的位置索引。字符插入时生成新的唯一ID，删除时标记为墓碑状态。
+        \item \textbf{偏序关系定义}：基于操作ID的因果关系定义偏序关系，确保因果一致性。如果操作A在操作B之前发生，且操作B依赖于操作A的结果，则A必须优先于B执行。
+        \item \textbf{合并策略}：当并发操作无因果关系时，采用确定性合并策略。例如，字符插入冲突时，基于操作ID的字典序确定最终位置顺序。
+    \end{enumerate}
+
+    以文本编辑为例，假设用户A在位置P插入字符"X"，用户B在相同位置插入字符"Y"。传统方法会产生冲突，而CRDT算法通过以下步骤解决：
+    \begin{enumerate}
+        \item 为"X"生成唯一ID：\texttt{(clientA, timestamp1)}
+        \item 为"Y"生成唯一ID：\texttt{(clientB, timestamp2)}
+        \item 基于ID排序确定最终顺序：若\texttt{clientA < clientB}，则最终文本为"XY"；否则为"YX"
+    \end{enumerate}
+
+    \subsubsection{网络同步协议}
+
+    APPT平台采用优化的网络同步协议提高协作效率：
+    \begin{itemize}
+        \item \textbf{增量同步}：仅传输文档状态差异，而非完整文档内容，减少网络带宽消耗。
+        \item \textbf{操作压缩}：将连续的编辑操作合并为批量更新，减少网络往返次数。
+        \item \textbf{状态向量（State Vector）}：记录每个客户端已知的最新状态，用于计算最小差异集。
+        \item \textbf{断线重连恢复}：通过状态向量对比，快速同步断线期间错过的更新。
+    \end{itemize}
+
+    \subsubsection{性能优化策略}
+
+    为提高大规模文档的协作性能，APPT平台实施以下优化：
+    \begin{itemize}
+        \item \textbf{分层更新}：将文档划分为逻辑块（如幻灯片页面），仅同步当前编辑块的变更。
+        \item \textbf{延迟同步}：对高频率编辑操作（如连续输入）进行去抖动处理，减少同步频率。
+        \item \textbf{内存管理}：定期清理历史操作记录，释放内存资源，同时保留必要的版本信息。
+        \item \textbf{本地优先}：编辑操作先在本地应用并确认，再异步同步到服务器，提供即时反馈体验。
+    \end{itemize}
+
+    \subsubsection{与传统协同算法的对比}
+
+    与传统基于操作转换（OT）的协同算法相比，CRDT算法具有以下优势：
+    \begin{table}[htbp]
+        \caption{CRDT与OT算法对比}
+        \label{tab:crdt-vs-ot}
+        \centering
+        \begin{tabular}{lll}
+            \toprule
+            对比维度 & CRDT算法 & OT算法 \\
+            \midrule
+            冲突解决 & 自动解决，无需中央协调器 & 需要中央服务器协调转换 \\
+            网络要求 & 支持P2P直接同步 & 必须通过中央服务器 \\
+            算法复杂度 & 相对简单，基于数学理论 & 复杂，需要维护转换函数 \\
+            扩展性 & 容易扩展到大规模节点 & 中央服务器可能成为瓶颈 \\
+            离线支持 & 天然支持，本地操作独立 & 需要复杂的状态同步机制 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    CRDT算法的数学基础确保了系统的正确性和可靠性，使得APPT平台能够在分布式环境下提供稳定、高效的实时协作体验。
+
+    \subsubsection{文档协同流程图}
+
+    APPT平台的文档协同流程采用条件分支设计，根据文档的协作状态动态选择独立编辑模式或实时协作模式。具体流程如图 \ref{fig:collaboration-flowchart} 所示。
+
+    \begin{figure}[htbp]
+        \centering
+        \begin{tikzpicture}[
+            node distance=1.0cm and 1.8cm,
+            startstop/.style={rectangle, rounded corners, draw, fill=red!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
+            process/.style={rectangle, draw, fill=blue!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
+            decision/.style={rectangle, draw, fill=green!10, align=center, minimum width=2.2cm, minimum height=1.0cm, font=\scriptsize, text width=1.8cm},
+            io/.style={rectangle, draw, fill=yellow!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
+            connector/.style={circle, draw, fill=orange!10, align=center, minimum width=0.7cm, minimum height=0.7cm, font=\scriptsize},
+            arrow/.style={->, >=stealth, thick},
+            label/.style={font=\scriptsize},
+            scale=0.75
+        ]
+
+        % 定义节点
+        \node[startstop] (start) {用户打开文档};
+        \node[io, below=of start] (load) {加载文档内容\\与权限信息};
+        \node[decision, below=of load, yshift=-0.3cm] (check) {文档有\\协作者？};
+
+        % 左侧分支：无协作者（独立模式）
+        \node[process, left=of check, xshift=-1.2cm] (localEdit) {直接本地编辑\\使用CodeMirror};
+        \node[process, below=of localEdit, yshift=-1.2cm] (localSave) {定期保存到\\后端数据库};
+        \node[connector, below=of localSave, yshift=-1.2cm] (localEnd) {结束};
+
+        % 右侧分支：有协作者（协同模式）
+        \node[process, right=of check, xshift=1.2cm] (initWs) {初始化WebSocket\\连接Hocuspocus};
+        \node[process, below=of initWs, yshift=-0.5cm] (initYjs) {创建Yjs文档实例\\绑定CodeMirror};
+        \node[process, below=of initYjs, yshift=-0.5cm] (sync) {同步文档状态\\使用CRDT算法};
+        \node[process, below=of sync, yshift=-0.5cm] (edit) {协同编辑\\实时冲突解决};
+        \node[process, below=of edit, yshift=-0.5cm] (persist) {定期保存到\\后端数据库};
+        \node[connector, below=of persist, yshift=-0.5cm] (collabEnd) {结束};
+
+        % 连接线
+        \draw[arrow] (start) -- (load);
+        \draw[arrow] (load) -- (check);
+
+        % 左侧分支连接
+        \draw[arrow] (check) -- node[above, label] {否} (localEdit);
+        \draw[arrow] (localEdit) -- (localSave);
+        \draw[arrow] (localSave) -- (localEnd);
+
+        % 右侧分支连接
+        \draw[arrow] (check) -- node[above, label] {是} (initWs);
+        \draw[arrow] (initWs) -- (initYjs);
+        \draw[arrow] (initYjs) -- (sync);
+        \draw[arrow] (sync) -- (edit);
+        \draw[arrow] (edit) -- (persist);
+        \draw[arrow] (persist) -- (collabEnd);
+
+        % 添加虚线框区分模式
+        % 独立编辑模式虚线框
+        \coordinate (localBoxNW) at ($(localEdit.north west)+(-0.3,0.3)$);
+        \coordinate (localBoxSE) at ($(localSave.south east |- localEnd.south)+(0.3,-0.3)$);
+        \draw[dashed, gray, thick] (localBoxNW) rectangle (localBoxSE);
+        \coordinate (localLabelPos) at ($(localBoxNW)!0.5!(localBoxSE |- localBoxNW)$);
+        \node[gray, above=0.2cm] at (localLabelPos) {\textbf{独立编辑模式}};
+
+        % 实时协作模式虚线框
+        \coordinate (collabBoxNW) at ($(initWs.north west)+(-0.3,0.3)$);
+        \coordinate (collabBoxSE) at ($(persist.south east |- collabEnd.south)+(0.3,-0.3)$);
+        \draw[dashed, gray, thick] (collabBoxNW) rectangle (collabBoxSE);
+        \coordinate (collabLabelPos) at ($(collabBoxNW)!0.5!(collabBoxSE |- collabBoxNW)$);
+        \node[gray, above=0.2cm] at (collabLabelPos) {\textbf{实时协作模式}};
+
+        \end{tikzpicture}
+        \caption{APPT平台文档协同流程图}
+        \label{fig:collaboration-flowchart}
+    \end{figure}
+
+    流程的关键决策点在于文档是否有协作者，具体实现逻辑如下：
+
+    \begin{enumerate}
+        \item \textbf{文档加载阶段}：用户打开文档时，系统加载文档内容和权限信息，同时查询该文档的协作者列表。
+
+        \item \textbf{协作状态判断}：检查文档是否有除当前用户外的其他协作者。如果文档为私有文档或只有当前用户有访问权限，则进入独立编辑模式；否则进入实时协作模式。
+
+        \item \textbf{独立编辑模式}：适用于个人文档或私有编辑场景：
+        \begin{itemize}
+            \item 直接使用CodeMirror编辑器进行本地编辑，无网络同步开销。
+            \item 编辑操作实时应用，提供流畅的本地编辑体验。
+            \item 定期或手动保存时将内容同步到后端MySQL数据库。
+            \item 支持离线编辑，恢复网络连接后自动同步更改。
+        \end{itemize}
+
+        \item \textbf{实时协作模式}：适用于多人协作场景：
+        \begin{itemize}
+            \item 初始化WebSocket连接，连接到Hocuspocus协作服务器。
+            \item 创建Yjs文档实例，并与CodeMirror编辑器绑定。
+            \item 通过CRDT算法自动同步文档状态，解决编辑冲突。
+            \item 支持实时光标追踪、用户状态显示等协作功能。
+            \item 定期将协作文档状态持久化到后端数据库，防止数据丢失。
+        \end{itemize}
+
+        \item \textbf{模式切换机制}：当文档协作状态发生变化时（如新增协作者或协作者全部离开），系统可动态切换编辑模式，确保用户体验的一致性。
+    \end{enumerate}
+
+    这种条件分支设计具有以下优势：
+    \begin{itemize}
+        \item \textbf{资源优化}：私有文档无需建立WebSocket连接，节省服务器资源。
+        \item \textbf{性能提升}：独立编辑模式减少网络延迟，提供更快的响应速度。
+        \item \textbf{灵活适应}：根据实际协作需求动态调整技术方案。
+        \item \textbf{用户体验}：保持编辑界面一致性，用户无需关心底层技术差异。
+    \end{itemize}
+
+    APPT平台通过智能的协作状态判断和模式选择机制，在保证功能完整性的同时，优化系统性能和用户体验，实现了高效、灵活的文档协同编辑解决方案。
+
     \subsection{权限管理系统}
 
     权限管理系统基于RBAC模型实现，具体实现细节如下：
@@ -471,11 +671,7 @@
 
         \item \textbf{集成测试}：测试模块间的集成和交互，确保系统整体功能正常。
 
-        \item \textbf{性能测试}：测试系统在高并发场景下的性能表现，包括响应时间、吞吐量等指标。
-
         \item \textbf{用户体验测试}：邀请真实用户使用系统，收集反馈意见并改进用户体验。
-
-        \item \textbf{安全测试}：测试系统的安全防护能力，包括认证授权、数据加密等方面。
     \end{itemize}
 
     \subsection{测试结果}
@@ -485,11 +681,7 @@
     \begin{itemize}
         \item \textbf{功能测试}：所有核心功能均能正常工作，实时协作、权限管理、AI辅助等功能达到设计要求。
 
-        \item \textbf{性能测试}：系统支持100个并发用户实时协作编辑，平均响应时间小于200毫秒。
-
         \item \textbf{兼容性测试}：系统在现代主流浏览器（Chrome、Firefox、Safari、Edge）上均能正常运行。
-
-        \item \textbf{安全测试}：系统通过常见的安全漏洞测试，包括XSS、CSRF、SQL注入等攻击防护。
 
         \item \textbf{用户体验测试}：用户反馈表明，系统界面友好，操作流程清晰，学习成本较低。
     \end{itemize}
@@ -508,10 +700,7 @@
             \midrule
             页面加载时间 & 首次访问 & 2.1秒 \\
             编辑器响应时间 & 普通编辑操作 & 120毫秒 \\
-            实时同步延迟 & 10个并发用户 & 180毫秒 \\
             AI生成响应时间 & 中等长度请求 & 3.5秒 \\
-            数据库查询性能 & 复杂查询 & 250毫秒 \\
-            并发用户支持 & 实时协作场景 & 100+用户 \\
             \bottomrule
         \end{tabular}
     \end{table}
