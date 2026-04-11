@@ -323,16 +323,106 @@
         \end{tabular}
     \end{table}
 
+    \subsection{重点表结构详解}
+
+    本节重点介绍 \texttt{slides}（幻灯片文档表）与 \texttt{slide\_comments}（评论表）两张表的详细字段设计。两表均以树形结构组织数据，但面对截然不同的使用场景，采取了差异显著的存储策略，具体对比详见本节末尾。
+
+    \subsubsection{slides 幻灯片文档表}
+
+    幻灯片文档表是平台的核心内容载体，存储每一个幻灯片文档的标题、正文与状态信息。\texttt{slides} 表通过 \texttt{parent\_id} 字段自关联，使空间内的文档可以形成任意深度的父子层级结构，支持知识库的树形目录组织，如表 \ref{tab:slides} 所示。
+
+    \begin{table}[htbp]
+        \caption{slides 幻灯片文档表结构}
+        \label{tab:slides}
+        \centering
+        \begin{tabular}{llll}
+            \toprule
+            字段名 & 数据类型 & 约束 & 说明 \\
+            \midrule
+            id & bigint & PK，自增 & 文档唯一主键 \\
+            title & varchar(255) & NOT NULL & 文档标题 \\
+            content & longtext & NULLABLE & 幻灯片 Markdown 正文 \\
+            slide\_space\_id & bigint & FK $\rightarrow$ slide\_spaces.id & 所属空间ID \\
+            parent\_id & bigint & FK $\rightarrow$ slides.id & 父文档ID，根节点为NULL \\
+            allow\_comment & tinyint(1) & DEFAULT 1 & 是否允许评论 \\
+            created\_by & bigint & FK $\rightarrow$ users.id & 创建者用户ID \\
+            is\_public & tinyint(1) & DEFAULT 0 & 是否公开（0私有，1公开）\\
+            is\_build & tinyint(1) & DEFAULT 0 & 是否已编译生成预览 \\
+            preview\_url & varchar(255) & NULLABLE & 编译后预览地址 \\
+            created\_at & datetime & NOT NULL & 创建时间 \\
+            updated\_at & datetime & NOT NULL & 最近修改时间 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \texttt{parent\_id} 是文档树的核心字段，自关联至同表的 \texttt{id}，构成邻接表（Adjacency List）模型；根文档的 \texttt{parent\_id} 为 \texttt{NULL}。平台支持用户通过拖拽方式调整文档在目录树中的位置，即节点的父子关系可动态变更，因此 \texttt{slides} 表仅使用邻接表而不引入物化路径。\texttt{allow\_comment} 与 \texttt{is\_public} 字段提供文档级的细粒度权限控制，\texttt{is\_build} 与 \texttt{preview\_url} 则记录文档的编译构建状态，供前端判断是否展示实时预览或静态构建预览。
+
+    \subsubsection{slide\_comments 评论表}
+
+    评论表支持用户对幻灯片内容进行多级评论与回复，其树形结构通过\textbf{邻接表}与\textbf{物化路径}两种模式的组合实现，如表 \ref{tab:slide-comments} 所示。
+
+    \begin{table}[htbp]
+        \caption{slide\_comments 评论表结构}
+        \label{tab:slide-comments}
+        \centering
+        \begin{tabular}{llll}
+            \toprule
+            字段名 & 数据类型 & 约束 & 说明 \\
+            \midrule
+            id & bigint & PK，自增 & 评论唯一主键 \\
+            slide\_id & bigint & FK $\rightarrow$ slides.id & 所属幻灯片ID \\
+            user\_id & bigint & FK $\rightarrow$ users.id & 评论发表者ID \\
+            content & text & NOT NULL & 评论正文内容 \\
+            path & varchar(255) & NULLABLE & 根节点到本节点的物化路径 \\
+            reply\_id & bigint & FK $\rightarrow$ slide\_comments.id & 父评论ID，顶层评论为NULL \\
+            created\_at & datetime & NOT NULL & 评论发布时间 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    评论表的关键设计要点如下：
+
+    \begin{itemize}
+        \item \textbf{邻接表（reply\_id）}：\texttt{reply\_id} 字段指向同表中父评论的 \texttt{id}，构成邻接表（Adjacency List）模型。顶层评论的 \texttt{reply\_id} 为 \texttt{NULL}，子评论的 \texttt{reply\_id} 指向其直接父节点。邻接表写入成本低，插入新评论只需设置父节点引用，无需修改其他记录，适合高频评论写入场景。
+
+        \item \textbf{物化路径（path）}：\texttt{path} 字段存储从根节点到当前节点的完整路径字符串，格式如 \texttt{/1/5/12/}，其中每段数字为对应层级评论的 \texttt{id}。利用 SQL 前缀查询 \texttt{WHERE path LIKE '/1/5/\%'}，可在不执行递归查询的情况下一次性获取任意评论节点下的全部子孙评论；删除某条评论及其所有回复时同样只需一条带前缀匹配的 \texttt{DELETE} 语句，避免了递归删除带来的多次数据库往返。
+
+        \item \textbf{权限联动控制}：评论功能受双重权限约束。\texttt{slides} 表中的 \texttt{allow\_comment} 字段由幻灯片所有者控制，决定该文档是否开放评论；用户角色须为 \texttt{commenter} 及以上级别（\texttt{commenter}、\texttt{editor}、\texttt{owner}）方可发表评论，\texttt{viewer} 角色仅有只读权限。
+    \end{itemize}
+
+    \subsubsection{两表设计思路对比}
+
+    \texttt{slides} 与 \texttt{slide\_comments} 均以树形结构组织数据，但两者在节点移动、子树展开和删除三个维度上的使用模式截然不同，由此导致了存储策略的根本差异，具体如表 \ref{tab:design-contrast} 所示。
+
+    \begin{table}[htbp]
+        \caption{两表树形存储策略对比}
+        \label{tab:design-contrast}
+        \centering
+        \begin{tabular}{lll}
+            \toprule
+            操作维度 & slides（文档树） & slide\_comments（评论树）\\
+            \midrule
+            节点结构调整 & 需要（支持拖拽排序） & 不需要（评论发出后不移动）\\
+            子树展开方式 & 逐级展开（按需加载） & 一次性展开整个讨论串 \\
+            子树删除方式 & 递归逐节点删除 & 单条 \texttt{LIKE} 前缀匹配删除 \\
+            树形存储模式 & 仅邻接表（\texttt{parent\_id}）& 邻接表 + 物化路径双模式 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \textbf{为何文档树不使用物化路径？} \texttt{slides} 表支持用户通过拖拽调整文档节点的位置，即节点的父子关系会动态变更。若引入物化路径，每次移动一个节点，都需要将该节点及其所有子孙节点的 \texttt{path} 字段全部更新，更新量与子树规模成正比，写放大严重。因此文档树仅维护 \texttt{parent\_id} 邻接表，移动节点只需修改一条记录的父节点引用，代价恒定。子树展开采用逐级按需加载策略，每次展开只查询当前层的直接子节点（\texttt{WHERE parent\_id = ?}），避免一次性加载过深的文档树；删除文档节点时则通过递归遍历依次删除子节点，与文档树规模相对较小、删除操作频率较低的实际使用场景相匹配。
+
+    \textbf{为何评论树引入物化路径？} 评论一经发布，其所属的父评论不会改变——用户无法将一条回复"移动"到另一个讨论串下，因此物化路径的维护成本几乎为零，写入时仅需将父节点的 \texttt{path} 追加当前评论 \texttt{id} 即可生成自身路径。与此同时，评论的两类高频操作恰好是物化路径最擅长的场景：展开某条评论下的全部回复，只需 \texttt{WHERE path LIKE '/1/5/\%'} 一条查询即可一次性取出整个子树，无需递归；删除某条评论及其全部子孙回复，同样通过 \texttt{DELETE WHERE path LIKE '/1/5/\%'} 单条语句完成，避免了逐节点递归删除带来的多次数据库往返。物化路径以冗余一个 \texttt{path} 字段为代价，将子树查询和删除的复杂度从递归的 $O(n)$ 次查询降低为常数次，在评论这一结构固定、子树操作高频的场景下性价比极高。
+
     \subsection{实体关系图}
 
     APPT平台的实体关系如图 \ref{fig:er-diagram} 所示，展示了各表之间的关系：
 
     \begin{figure}[htbp]
         \centering
-        \usetikzlibrary{shapes.geometric}
         \begin{tikzpicture}[
             entity/.style={rectangle, draw, rounded corners, fill=blue!10, align=center, minimum width=3.5cm, minimum height=1.6cm, text width=3cm, inner sep=0.2cm},
-            relationship/.style={diamond, draw, fill=green!10, align=center, minimum width=2.4cm, minimum height=2.4cm, inner sep=0.1cm},
+            relationship/.style={rectangle, draw, fill=green!10, align=center, minimum width=2.0cm, minimum height=0.9cm, inner sep=0.1cm},
             arrow/.style={->, >=stealth, thick},
             label/.style={font=\small},
             scale=0.8, transform shape
