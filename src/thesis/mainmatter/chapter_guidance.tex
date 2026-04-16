@@ -47,16 +47,44 @@
     APPT平台的主要界面包括：
 
     \begin{itemize}
-        \item \textbf{工作台}：用户登录后的主界面，显示幻灯片空间、最近文档和快捷操作入口。
+        \item \textbf{工作台}：用户登录后的主界面，显示幻灯片空间、最近文档和快捷操作入口，如图 \ref{fig:home-interface} 所示。
 
-        \item \textbf{编辑器}：幻灯片编辑界面，分为编辑器区域、预览区域和侧边栏功能面板。
+        \item \textbf{编辑器}：幻灯片编辑界面，分为编辑器区域、预览区域和侧边栏功能面板，如图 \ref{fig:editor-interface} 所示。
 
-        \item \textbf{空间管理}：管理幻灯片空间（SlideSpace）的界面，支持空间创建、成员管理和文档组织。
+        \item \textbf{空间管理}：管理幻灯片空间（SlideSpace）的界面，支持空间创建、成员管理和文档组织，如图 \ref{fig:slideSpace-interface} 所示。
 
         \item \textbf{设置页面}：用户个人设置和系统配置界面，包括账户信息、主题偏好和通知设置。
 
-        \item \textbf{协作面板}：显示当前在线协作者、权限设置和评论系统的功能面板。
+        \item \textbf{协作面板}：显示当前在线协作者、权限设置和评论系统的功能面板，如图 \ref{fig:permission-panel-interface} 所示。
     \end{itemize}
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/start.png}
+        \caption{APPT平台工作台界面}
+        \label{fig:home-interface}
+    \end{figure}
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/editor.png}
+        \caption{APPT平台编辑器界面}
+        \label{fig:editor-interface}
+    \end{figure}
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/slideSpace.png}
+        \caption{APPT平台幻灯片空间管理界面}
+        \label{fig:slideSpace-interface}
+    \end{figure}
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/permission-panel-pure-white.png}
+        \caption{APPT平台权限管理面板界面}
+        \label{fig:permission-panel-interface}
+    \end{figure}
 
     \section{核心功能使用指南}\label{sec:core-features-guide}
 
@@ -99,7 +127,7 @@
 
     \subsection{AI辅助创作}
 
-    APPT平台集成大语言模型API，提供智能内容生成和创作辅助：
+    APPT平台集成大语言模型API，提供智能内容生成和创作辅助，如图 \ref{fig:ai-assistant-interface} 和图 \ref{fig:ai-generate-interface} 所示：
 
     \begin{itemize}
         \item \textbf{AI面板调用}：使用Ctrl+I快捷键或点击编辑器侧边栏的AI图标打开AI辅助面板。AI面板提供内容生成、语法优化和创意建议等功能。
@@ -112,6 +140,20 @@
 
         \item \textbf{图像生成功能}：平台集成AI图像生成能力，可以根据文本描述生成配图，支持技术图表、概念图示和装饰性图片等多种类型。
     \end{itemize}
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/ai-assistant.png}
+        \caption{APPT平台AI辅助功能界面}
+        \label{fig:ai-assistant-interface}
+    \end{figure}
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/ai-gernerate.png}
+        \caption{APPT平台AI内容生成界面}
+        \label{fig:ai-generate-interface}
+    \end{figure}
 
     \begin{leftbar}
         \noindent\textbf{使用建议：}AI辅助功能适合快速生成初稿、获取创意灵感和优化表达方式。建议用户先提供清晰的上下文和具体要求，生成结果后根据需要进行调整和优化。
@@ -145,7 +187,7 @@
 
     \subsection{版本控制系统}
 
-    平台提供简化的版本控制功能，降低Git等专业工具的使用门槛：
+    平台提供简化的版本控制功能，降低Git等专业工具的使用门槛，如图 \ref{fig:version-control-interface} 所示：
 
     \begin{itemize}
         \item \textbf{自动保存机制}：系统定期自动保存文档内容，防止数据丢失。用户也可以使用Ctrl+S快捷键手动保存。
@@ -158,6 +200,13 @@
 
         \item \textbf{一键回滚操作}：选择任意历史版本，点击"回滚到此版本"按钮可以将文档内容恢复到指定版本状态。回滚操作会创建新的版本记录，不影响历史版本数据。
     \end{itemize}
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/version-control-wh&bl.png}
+        \caption{APPT平台版本控制界面}
+        \label{fig:version-control-interface}
+    \end{figure}
 
     % \begin{figure}[htbp]
     %     \centering
@@ -227,7 +276,7 @@
 
     \subsection{代码片段管理}
 
-    平台提供代码片段管理系统，支持可复用代码块的存储和插入：
+    平台提供代码片段管理系统，支持可复用代码块的存储和插入，如图 \ref{fig:snippets-interface} 所示：
 
     \begin{itemize}
         \item \textbf{创建代码片段}：在编辑器中选中代码内容，右键选择"保存为代码片段"，输入片段名称和描述信息。代码片段会保存到用户的个人片段库中。
@@ -236,12 +285,18 @@
 
         \item \textbf{管理片段库}：在设置页面的代码片段管理界面中，用户可以查看、编辑、删除和分类管理所有个人代码片段。
 
-        \item \textbf{共享代码片段}：支持将代码片段分享到团队片段库，团队成员可以共同使用和管理技术代码示例、常用配置模板等。
     \end{itemize}
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/appt/snippets.png}
+        \caption{APPT平台代码片段管理界面}
+        \label{fig:snippets-interface}
+    \end{figure}
 
     \subsection{评论与讨论系统}
 
-    平台集成评论功能，支持文档内容的讨论和反馈：
+    平台集成评论功能，支持文档内容的讨论和反馈，如图 \ref{fig:comment-interface} 所示：
 
     \begin{itemize}
         \item \textbf{添加评论}：在编辑器中选中文本内容，点击出现的评论图标或使用右键菜单添加评论。评论支持Markdown格式，可以包含代码块和链接。
@@ -250,9 +305,16 @@
       
     \end{itemize}
 
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/appt/comment.png}
+        \caption{APPT平台评论系统界面}
+        \label{fig:comment-interface}
+    \end{figure}
+
     \subsection{幻灯片空间管理}
 
-    幻灯片空间（SlideSpace）是组织和管理幻灯片文档的知识库系统：
+    幻灯片空间（SlideSpace）是组织和管理幻灯片文档的知识库系统，如图 \ref{fig:slideSpace-interface} 和图 \ref{fig:shared-doc-presentation-interface} 所示：
 
     \begin{itemize}
         \item \textbf{创建空间}：在工作台界面点击"创建空间"按钮，输入空间名称、描述和可见性设置。空间可以作为项目、主题或团队的文档集合。
@@ -262,6 +324,13 @@
 
         \item \textbf{全局搜索}：平台提供全局搜索功能，可以跨空间搜索文档标题和内容，快速定位目标文档。
     \end{itemize}
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/appt/shared-doc-presentation.png}
+        \caption{APPT平台共享文档演示界面}
+        \label{fig:shared-doc-presentation-interface}
+    \end{figure}
 
     \subsection{主题与插件系统}
 

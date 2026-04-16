@@ -418,71 +418,69 @@
 
     APPT平台的实体关系如图 \ref{fig:er-diagram} 所示，展示了各表之间的关系：
 
-    \begin{figure}[htbp]
-        \centering
-        \begin{tikzpicture}[
-            entity/.style={rectangle, draw, rounded corners, fill=blue!10, align=center, minimum width=3.5cm, minimum height=1.6cm, text width=3cm, inner sep=0.2cm},
-            relationship/.style={rectangle, draw, fill=green!10, align=center, minimum width=2.0cm, minimum height=0.9cm, inner sep=0.1cm},
-            arrow/.style={->, >=stealth, thick},
-            label/.style={font=\small},
-            scale=0.8, transform shape
-        ]
 
-        % 实体节点 - 上层
-        \node[entity] (user) at (0, 5) {用户表\\users};
-        \node[entity, right=6.5cm of user] (space) {幻灯片空间表\\slide\_spaces};
 
-        % 实体节点 - 中层
-        \node[entity, below=5cm of user] (snippet) {代码片段表\\snippets};
-        \node[entity, below=5cm of space] (slide) {幻灯片表\\slides};
-        \node[entity, right=6.5cm of slide] (comment) {评论表\\slide\_comments};
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        entity/.style={rectangle, draw, rounded corners, fill=blue!10, align=center, 
+                      minimum width=3.2cm, minimum height=1.5cm, text width=2.9cm, inner sep=0.2cm},
+        relationship/.style={rectangle, draw, fill=green!10, align=center, 
+                            minimum width=1.8cm, minimum height=0.8cm, inner sep=0.1cm},
+        arrow/.style={->, >=stealth, thick},
+        label/.style={font=\small},
+        scale=0.75, transform shape
+    ]
 
-        % 实体节点 - 下层
-        \node[entity, below=5cm of snippet] (version) {版本控制表\\slide\_versions};
-        \node[entity, below=5cm of slide] (role) {用户角色表\\slide\_user\_roles};
-        \node[entity, below=5cm of comment] (regcode) {注册码表\\registration\_codes};
+    % 实体节点 - 上层
+    \node[entity] (user) at (0, 6) {用户表\\users};
+    \node[entity, right=6cm of user] (space) {幻灯片空间表\\slide\_spaces};
 
-        % 关系节点
-        \node[relationship] (user_space) at ($(user)!0.5!(space) + (0,-0.3cm)$) {拥有};
-        \node[relationship] (space_slide) at ($(space)!0.5!(slide) + (0.3cm,0)$) {包含};
-        \node[relationship] (slide_version) at ($(slide)!0.5!(version) + (0.3cm,0)$) {版本化};
-        \node[relationship] (user_slide) at ($(user)!0.5!(slide) + (-0.2cm,-0.2cm)$) {协作};
-        \node[relationship] (slide_comment) at ($(slide)!0.5!(comment) + (0,0.3cm)$) {评论};
-        \node[relationship] (user_role) at ($(user)!0.5!(role) + (-0.3cm,0)$) {授权};
+    % 实体节点 - 中层
+    \node[entity, below=4.5cm of user] (snippet) {代码片段表\\snippets};
+    \node[entity, below=4.5cm of space] (slide) {幻灯片表\\slides};
+    \node[entity, right=6cm of slide] (comment) {评论表\\slide\_comments};
 
-        % 连接线
-        \draw[arrow] (user) -- node[pos=0.3, above, label] {1} (user_space);
-        \draw[arrow] (user_space) -- node[pos=0.7, above, label] {N} (space);
+    % 实体节点 - 下层
+    \node[entity, below=4.5cm of snippet] (version) {版本控制表\\slide\_versions};
+    \node[entity, below=4.5cm of slide] (role) {用户角色表\\slide\_user\_roles};
+    \node[entity, below=4.5cm of comment] (regcode) {注册码表\\registration\_codes};
 
-        \draw[arrow] (space) -- node[pos=0.3, right, label] {1} (space_slide);
-        \draw[arrow] (space_slide) -- node[pos=0.7, right, label] {N} (slide);
+    % 关系节点
+    \node[relationship] (user_space) at ($(user)!0.5!(space) + (0,-0.25cm)$) {拥有};
+    \node[relationship] (space_slide) at ($(space)!0.5!(slide) + (0.25cm,0)$) {包含};
+    \node[relationship] (slide_version) at ($(slide)!0.5!(version) + (0.25cm,0)$) {版本化};
+    \node[relationship] (user_slide) at ($(user)!0.5!(slide) + (-0.15cm,-0.15cm)$) {协作};
+    \node[relationship] (slide_comment) at ($(slide)!0.5!(comment) + (0,0.25cm)$) {评论};
+    \node[relationship] (user_role) at ($(user)!0.5!(role) + (-0.25cm,0)$) {授权};
 
-        \draw[arrow] (slide) -- node[pos=0.3, right, label] {1} (slide_version);
-        \draw[arrow] (slide_version) -- node[pos=0.7, right, label] {N} (version);
+    % 连接线
+    \draw[arrow] (user) -- node[pos=0.3, above, label] {1} (user_space);
+    \draw[arrow] (user_space) -- node[pos=0.7, above, label] {N} (space);
 
-        \draw[arrow] (user) -- node[pos=0.3, left, label] {1} (user_slide);
-        \draw[arrow] (user_slide) -- node[pos=0.7, above, label] {N} (slide);
+    \draw[arrow] (space) -- node[pos=0.3, right, label] {1} (space_slide);
+    \draw[arrow] (space_slide) -- node[pos=0.7, right, label] {N} (slide);
 
-        \draw[arrow] (slide) -- node[pos=0.3, above, label] {1} (slide_comment);
-        \draw[arrow] (slide_comment) -- node[pos=0.7, above, label] {N} (comment);
+    \draw[arrow] (slide) -- node[pos=0.3, right, label] {1} (slide_version);
+    \draw[arrow] (slide_version) -- node[pos=0.7, right, label] {N} (version);
 
-        \draw[arrow] (user) -- node[pos=0.3, left, label] {1} (user_role);
-        \draw[arrow] (user_role) -- node[pos=0.7, right, label] {N} (role);
+    \draw[arrow] (user) -- node[pos=0.3, left, label] {1} (user_slide);
+    \draw[arrow] (user_slide) -- node[pos=0.7, above, label] {N} (slide);
 
-        % 其他实体连接
-        \draw[arrow, dashed] (user) -- node[pos=0.3, left, label] {创建} (snippet);
-        \draw[arrow, dashed] (user) -- node[pos=0.7, below right, label] {使用} (regcode);
+    \draw[arrow] (slide) -- node[pos=0.3, above, label] {1} (slide_comment);
+    \draw[arrow] (slide_comment) -- node[pos=0.7, above, label] {N} (comment);
 
-        % % 图例
-        % \node[entity, below=2cm of version, fill=blue!5] (legend_entity) {实体};
-        % \node[relationship, right=2.5cm of legend_entity, fill=green!5] (legend_rel) {关系};
-        % \draw[arrow] (legend_entity) -- node[above, label] {1:N} (legend_rel);
+    \draw[arrow] (user) -- node[pos=0.3, left, label] {1} (user_role);
+    \draw[arrow] (user_role) -- node[pos=0.7, right, label] {N} (role);
 
-        \end{tikzpicture}
-        \caption{APPT平台实体关系图}
-        \label{fig:er-diagram}
-    \end{figure}
+    % 标准实线连接，无遮挡
+    \draw[arrow] (user) -- node[pos=0.5, left, label] {创建} (snippet);
+    \draw[arrow] (user.east) to[out=-30, in=120] node[pos=0.6, right, label] {使用} (regcode.north);
 
+    \end{tikzpicture}
+    \caption{APPT平台实体关系图}
+    \label{fig:er-diagram}
+\end{figure}
     主要关系包括：
     \begin{itemize}
         \item \textbf{用户与空间}：一个用户可以拥有多个幻灯片空间（一对多关系）。
