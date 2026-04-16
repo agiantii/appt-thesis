@@ -37,7 +37,7 @@
     在系统设计过程中，我们遵循以下设计原则：
 
     \begin{itemize}
-        \item \textbf{模块化设计}：采用微服务架构思想，将系统划分为独立的功能模块，便于维护和扩展。
+        \item \textbf{模块化设计}：系统划分为独立的功能模块，便于维护和扩展。
 
         \item \textbf{前后端分离}：实现前端展示层与后端业务层的完全分离，提高系统的灵活性和可维护性。
 
@@ -631,7 +631,7 @@
         \node[process, below=of initWs, yshift=-0.5cm] (initYjs) {创建Yjs文档实例\\绑定CodeMirror};
         \node[process, below=of initYjs, yshift=-0.5cm] (sync) {同步文档状态\\使用CRDT算法};
         \node[process, below=of sync, yshift=-0.5cm] (edit) {协同编辑\\实时冲突解决};
-        \node[process, below=of edit, yshift=-0.5cm] (persist) {定期保存到\\后端数据库};
+        \node[process, below=of edit, yshift=-0.5cm] (persist) {保存到\\后端数据库};
         \node[connector, below=of persist, yshift=-0.5cm] (collabEnd) {结束};
 
         % 连接线

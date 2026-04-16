@@ -74,12 +74,11 @@
 
 	\subsection{平台架构设计}
 
-	基于微服务架构思想，将系统分为前端展示层、后端业务层和数据存储层。前端采用React 19 + TypeScript + Vite技术栈，集成CodeMirror 6编辑器和Yjs协作库；后端采用NestJS框架，提供RESTful API和WebSocket协作服务；数据存储使用MySQL数据库，通过TypeORM进行数据持久化。
+	系统分为前端展示层、后端业务层和数据存储层。前端采用React 19 + TypeScript + Vite技术栈，集成CodeMirror 6编辑器和Yjs协作库；后端采用NestJS框架，提供RESTful API和WebSocket协作服务；数据存储使用MySQL数据库，通过TypeORM进行数据持久化。
 
 	\subsection{实时协作功能实现}
 
-	研究CRDT算法在文档协作中的应用，基于Yjs库实现操作转换和冲突解决机制。通过Hocuspocus WebSocket服务器处理多客户端连接，实现文档状态同步和实时光标显示。
-
+	研究CRDT算法在文档协作中的应用，基于Yjs库实现操作转换和冲突解决机制。通过Hocuspocus WebSocket 服务器处理多客户端连接，实现文档状态同步和实时光标显示。
 	\subsection{权限管理系统开发}
 
 	基于JWT认证和RBAC模型，设计四级用户角色权限体系。实现文档可见性控制（公开/私有）、协作成员管理和操作权限校验，确保文档安全性和访问控制。
