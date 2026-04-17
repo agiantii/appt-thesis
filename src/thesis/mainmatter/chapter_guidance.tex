@@ -47,15 +47,15 @@
     APPT平台的主要界面包括：
 
     \begin{itemize}
-        \item \textbf{工作台}：用户登录后的主界面，显示幻灯片空间、最近文档和快捷操作入口，如图 \ref{fig:home-interface} 所示。
+        \item \textbf{工作台}：用户登录后的主界面，显示幻灯片空间、最近幻灯片和快捷操作入口，如图 \ref{fig:home-interface} 所示。
 
         \item \textbf{编辑器}：幻灯片编辑界面，分为编辑器区域、预览区域和侧边栏功能面板，如图 \ref{fig:editor-interface} 所示。
 
         \item \textbf{空间管理}：管理幻灯片空间（SlideSpace）的界面，支持空间创建、成员管理和文档组织，如图 \ref{fig:slideSpace-interface} 所示。
 
-        \item \textbf{设置页面}：用户个人设置和系统配置界面，包括账户信息、主题偏好和通知设置。
+        \item \textbf{设置页面}：用户个人设置和系统配置界面，包括账户信息、主题偏好等。
 
-        \item \textbf{协作面板}：显示当前在线协作者、权限设置和评论系统的功能面板，如图 \ref{fig:permission-panel-interface} 所示。
+        \item \textbf{协作面板}：当前幻灯片权限的管理面板，如图 \ref{fig:permission-panel-interface} 所示。
     \end{itemize}
 
     \begin{figure}[htbp]
@@ -90,8 +90,14 @@
 
     \subsection{实时协作编辑}
 
-    APPT平台基于Yjs CRDT算法实现无冲突的实时协作编辑，支持多用户同时编辑同一文档：
+    APPT平台基于Yjs CRDT算法实现无冲突的实时协作编辑，支持多用户同时编辑同一文档,如\ref{fig:shared-doc-presentation-interface}所示：
 
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/appt/shared-doc-presentation.png}
+        \caption{APPT平台共享文档演示界面}
+        \label{fig:shared-doc-presentation-interface}
+    \end{figure}
     \begin{itemize}
         \item \textbf{邀请协作者}：在编辑器右上角的协作面板中点击"邀请成员"按钮，输入协作者的邮箱地址并选择角色权限（Owner/Editor/Commenter/Viewer）。系统会自动发送邀请邮件。
 
@@ -140,7 +146,10 @@
 
         \item \textbf{图像生成功能}：平台集成AI图像生成能力，可以根据文本描述生成配图，支持技术图表、概念图示和装饰性图片等多种类型。
     \end{itemize}
-
+    \begin{leftbar}
+        \noindent\textbf{使用建议：}AI辅助功能适合快速生成初稿、获取创意灵感和优化表达方式。建议用户先提供清晰的上下文和具体要求，生成结果后根据需要进行调整和优化。
+    \end{leftbar}
+    
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/ai-assistant.png}
@@ -155,9 +164,6 @@
         \label{fig:ai-generate-interface}
     \end{figure}
 
-    \begin{leftbar}
-        \noindent\textbf{使用建议：}AI辅助功能适合快速生成初稿、获取创意灵感和优化表达方式。建议用户先提供清晰的上下文和具体要求，生成结果后根据需要进行调整和优化。
-    \end{leftbar}
 
     \subsection{幻灯片编辑基础}
 
@@ -287,7 +293,7 @@
 
     \end{itemize}
 
-    \begin{figure}[htbp]
+    \begin{figure}[!htbp]
         \centering
         \includegraphics[width=0.95\textwidth]{figures/appt/snippets.png}
         \caption{APPT平台代码片段管理界面}
@@ -313,8 +319,8 @@
     \end{figure}
 
     \subsection{幻灯片空间管理}
-% TODO 图片引用有问题
-    幻灯片空间（SlideSpace）是组织和管理幻灯片文档的知识库系统，如图 \ref{fig:slideSpace-interface} 和图 \ref{fig:shared-doc-presentation-interface} 所示：
+
+    幻灯片空间（SlideSpace）是组织和管理幻灯片文档的知识库系统：
 
     \begin{itemize}
         \item \textbf{创建空间}：在工作台界面点击"创建空间"按钮，输入空间名称、描述和可见性设置。空间可以作为项目、主题或团队的文档集合。
@@ -324,13 +330,7 @@
 
         \item \textbf{全局搜索}：平台提供全局搜索功能，可以跨空间搜索文档标题和内容，快速定位目标文档。
     \end{itemize}
-% TODO 共享文档演示界面截图 插入位置需要调整
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.95\textwidth]{figures/appt/shared-doc-presentation.png}
-        \caption{APPT平台共享文档演示界面}
-        \label{fig:shared-doc-presentation-interface}
-    \end{figure}
+
 
     \subsection{主题与插件系统}
 
@@ -418,10 +418,6 @@
 
     \begin{itemize}
         \item 了解APPT平台的基本概念和功能特点，掌握快速入门方法。
-
-        \item 熟练使用实时协作、权限管理、AI辅助等核心功能，提高团队协作效率。
-
-        \item 掌握版本控制、代码片段、空间管理等高级功能，满足复杂使用场景需求。
 
         \item 运用最佳实践和技巧，优化工作流程，提升幻灯片创作质量和效率。
     \end{itemize}

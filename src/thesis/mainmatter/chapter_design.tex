@@ -790,25 +790,6 @@
         \item \textbf{用户体验测试}：用户反馈表明，系统界面友好，操作流程清晰，学习成本较低。
     \end{itemize}
 
-    \subsection{性能评估}
-
-    对系统关键性能指标进行评估，结果如下：
-% TODO添加协作编辑性能评估数据
-    \begin{table}[htbp]
-        \caption{APPT平台性能评估结果}
-        \label{tab:performance-evaluation}
-        \centering
-        \begin{tabular}{lll}
-            \toprule
-            性能指标 & 测试条件 & 结果 \\
-            \midrule
-            页面加载时间 & 首次访问 & 2.1秒 \\
-            编辑器响应时间 & 普通编辑操作 & 120毫秒 \\
-            AI生成响应时间 & 中等长度请求 & 3.5秒 \\
-            \bottomrule
-        \end{tabular}
-    \end{table}
-
     \section{小结}\label{sec:design-summary}
 
     本章详细介绍了APPT平台的设计目标、系统架构、前后端设计、数据库设计以及核心功能实现。通过前后端分离的架构、基于CRDT的实时协作技术、RBAC权限管理系统和AI辅助功能集成，APPT平台实现了智能幻灯片协作编辑的核心功能。
