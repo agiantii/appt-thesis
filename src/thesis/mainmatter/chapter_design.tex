@@ -419,66 +419,84 @@
     APPT平台的实体关系如图 \ref{fig:er-diagram} 所示，展示了各表之间的关系：
 
 
-
-\begin{figure}[htbp]
+% TODO 图表位置、格式需要调整
+\begin{figure}[htbp] 
     \centering
     \begin{tikzpicture}[
-        entity/.style={rectangle, draw, rounded corners, fill=blue!10, align=center, 
-                      minimum width=3.2cm, minimum height=1.5cm, text width=2.9cm, inner sep=0.2cm},
-        relationship/.style={rectangle, draw, fill=green!10, align=center, 
-                            minimum width=1.8cm, minimum height=0.8cm, inner sep=0.1cm},
-        arrow/.style={->, >=stealth, thick},
-        label/.style={font=\small},
-        scale=0.75, transform shape
+        entity/.style={
+            rectangle, draw, minimum width=2.8cm, minimum height=0.9cm, 
+            align=center, inner sep=0.2cm, font=\small
+        },
+        relationship/.style={
+            diamond, draw, aspect=2, inner sep=0.1cm, align=center, font=\small
+        },
+        label/.style={font=\footnotesize, fill=white, inner sep=1pt},
+        scale=0.8, transform shape
     ]
 
-    % 实体节点 - 上层
-    \node[entity] (user) at (0, 6) {用户表\\users};
-    \node[entity, right=6cm of user] (space) {幻灯片空间表\\slide\_spaces};
+    % ---- 实体定义（使用相对定位） ----
+    \node[entity] (user)                              {用户表\\users};
+    \node[entity, right=5cm of user] (space)          {幻灯片空间表\\slide\_spaces};
+    \node[entity, below=2.5cm of space] (slide)       {幻灯片表\\slides};
+    \node[entity, below=3cm of slide] (version)       {版本控制表\\slide\_versions};
+    \node[entity, right=4.5cm of slide] (comment)     {评论表\\slide\_comments};
+    \node[entity, below=2.5cm of user] (role)         {用户角色表\\slide\_user\_roles};
+    \node[entity, right=3.5cm of role] (snippet)      {代码片段表\\snippets};
+    \node[entity, below=2.5cm of snippet] (regcode)   {注册码表\\registration\_codes};
 
-    % 实体节点 - 中层
-    \node[entity, below=4.5cm of user] (snippet) {代码片段表\\snippets};
-    \node[entity, below=4.5cm of space] (slide) {幻灯片表\\slides};
-    \node[entity, right=6cm of slide] (comment) {评论表\\slide\_comments};
+    % ---- 关系菱形节点（置于关联实体中心） ----
+    % 用户 - 拥有 - 空间
+    \node[relationship] (owns) at ($(user)!0.5!(space)$) {拥有};
+    % 空间 - 包含 - 幻灯片
+    \node[relationship] (contains) at ($(space)!0.5!(slide)$) {包含};
+    % 幻灯片 - 版本化 - 版本
+    \node[relationship] (versioned) at ($(slide)!0.5!(version)$) {版本化};
+    % 幻灯片 - 评论 - 评论
+    \node[relationship] (comments) at ($(slide)!0.5!(comment)$) {评论};
+    % 用户 - 授权 - 角色
+    \node[relationship] (authorizes) at ($(user)!0.5!(role)$) {授权};
+    % 用户 - 协作 - 幻灯片
+    \node[relationship] (collaborates) at ($(user)!0.5!(slide) + (-0.5,0)$) {协作};
+    % 用户 - 创建 - 代码片段
+    \node[relationship] (creates) at ($(user)!0.5!(snippet) + (0,-0.3)$) {创建};
+    % 用户 - 使用 - 注册码
+    \node[relationship] (uses) at ($(user)!0.5!(regcode) + (0.5,0.3)$) {使用};
 
-    % 实体节点 - 下层
-    \node[entity, below=4.5cm of snippet] (version) {版本控制表\\slide\_versions};
-    \node[entity, below=4.5cm of slide] (role) {用户角色表\\slide\_user\_roles};
-    \node[entity, below=4.5cm of comment] (regcode) {注册码表\\registration\_codes};
+    % ---- 连接线与基数标注 ----
+    % 用户 -- 拥有 -- 空间 (1:N)
+    \draw (user) -- (owns) node[pos=0.3, label] {1};
+    \draw (owns) -- (space) node[pos=0.7, label] {N};
 
-    % 关系节点
-    \node[relationship] (user_space) at ($(user)!0.5!(space) + (0,-0.25cm)$) {拥有};
-    \node[relationship] (space_slide) at ($(space)!0.5!(slide) + (0.25cm,0)$) {包含};
-    \node[relationship] (slide_version) at ($(slide)!0.5!(version) + (0.25cm,0)$) {版本化};
-    \node[relationship] (user_slide) at ($(user)!0.5!(slide) + (-0.15cm,-0.15cm)$) {协作};
-    \node[relationship] (slide_comment) at ($(slide)!0.5!(comment) + (0,0.25cm)$) {评论};
-    \node[relationship] (user_role) at ($(user)!0.5!(role) + (-0.25cm,0)$) {授权};
+    % 空间 -- 包含 -- 幻灯片 (1:N)
+    \draw (space) -- (contains) node[pos=0.3, label] {1};
+    \draw (contains) -- (slide) node[pos=0.7, label] {N};
 
-    % 连接线
-    \draw[arrow] (user) -- node[pos=0.3, above, label] {1} (user_space);
-    \draw[arrow] (user_space) -- node[pos=0.7, above, label] {N} (space);
+    % 幻灯片 -- 版本化 -- 版本 (1:N)
+    \draw (slide) -- (versioned) node[pos=0.3, label] {1};
+    \draw (versioned) -- (version) node[pos=0.7, label] {N};
 
-    \draw[arrow] (space) -- node[pos=0.3, right, label] {1} (space_slide);
-    \draw[arrow] (space_slide) -- node[pos=0.7, right, label] {N} (slide);
+    % 幻灯片 -- 评论 -- 评论 (1:N)
+    \draw (slide) -- (comments) node[pos=0.3, label] {1};
+    \draw (comments) -- (comment) node[pos=0.7, label] {N};
 
-    \draw[arrow] (slide) -- node[pos=0.3, right, label] {1} (slide_version);
-    \draw[arrow] (slide_version) -- node[pos=0.7, right, label] {N} (version);
+    % 用户 -- 授权 -- 角色 (1:N)
+    \draw (user) -- (authorizes) node[pos=0.3, label] {1};
+    \draw (authorizes) -- (role) node[pos=0.7, label] {N};
 
-    \draw[arrow] (user) -- node[pos=0.3, left, label] {1} (user_slide);
-    \draw[arrow] (user_slide) -- node[pos=0.7, above, label] {N} (slide);
+    % 用户 -- 协作 -- 幻灯片 (1:N)
+    \draw (user) -- (collaborates) node[pos=0.3, label] {1};
+    \draw (collaborates) -- (slide) node[pos=0.7, label] {N};
 
-    \draw[arrow] (slide) -- node[pos=0.3, above, label] {1} (slide_comment);
-    \draw[arrow] (slide_comment) -- node[pos=0.7, above, label] {N} (comment);
+    % 用户 -- 创建 -- 代码片段 (1:N)
+    \draw (user) -- (creates) node[pos=0.3, label] {1};
+    \draw (creates) -- (snippet) node[pos=0.7, label] {N};
 
-    \draw[arrow] (user) -- node[pos=0.3, left, label] {1} (user_role);
-    \draw[arrow] (user_role) -- node[pos=0.7, right, label] {N} (role);
-
-    % 标准实线连接，无遮挡
-    \draw[arrow] (user) -- node[pos=0.5, left, label] {创建} (snippet);
-    \draw[arrow] (user.east) to[out=-30, in=120] node[pos=0.6, right, label] {使用} (regcode.north);
+    % 用户 -- 使用 -- 注册码 (1:N)
+    \draw (user) -- (uses) node[pos=0.3, label] {1};
+    \draw (uses) -- (regcode) node[pos=0.7, label] {N};
 
     \end{tikzpicture}
-    \caption{APPT平台实体关系图}
+    \caption{APPT平台实体关系图（Chen表示法）}
     \label{fig:er-diagram}
 \end{figure}
     主要关系包括：
@@ -777,7 +795,7 @@
     \subsection{性能评估}
 
     对系统关键性能指标进行评估，结果如下：
-
+% TODO添加协作编辑性能评估数据
     \begin{table}[htbp]
         \caption{APPT平台性能评估结果}
         \label{tab:performance-evaluation}
