@@ -4,7 +4,7 @@
     %---------------------------------------------------------------------------%
     %->> 系统设计与实现章节写作指南
     %---------------------------------------------------------------------------%
-    % 本章主要介绍APPT平台的设计思路、架构和实现方法
+    % 本章主要介绍本平台的设计思路、架构和实现方法
     % 一个完整的系统设计与实现章节应包含以下几个部分：
     % 1. 设计目标：明确系统的设计目标和原则
     % 2. 系统架构：介绍系统的整体架构和各组件的功能
@@ -16,7 +16,7 @@
 
     \subsection{设计目标}
 
-    APPT（AI驱动的幻灯片协作编辑平台）的设计目标是创建一个功能完善、易用性强的智能幻灯片协作平台，具体目标包括：
+    本平台的设计目标在于构建一个功能完善、易用性强的智能幻灯片协作平台，具体目标包括：
 
     \begin{itemize}
         \item \textbf{实时协作支持}：基于现代Web技术实现多用户实时协作编辑，支持实时光标追踪和在线状态显示。
@@ -34,7 +34,7 @@
 
     \subsection{设计原则}
 
-    在系统设计过程中，我们遵循以下设计原则：
+    在系统设计过程中，遵循了以下设计原则：
 
     \begin{itemize}
         \item \textbf{模块化设计}：系统划分为独立的功能模块，便于维护和扩展。
@@ -52,7 +52,7 @@
 
     \section{系统总体架构}\label{sec:system-architecture}
 
-    APPT平台采用前后端分离的架构\cite{wu2020frontend}，整体架构如图 \ref{fig:appt-architecture} 所示。系统分为前端展示层、后端业务层和数据存储层三个主要层次。
+    本平台采用了前后端分离的设计架构\cite{wu2020frontend}。系统的整体架构如图 \ref{fig:appt-architecture} 所示，包含三个主要层次：前端展示层、后端业务层和数据存储层。
 
     \begin{figure}[htbp]
         \centering
@@ -111,108 +111,108 @@
 
         \end{scope}
         \end{tikzpicture}
-        \caption{APPT平台整体架构图}
+        \caption{智能幻灯片协作平台整体架构图}
         \label{fig:appt-architecture}
     \end{figure}
 
     \subsection{前端展示层}
 
-    前端展示层负责用户界面呈现和交互逻辑处理，主要包括：
+    前端展示层负责用户界面的呈现与交互逻辑的处理，主要包含以下组件：
 
     \begin{itemize}
-        \item \textbf{React应用}：基于React 19 + TypeScript + Vite构建的单页应用，提供响应式用户界面。
+        \item \textbf{React应用}：采用React 19、TypeScript和Vite技术栈构建单页应用，具备响应式用户界面能力。
 
-        \item \textbf{CodeMirror 6编辑器}：集成的代码编辑器，支持Markdown语法高亮和实时预览。
+        \item \textbf{CodeMirror 6编辑器}：内置的代码编辑工具，具备Markdown语法高亮和实时预览功能。
 
-        \item \textbf{Yjs客户端}：实时协作客户端，通过WebSocket连接后端协作服务器。
+        \item \textbf{Yjs客户端}：负责实时协作的客户端组件，通过WebSocket协议与后端协作服务器建立连接。
 
-        \item \textbf{Slidev预览组件}：实时幻灯片预览组件，支持Dev/Build双模式预览。
+        \item \textbf{Slidev预览组件}：实现幻灯片实时预览功能的组件，提供了Dev和Build两种预览模式。
     \end{itemize}
 
     \subsection{后端业务层}
 
-    后端业务层负责处理业务逻辑和数据持久化，主要包括：
+    后端业务层负责业务逻辑处理和数据持久化，主要由以下模块构成：
 
     \begin{itemize}
-        \item \textbf{NestJS框架}：基于Node.js的渐进式框架，提供RESTful API和WebSocket服务。
+        \item \textbf{NestJS框架}：构建在Node.js之上的渐进式框架，提供RESTful API接口。
 
-        \item \textbf{Hocuspocus服务器}：WebSocket协作服务器，处理Yjs文档的状态同步。
+        \item \textbf{Hocuspocus服务器}：作为WebSocket协作服务器，负责处理Yjs文档的状态同步任务。
 
-        \item \textbf{业务模块}：包括用户管理、幻灯片管理、权限控制、AI辅助、版本控制等功能模块。
+        \item \textbf{业务模块}：涵盖用户管理、幻灯片管理、权限控制、AI辅助和版本控制等功能的组件集合。
 
-        \item \textbf{认证授权}：JWT认证系统和RBAC权限控制模块。
+        \item \textbf{认证授权}：采用JWT认证系统与RBAC权限控制模块实现安全访问。
     \end{itemize}
 
     \subsection{数据存储层}
 
-    数据存储层负责数据的持久化存储，主要包括：
+    数据存储层负责数据持久化存储，主要包含以下存储组件：
 
     \begin{itemize}
-        \item \textbf{MySQL数据库}：关系型数据库，存储用户信息、幻灯片内容、权限数据等结构化数据。
+        \item \textbf{MySQL数据库}：作为关系型数据库，用于存储用户信息、幻灯片内容、权限数据等结构化数据。
 
-        \item \textbf{对象存储}：阿里云OSS，用于存储上传的图片和其他静态资源。
+        \item \textbf{对象存储}：采用阿里云OSS服务，负责存储上传的图片及其他静态资源文件。
     \end{itemize}
 
     \section{前端架构设计}\label{sec:frontend-architecture}
 
     \subsection{技术栈选择}
 
-    前端采用现代Web技术栈，具体选择如下：
+    前端部分选用了现代化的Web技术栈，具体的技术选择如下：
 
     \begin{itemize}
-        \item \textbf{React 19.2.4}：最新React版本，提供高效的用户界面渲染和状态管理。
+        \item \textbf{React 19.2.4}：选用最新的React版本，能够高效地完成用户界面渲染与状态管理任务。
 
-        \item \textbf{TypeScript 5.8}：类型安全的JavaScript超集，提高代码质量和开发效率。
+        \item \textbf{TypeScript 5.8}：作为类型安全的JavaScript超集，有助于提升代码质量并提高开发效率。
 
-        \item \textbf{Vite 6.2}：下一代前端构建工具，提供极速的开发体验和优化的生产构建。
+        \item \textbf{Vite 6.2}：作为下一代前端构建工具，能够提供快速的开发体验并优化生产构建过程。
 
-        \item \textbf{React Router v7}：客户端路由管理，支持动态路由和嵌套路由。
+        \item \textbf{React Router v7}：负责客户端的路由管理工作，支持动态路由和嵌套路由功能。
 
-        \item \textbf{CodeMirror 6}：现代化的代码编辑器，支持丰富的编辑功能和插件系统。
+        \item \textbf{CodeMirror 6}：作为现代化的代码编辑器，提供了丰富的编辑功能并支持插件系统扩展。
     \end{itemize}
 
     \subsection{组件化设计}
 
-    前端采用组件化设计模式，将系统功能拆分为可复用的组件模块：
+    前端部分采用了组件化的设计模式，将系统功能拆分成可复用的组件模块，具体包括：
 
     \begin{itemize}
-        \item \textbf{布局组件}：DashboardLayout、ResizablePanels等，负责页面布局和窗口管理。
+        \item \textbf{布局组件}：例如DashboardLayout、ResizablePanels等，负责页面布局和窗口管理任务。
 
-        \item \textbf{编辑器组件}：EditorHeader、EditorSidebar、EditorPreview等，实现幻灯片编辑功能。
+        \item \textbf{编辑器组件}：包括EditorHeader、EditorSidebar、EditorPreview等，共同实现幻灯片编辑功能。
 
-        \item \textbf{权限组件}：PermissionModal、CollaboratorModal等，管理用户权限和协作成员。
+        \item \textbf{权限组件}：如PermissionModal、CollaboratorModal等，负责管理用户权限和协作成员信息。
 
-        \item \textbf{AI组件}：AIPanel、AISuggestion等，提供AI辅助功能界面。
+        \item \textbf{AI组件}：例如AIPanel、AISuggestion等，用于提供AI辅助功能的用户界面。
 
-        \item \textbf{版本控制组件}：VersionHistory、DiffViewer等，展示版本历史和内容差异。
+        \item \textbf{版本控制组件}：包括VersionHistory、DiffViewer等，负责展示版本历史记录和内容差异信息。
     \end{itemize}
 
     \subsection{状态管理}
 
-    前端采用分层的状态管理策略：
+    前端部分采用了分层化的状态管理策略，具体包括：
 
     \begin{itemize}
-        \item \textbf{本地状态}：使用React的useState和useReducer管理组件内部状态。
+        \item \textbf{本地状态}：借助React的useState和useReducer钩子管理组件内部的状态数据。
 
-        \item \textbf{全局状态}：使用Context API管理跨组件的全局状态，如用户认证状态、主题设置等。
+        \item \textbf{全局状态}：通过Context API管理跨组件的全局状态信息，例如用户认证状态和主题设置等。
 
-        \item \textbf{服务器状态}：使用React Query管理从服务器获取的数据状态，支持缓存、重试和乐观更新。
+        \item \textbf{服务器状态}：采用React Query管理从服务器获取的数据状态，具备缓存、重试和乐观更新等能力。
 
-        \item \textbf{协作状态}：通过Yjs管理文档的实时协作状态，包括文档内容、光标位置和用户状态。
+        \item \textbf{协作状态}：借助Yjs管理文档的实时协作状态，涵盖文档内容、光标位置和用户状态等信息。
     \end{itemize}
 
     \subsection{实时协作实现}
 
-    前端实时协作功能基于Yjs库实现，具体实现方案如下：
+    前端的实时协作功能基于Yjs库进行实现，具体的实现方案如下：
 
     \begin{itemize}
-        \item \textbf{文档绑定}：将CodeMirror编辑器与Yjs文档实例绑定，实现编辑操作的实时同步。
+        \item \textbf{文档绑定}：将CodeMirror编辑器与Yjs文档实例进行绑定，从而实现编辑操作的实时同步。
 
-        \item \textbf{WebSocket连接}：通过@hocuspocus/provider建立与Hocuspocus服务器的WebSocket连接。
+        \item \textbf{WebSocket连接}：借助@hocuspocus/provider建立与Hocuspocus服务器之间的WebSocket连接。
 
-        \item \textbf{光标追踪}：使用Yjs的awareness功能实现实时光标位置显示和用户状态同步。
+        \item \textbf{光标追踪}：利用Yjs的awareness功能实现实时光标位置显示以及用户状态同步。
 
-        \item \textbf{冲突解决}：利用CRDT算法自动解决并发编辑冲突，确保最终一致性。
+        \item \textbf{冲突解决}：通过CRDT算法自动解决并发编辑产生的冲突，从而确保最终的一致性。
     \end{itemize}
 
     \section{后端架构设计}\label{sec:backend-architecture}
@@ -283,7 +283,7 @@
 
     \subsection{数据库选型}
 
-    考虑到APPT平台的数据特点和性能需求，选择MySQL\cite{hu2015mysql,lan2004mysql}作为主要数据库：
+    考虑到本平台的数据特点和性能需求，选择MySQL\cite{hu2015mysql,lan2004mysql}作为主要数据库：
 
     \begin{itemize}
         \item \textbf{关系型数据}：用户、幻灯片、权限等数据具有明确的关系结构，适合使用关系型数据库。
@@ -296,11 +296,11 @@
     \end{itemize}
 
     \subsection{核心表结构}
-
-    APPT平台共设计12个核心数据表，主要表结构如下：
+% TODO
+    本平台共设计12个核心数据表，如表 \ref{tab:database-tables} 所示：
 
     \begin{table}[htbp]
-        \caption{APPT平台核心数据表}
+        \caption{智能幻灯片协作平台核心数据表}
         \label{tab:database-tables}
         \centering
         \begin{tabular}{lll}
@@ -325,14 +325,14 @@
 
     \subsection{重点表结构详解}
 
-    本节重点介绍 \texttt{slides}（幻灯片文档表）与 \texttt{slide\_comments}（评论表）两张表的详细字段设计。两表均以树形结构组织数据，但面对截然不同的使用场景，采取了差异显著的存储策略，具体对比详见本节末尾。
+    本节重点介绍 \texttt{slides}（幻灯片表）与 \texttt{slide\_comments}（评论表）两张表的详细字段设计。两表均以树形结构组织数据，但面对截然不同的使用场景，采取了差异显著的存储策略，具体对比详见本节末尾。
 
-    \subsubsection{slides 幻灯片文档表}
+    \subsubsection{slides 幻灯片表}
 
-    幻灯片文档表是平台的核心内容载体，存储每一个幻灯片文档的标题、正文与状态信息。\texttt{slides} 表通过 \texttt{parent\_id} 字段自关联，使空间内的文档可以形成任意深度的父子层级结构，支持知识库的树形目录组织，如表 \ref{tab:slides} 所示。
+    幻灯片表是平台的核心内容载体，存储每一个幻灯片文档的标题、正文与状态信息。\texttt{slides} 表通过 \texttt{parent\_id} 字段自关联，使空间内的文档可以形成任意深度的父子层级结构，支持知识库的树形目录组织，如表 \ref{tab:slides} 所示。
 
     \begin{table}[htbp]
-        \caption{slides 幻灯片文档表结构}
+        \caption{slides 幻灯片表结构}
         \label{tab:slides}
         \centering
         \begin{tabular}{llll}
@@ -410,13 +410,13 @@
         \end{tabular}
     \end{table}
 
-    \textbf{为何文档树不使用物化路径？} \texttt{slides} 表支持用户通过拖拽调整文档节点的位置，即节点的父子关系会动态变更。若引入物化路径，每次移动一个节点，都需要将该节点及其所有子孙节点的 \texttt{path} 字段全部更新，更新量与子树规模成正比，写放大严重。因此文档树仅维护 \texttt{parent\_id} 邻接表，移动节点只需修改一条记录的父节点引用，代价恒定。子树展开采用逐级按需加载策略，每次展开只查询当前层的直接子节点（\texttt{WHERE parent\_id = ?}），避免一次性加载过深的文档树；删除文档节点时则通过递归遍历依次删除子节点，与文档树规模相对较小、删除操作频率较低的实际使用场景相匹配。
+    \textbf{为何文档树不使用物化路径？} \texttt{slides} 表支持用户通过拖拽调整文档节点的位置，即节点的父子关系会动态变更。若引入物化路径，每次移动一个节点，都需要将该节点及其所有子孙节点的 \texttt{path} 字段全部更新，更新量与子树规模成正比，写放大严重。因此文档树仅维护 \texttt{parent\_id} 邻接表，移动节点只需修改一条记录的父节点引用，代价恒定。删除文档节点时则通过递归遍历依次删除子节点，与文档树规模相对较小、删除操作频率较低的实际使用场景相匹配。
 
     \textbf{为何评论树引入物化路径？} 评论一经发布，其所属的父评论不会改变——用户无法将一条回复"移动"到另一个讨论串下，因此物化路径的维护成本几乎为零，写入时仅需将父节点的 \texttt{path} 追加当前评论 \texttt{id} 即可生成自身路径。与此同时，评论的两类高频操作恰好是物化路径最擅长的场景：展开某条评论下的全部回复，只需 \texttt{WHERE path LIKE '/1/5/\%'} 一条查询即可一次性取出整个子树，无需递归；删除某条评论及其全部子孙回复，同样通过 \texttt{DELETE WHERE path LIKE '/1/5/\%'} 单条语句完成，避免了逐节点递归删除带来的多次数据库往返。物化路径以冗余一个 \texttt{path} 字段为代价，将子树查询和删除的复杂度从递归的 $O(n)$ 次查询降低为常数次，在评论这一结构固定、子树操作高频的场景下性价比极高。
 
     \subsection{核心实体关系图}
 
-    APPT平台的核心实体关系如图 \ref{fig:er-diagram} 所示，展示了各表之间的关系：
+    本平台的核心实体关系如图 \ref{fig:er-diagram} 所示，展示了各表之间的关系：
 
     \clearpage
     \begin{figure}[!htbp]
@@ -495,7 +495,7 @@
         \draw[arrow] (r_user_regcode) -- node[pos=0.65, left, label] {N} (regcode);
 
         \end{tikzpicture}
-        \caption{APPT平台核心实体关系图}
+        \caption{智能幻灯片协作平台核心实体关系图}
         \label{fig:er-diagram}
     \end{figure}
     主要关系包括：
@@ -505,7 +505,6 @@
         \item \textbf{幻灯片与版本}：一个幻灯片可以有多个版本（一对多关系）。
         \item \textbf{用户与权限}：一个用户可以在多个幻灯片中拥有不同的权限（多对多关系）。
         \item \textbf{幻灯片与评论}：一个幻灯片可以有多个评论（一对多关系）。
-        \item \textbf{评论与回复}：评论之间可以形成回复关系（自关联一对多关系）。
     \end{itemize}
 
     \section{核心功能实现}\label{sec:core-features}
@@ -520,27 +519,26 @@
         \item \textbf{操作同步机制}：通过WebSocket连接同步编辑操作，使用增量更新减少网络传输量。
 
         \item \textbf{冲突解决策略}：采用CRDT算法自动解决并发编辑冲突，确保最终一致性。
-
-        \item \textbf{性能优化}：使用操作批处理和压缩算法优化网络传输性能，提高响应速度。
+        \item 
     \end{itemize}
 
     \subsection{协同算法原理}
 
-    APPT平台采用基于CRDT（Conflict-Free Replicated Data Type，无冲突复制数据类型）的协同算法实现实时协作编辑\cite{lv2022crdt,algorithms2017crdt}。CRDT是一种分布式数据结构的数学理论，能够确保在异步网络环境下，多个副本之间的数据最终保持一致，无需中央协调器解决冲突。
+    本平台采用了基于CRDT（Conflict-Free Replicated Data Type，无冲突复制数据类型）的协同算法来实现实时协作编辑功能\cite{lv2022crdt,algorithms2017crdt}。CRDT作为一种无冲突复制数据类型的数学理论，能够确保在异步网络环境中，多个数据副本之间最终达到一致状态，而不需要中央协调器来解决冲突问题。
 
     \subsubsection{CRDT基本概念}
 
-    CRDT算法主要分为两种类型：
+    CRDT算法主要包含以下两种类型：
     \begin{itemize}
-        \item \textbf{基于操作的CRDT（Op-based CRDT）}：通过同步操作序列实现一致性，每个操作都是可交换、可结合和幂等的。
-        \item \textbf{基于状态的CRDT（State-based CRDT）}：通过同步完整状态或状态差异实现一致性，状态合并操作满足交换律、结合律和幂等律。
+        \item \textbf{基于操作的CRDT（Op-based CRDT）}：通过同步操作序列的方式来达成一致性，其中每个操作都具备交换性、结合性和幂等性特征。
+        \item \textbf{基于状态的CRDT（State-based CRDT）}：通过同步完整状态或状态差异来实现一致性，状态合并操作需要满足交换律、结合律和幂等律的要求。
     \end{itemize}
 
-    APPT平台采用Yjs库实现的基于操作的CRDT算法，具体特点如下：
+    本平台采用了Yjs库实现的基于操作的CRDT算法，该算法具有以下特点：
     \begin{itemize}
-        \item \textbf{交换性}：操作顺序不影响最终结果，无论操作到达顺序如何，最终状态一致。
-        \item \textbf{结合性}：操作组合方式不影响最终结果，支持分组传输和批处理优化。
-        \item \textbf{幂等性}：重复执行同一操作不会改变状态，确保网络重传和重复消息不会导致数据不一致。
+        \item \textbf{交换性}：操作的顺序不会影响最终结果，无论操作到达的顺序如何，最终状态都能够保持一致。
+        \item \textbf{结合性}：操作组合的方式不会影响最终结果，这为分组传输和批处理优化提供了支持。
+        \item \textbf{幂等性}：重复执行相同的操作不会改变状态，从而确保网络重传和重复消息不会引起数据不一致问题。
     \end{itemize}
 
     \subsubsection{Yjs文档模型设计}
@@ -573,7 +571,7 @@
 
     \subsubsection{网络同步协议}
 
-    APPT平台采用优化的网络同步协议提高协作效率：
+    本平台采用优化的网络同步协议提高协作效率：
     \begin{itemize}
         \item \textbf{增量同步}：仅传输文档状态差异，而非完整文档内容，减少网络带宽消耗。
         \item \textbf{操作压缩}：将连续的编辑操作合并为批量更新，减少网络往返次数。
@@ -583,12 +581,10 @@
 
     \subsubsection{性能优化策略}
 
-    为提高大规模文档的协作性能，APPT平台实施以下优化：
+    为提高大规模文档的协作性能，本平台实施以下优化：
     \begin{itemize}
-        \item \textbf{分层更新}：将文档划分为逻辑块（如幻灯片页面），仅同步当前编辑块的变更。
         \item \textbf{延迟同步}：对高频率编辑操作（如连续输入）进行去抖动处理，减少同步频率。
         \item \textbf{内存管理}：定期清理历史操作记录，释放内存资源，同时保留必要的版本信息。
-        \item \textbf{本地优先}：编辑操作先在本地应用并确认，再异步同步到服务器，提供即时反馈体验。
     \end{itemize}
 
     \subsubsection{与传统协同算法的对比}
@@ -603,7 +599,7 @@
             对比维度 & CRDT算法 & OT算法 \\
             \midrule
             冲突解决 & 自动解决，无需中央协调器 & 需要中央服务器协调转换 \\
-            网络要求 & 支持P2P直接同步 & 必须通过中央服务器 \\
+            网络要求 & 支持直接同步 & 必须通过中央服务器 \\
             算法复杂度 & 相对简单，基于数学理论 & 复杂，需要维护转换函数 \\
             扩展性 & 容易扩展到大规模节点 & 中央服务器可能成为瓶颈 \\
             离线支持 & 天然支持，本地操作独立 & 需要复杂的状态同步机制 \\
@@ -611,11 +607,11 @@
         \end{tabular}
     \end{table}
 
-    CRDT算法的数学基础确保了系统的正确性和可靠性，使得APPT平台能够在分布式环境下提供稳定、高效的实时协作体验\cite{sun2019otcrdt,lv2016stringcrdt}。
+    CRDT算法的数学理论保障了系统的正确性与可靠性，从而为本平台提供了稳定且高效的实时协作体验\cite{sun2019otcrdt,lv2016stringcrdt}。
 
     \subsubsection{文档协同流程图}
 
-    APPT平台的文档协同流程\cite{li2020cscw,li1997cscw}采用条件分支设计，根据文档的协作状态动态选择独立编辑模式或实时协作模式。具体流程如图 \ref{fig:collaboration-flowchart} 所示。
+    本平台的文档协同流程\cite{li2020cscw,li1997cscw}采用了条件分支设计方案，能够依据文档的协作状态动态选择独立编辑模式或实时协作模式。具体流程详见图 \ref{fig:collaboration-flowchart}。
 
     \begin{figure}[htbp]
         \centering
@@ -682,11 +678,11 @@
         \node[gray, above=0.2cm] at (collabLabelPos) {\textbf{实时协作模式}};
 
         \end{tikzpicture}
-        \caption{APPT平台文档协同流程图}
+        \caption{智能幻灯片协作平台文档协同流程图}
         \label{fig:collaboration-flowchart}
     \end{figure}
 
-    流程的关键决策点在于文档是否有协作者，具体实现逻辑如下：
+    流程的关键决策依据是文档是否存在协作者，具体实现逻辑如下所述：
 
     \begin{enumerate}
         \item \textbf{文档加载阶段}：用户打开文档时，系统加载文档内容和权限信息，同时查询该文档的协作者列表。
@@ -695,7 +691,6 @@
 
         \item \textbf{独立编辑模式}：适用于个人文档或私有编辑场景：
         \begin{itemize}
-            \item 直接使用CodeMirror编辑器进行本地编辑，无网络同步开销。
             \item 编辑操作实时应用，提供流畅的本地编辑体验。
             \item 定期或手动保存时将内容同步到后端MySQL数据库。
         \end{itemize}
@@ -709,22 +704,22 @@
             \item 定期将协作文档状态持久化到后端数据库，防止数据丢失。
         \end{itemize}
 
-        \item \textbf{模式切换机制}：当文档协作状态发生变化时（如新增协作者或协作者全部离开），系统可动态切换编辑模式，确保用户体验的一致性。
+        
     \end{enumerate}
 
     这种条件分支设计具有以下优势：
     \begin{itemize}
-        \item \textbf{资源优化}：私有文档无需建立WebSocket连接，节省服务器资源。
-        \item \textbf{性能提升}：独立编辑模式减少网络延迟，提供更快的响应速度。
-        \item \textbf{灵活适应}：根据实际协作需求动态调整技术方案。
-        \item \textbf{用户体验}：保持编辑界面一致性，用户无需关心底层技术差异。
+        \item \textbf{资源优化}：私有文档无需建立WebSocket连接，从而节省服务器资源。
+        \item \textbf{性能提升}：独立编辑模式减少了网络延迟，能够提供更快的响应速度。
+        \item \textbf{灵活适应}：能够根据实际协作需求动态调整技术方案。
+        \item \textbf{用户体验}：保持了编辑界面的一致性，用户无需关注底层技术差异。
     \end{itemize}
 
-    APPT平台通过智能的协作状态判断和模式选择机制，在保证功能完整性的同时，优化系统性能和用户体验，实现了高效、灵活的文档协同编辑解决方案。
+    本平台通过智能化的协作状态判断与模式选择机制，在确保功能完整性的基础上，优化了系统性能与用户体验。这一设计实现了高效且灵活的文档协同编辑解决方案。
 
     \subsection{权限管理系统}
 
-    权限管理系统基于RBAC模型实现\cite{zhang2013rbac,wu2002rbacweb,kuhlmann2013uml}，具体实现细节如下：
+    权限管理系统采用RBAC模型构建\cite{zhang2013rbac,wu2002rbacweb,kuhlmann2013uml}，具体实现包括以下方面：
 
     \begin{itemize}
         \item \textbf{角色定义}：定义Owner、Editor、Commenter、Viewer四种角色，每种角色具有不同的权限集合。
@@ -738,7 +733,7 @@
 
     \subsection{AI辅助功能}
 
-    AI辅助功能集成大语言模型API，具体实现细节如下：
+    AI辅助功能通过集成大语言模型API实现，具体包括以下环节：
 
     \begin{itemize}
         \item \textbf{API集成}：集成通义千问等大语言模型API，支持文本生成和图像生成。
@@ -752,7 +747,7 @@
 
     \subsection{版本控制系统}
 
-    版本控制系统设计简化操作流程，具体实现细节如下：
+    版本控制系统旨在简化操作流程，具体实现包含以下要点：
 
     \begin{itemize}
         \item \textbf{自动保存}：定期自动保存文档内容，防止数据丢失。
@@ -768,7 +763,7 @@
 
     \subsection{测试方法}
 
-    为确保系统质量，采用以下测试方法：
+    为保证系统质量，实施了以下测试方法：
 
     \begin{itemize}
         \item \textbf{单元测试}：对核心功能模块进行单元测试，确保代码逻辑正确性。
@@ -780,22 +775,22 @@
 
     \subsection{测试结果}
 
-    测试结果表明，APPT平台在功能、性能和用户体验方面表现良好：
+    测试结果证明，本平台在功能表现、性能指标以及用户体验方面均表现良好：
 
     \begin{itemize}
-        \item \textbf{功能测试}：所有核心功能均能正常工作，实时协作、权限管理、AI辅助等功能达到设计要求。
+        \item \textbf{功能测试}：所有核心功能均正常运行，实时协作、权限管理、AI辅助等模块均符合设计要求。
 
-        \item \textbf{兼容性测试}：系统在现代主流浏览器（Chrome、Firefox、Safari、Edge）上均能正常运行。
+        \item \textbf{兼容性测试}：系统在主流现代浏览器（如Chrome、Firefox、Safari、Edge）上均可正常运行。
 
-        \item \textbf{用户体验测试}：用户反馈表明，系统界面友好，操作流程清晰，学习成本较低。
+        \item \textbf{用户体验测试}：用户反馈显示，系统界面友好，操作流程清晰易懂，学习成本较低。
     \end{itemize}
 
     \section{小结}\label{sec:design-summary}
 
-    本章详细介绍了APPT平台的设计目标、系统架构、前后端设计、数据库设计以及核心功能实现。通过前后端分离的架构、基于CRDT的实时协作技术、RBAC权限管理系统和AI辅助功能集成，APPT平台实现了智能幻灯片协作编辑的核心功能。
+    本章全面阐述了本平台的设计目标、系统架构以及核心功能实现细节。具体涵盖了前后端设计、数据库设计等关键技术环节。通过采用前后端分离架构，整合基于CRDT的实时协作技术、RBAC权限管理系统以及AI辅助功能，本平台完成了智能幻灯片协作编辑核心功能的构建。
 
-    系统设计充分考虑了用户体验和技术实现的平衡，在保证功能完整性的同时，注重降低非技术用户的使用门槛。测试结果表明，系统在功能、性能和用户体验方面均达到设计要求，能够满足技术团队和教育工作者对智能幻灯片协作平台的需求。
+    系统设计全面兼顾了用户体验与技术实现的平衡关系。在确保功能完整性的基础上，特别注重降低非技术用户的学习门槛。测试结果验证表明，系统在功能表现、性能指标以及用户体验等维度均符合设计预期，能够有效满足技术团队和教育工作者对于智能幻灯片协作平台的实际需求。
 
-    未来，我们将继续优化系统性能，扩展AI辅助功能，增加更多协作场景支持，并根据用户反馈持续改进系统功能和用户体验，使APPT平台成为更加强大和易用的幻灯片协作工具。
+    未来，我们将持续提升系统性能表现，进一步增强AI辅助功能。同时，计划丰富更多协作场景支持，并依据用户反馈不断改进系统功能与用户体验。通过以上措施，力求使本平台发展成为更加强大且易于使用的幻灯片协作工具。
 
 \end{cuzchapter}

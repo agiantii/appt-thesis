@@ -1,9 +1,9 @@
 \begin{cuzchapter}{使用指南}{chap:guide}
 
     %---------------------------------------------------------------------------%
-    %->> APPT平台使用指南
+    %->> 本平台使用指南
     %---------------------------------------------------------------------------%
-    % 本章主要提供APPT平台的使用指南和示例，帮助用户快速上手
+    % 本章主要提供本平台的使用指南和示例，帮助用户快速上手
     % 一个完整的使用指南章节应包含以下几个部分：
     % 1. 平台概述与快速入门：介绍平台基本概念和快速开始方法
     % 2. 核心功能使用指南：详细说明实时协作、权限管理、AI辅助等核心功能的使用方法
@@ -12,13 +12,13 @@
 
     \section{平台概述与快速入门}\label{sec:overview-quickstart}
 
-    APPT（AI驱动的幻灯片协作编辑平台）是基于现代Web技术构建的智能幻灯片协作平台，旨在为技术团队和教育工作者提供高效的幻灯片制作与协作解决方案。本章将详细介绍平台的使用方法和各项功能，帮助用户快速上手并充分利用平台的协作与创作能力。
+    本平台是基于现代Web技术构建的智能幻灯片协作平台，旨在为技术团队和教育工作者提供高效的幻灯片制作与协作解决方案。本章将详细介绍平台的使用方法和各项功能，帮助用户快速上手并充分利用平台的协作与创作能力。
 
-    APPT平台采用前后端分离的架构，前端基于React 19 + TypeScript + Vite构建，集成CodeMirror 6编辑器和Yjs协作库；后端采用NestJS框架，提供RESTful API和基于Hocuspocus的WebSocket协作服务。平台支持实时协作编辑、细粒度权限管理、AI辅助创作和简化版本控制等核心功能。
+    本平台采用前后端分离架构设计。前端使用React 19、TypeScript和Vite技术栈，集成了CodeMirror 6编辑器和Yjs协作库。后端基于NestJS框架，提供RESTful API和基于Hocuspocus的WebSocket协作服务。平台支持实时协作编辑、细粒度权限管理、AI辅助创作和简化版本控制等核心功能。
 
     \subsection{注册与登录}
 
-    首次使用APPT平台需要进行用户注册和登录：
+    首次使用本平台需要进行用户注册和登录：
 
     \begin{itemize}
         \item \textbf{注册账号}：访问平台网址，点击注册按钮，输入邮箱地址、用户名和密码完成注册。平台采用注册码机制，需要有效的注册码才能完成注册流程。
@@ -44,7 +44,7 @@
 
     \subsection{平台界面概览}
 
-    APPT平台的主要界面包括：
+    本平台的主要界面包括：
 
     \begin{itemize}
         \item \textbf{工作台}：用户登录后的主界面，显示幻灯片空间、最近幻灯片和快捷操作入口，如图 \ref{fig:home-interface} 所示。
@@ -61,28 +61,28 @@
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/start.png}
-        \caption{APPT平台工作台界面}
+        \caption{智能幻灯片协作平台工作台界面}
         \label{fig:home-interface}
     \end{figure}
 
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/editor.png}
-        \caption{APPT平台编辑器界面}
+        \caption{智能幻灯片协作平台编辑器界面}
         \label{fig:editor-interface}
     \end{figure}
 
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/slideSpace.png}
-        \caption{APPT平台幻灯片空间管理界面}
+        \caption{智能幻灯片协作平台幻灯片空间管理界面}
         \label{fig:slideSpace-interface}
     \end{figure}
 
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/permission-panel-pure-white.png}
-        \caption{APPT平台权限管理面板界面}
+        \caption{智能幻灯片协作平台权限管理面板界面}
         \label{fig:permission-panel-interface}
     \end{figure}
 
@@ -90,16 +90,16 @@
 
     \subsection{实时协作编辑}
 
-    APPT平台基于Yjs CRDT算法实现无冲突的实时协作编辑\cite{zhou2019websocket,cai2021collaborative}，支持多用户同时编辑同一文档,如\ref{fig:shared-doc-presentation-interface}所示：
+    本平台基于Yjs CRDT算法实现了无冲突的实时协作编辑功能\cite{zhou2019websocket,cai2021collaborative}，支持多用户同时编辑同一文档,如\ref{fig:shared-doc-presentation-interface}所示：
 
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.95\textwidth]{figures/appt/shared-doc-presentation.png}
-        \caption{APPT平台共享文档演示界面}
+        \caption{智能幻灯片协作平台共享文档演示界面}
         \label{fig:shared-doc-presentation-interface}
     \end{figure}
     \begin{itemize}
-        \item \textbf{邀请协作者}：在编辑器右上角的协作面板中点击"邀请成员"按钮，输入协作者的邮箱地址并选择角色权限（Owner/Editor/Commenter/Viewer）。系统会自动发送邀请邮件。
+        \item \textbf{邀请协作者}：在编辑器右上角的协作面板中点击"邀请成员"按钮，输入协作者的用户名并选择角色权限（Owner/Editor/Commenter/Viewer）。
 
         \item \textbf{实时光标追踪}：协作者在编辑文档时，其他用户可以在编辑器中看到其实时光标位置和选中内容，不同用户以不同颜色区分。
 
@@ -114,7 +114,7 @@
 
     \subsection{权限管理系统}
 
-    平台基于RBAC模型设计四级权限体系，确保文档的安全访问和合理使用：
+    平台基于RBAC模型设计了四级权限体系，以确保文档的安全访问和合理使用：
 
     \begin{itemize}
         \item \textbf{角色权限定义}：
@@ -133,7 +133,7 @@
 
     \subsection{AI辅助创作}
 
-    APPT平台集成大语言模型API，提供智能内容生成和创作辅助，如图 \ref{fig:ai-assistant-interface} 和图 \ref{fig:ai-generate-interface} 所示：
+    本平台集成了大语言模型API，能够提供智能内容生成和创作辅助，如图 \ref{fig:ai-assistant-interface} 和图 \ref{fig:ai-generate-interface} 所示：
 
     \begin{itemize}
         \item \textbf{AI面板调用}：使用Ctrl+I快捷键或点击编辑器侧边栏的AI图标打开AI辅助面板。AI面板提供内容生成、语法优化和创意建议等功能。
@@ -153,14 +153,14 @@
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/ai-assistant.png}
-        \caption{APPT平台AI辅助功能界面}
+        \caption{智能幻灯片协作平台AI辅助功能界面}
         \label{fig:ai-assistant-interface}
     \end{figure}
 
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/ai-gernerate.png}
-        \caption{APPT平台AI内容生成界面}
+        \caption{智能幻灯片协作平台AI内容生成界面}
         \label{fig:ai-generate-interface}
     \end{figure}
 
@@ -210,7 +210,7 @@
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/version-control-wh&bl.png}
-        \caption{APPT平台版本控制界面}
+        \caption{智能幻灯片协作平台版本控制界面}
         \label{fig:version-control-interface}
     \end{figure}
 
@@ -276,7 +276,7 @@
     %     \node[label, below=0.1cm of diff] {\textbf{操作控制区}};
 
     %     \end{tikzpicture}
-    %     \caption{APPT平台版本控制界面示意图}
+    %     \caption{智能幻灯片协作平台版本控制界面示意图}
     %     \label{fig:version-control-ui}
     % \end{figure}
 
@@ -296,7 +296,7 @@
     \begin{figure}[!htbp]
         \centering
         \includegraphics[width=0.95\textwidth]{figures/appt/snippets.png}
-        \caption{APPT平台代码片段管理界面}
+        \caption{智能幻灯片协作平台代码片段管理界面}
         \label{fig:snippets-interface}
     \end{figure}
 
@@ -314,7 +314,7 @@
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.95\textwidth]{figures/appt/comment.png}
-        \caption{APPT平台评论系统界面}
+        \caption{智能幻灯片协作平台评论系统界面}
         \label{fig:comment-interface}
     \end{figure}
 
@@ -323,7 +323,7 @@
     幻灯片空间（SlideSpace）是组织和管理幻灯片文档的知识库系统：
 
     \begin{itemize}
-        \item \textbf{创建空间}：在工作台界面点击"创建空间"按钮，输入空间名称、描述和可见性设置。空间可以作为项目、主题或团队的文档集合。
+        \item \textbf{创建空间}：在工作台界面点击"创建空间"按钮，输入空间名称、描述和可见性设置。
 
         \item \textbf{文档组织}：空间支持文档的树形结构组织，可以通过拖拽调整文档顺序和层级关系。文档支持父子关系，便于构建知识体系。
 
@@ -348,7 +348,7 @@
 
     \subsection{团队协作流程建议}
 
-    基于APPT平台的团队协作最佳实践：
+    基于本平台的团队协作最佳实践：
 
     \begin{itemize}
         \item \textbf{明确角色分工}：根据团队成员的专业领域和职责分配适当的文档权限。建议设立文档负责人（Owner）负责最终审核和发布。
@@ -364,7 +364,7 @@
 
     \subsection{效率提升技巧}
 
-    提高APPT平台使用效率的技巧和建议：
+    提高本平台使用效率的技巧和建议：
 
     \begin{itemize}
         \item \textbf{快捷键熟练使用}：熟练掌握常用快捷键（如Ctrl+S、Ctrl+B、Ctrl+I等），减少鼠标操作，提高编辑效率。
@@ -414,16 +414,16 @@
 
     \section{总结}\label{sec:guide-summary}
 
-    本章详细介绍了APPT平台的使用指南，涵盖了平台概述、核心功能使用、高级功能详解和最佳实践等内容。通过本章的学习，用户可以：
+    本章详细介绍了本平台的使用指南，涵盖了平台概述、核心功能使用、高级功能详解和最佳实践等内容。通过本章的学习，用户可以：
 
     \begin{itemize}
-        \item 了解APPT平台的基本概念和功能特点，掌握快速入门方法。
+        \item 了解本平台的基本概念和功能特点，掌握快速入门方法。
 
         \item 运用最佳实践和技巧，优化工作流程，提升幻灯片创作质量和效率。
     \end{itemize}
 
-    APPT平台作为AI驱动的幻灯片协作编辑平台，不仅提供了强大的技术功能，还注重用户体验和协作效率。平台的设计理念是通过技术手段降低使用门槛，让用户能够专注于内容创作和团队协作，而非技术细节。
+    本平台作为AI驱动的幻灯片协作编辑平台，不仅提供了强大的技术功能，还注重用户体验和协作效率。平台的设计理念是通过技术手段降低使用门槛，让用户能够专注于内容创作和团队协作，而非技术细节。
 
-    随着平台的不断发展和完善，将会提供更多创新的功能和优化的用户体验。用户可以通过平台帮助文档、社区论坛和客户支持获取最新的使用信息和问题解决方案。我们鼓励用户积极反馈使用体验，共同推动平台的改进和发展，使APPT平台成为更加强大和易用的幻灯片协作工具。
+    随着平台的不断发展和完善，将会提供更多创新的功能和优化的用户体验。用户可以通过平台帮助文档、社区论坛和客户支持获取最新的使用信息和问题解决方案。我们鼓励用户积极反馈使用体验，共同推动平台的改进和发展，使本平台成为更加强大和易用的幻灯片协作工具。
 
 \end{cuzchapter}
