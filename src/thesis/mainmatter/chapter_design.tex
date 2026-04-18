@@ -52,7 +52,7 @@
 
     \section{系统总体架构}\label{sec:system-architecture}
 
-    APPT平台采用前后端分离的架构，整体架构如图 \ref{fig:appt-architecture} 所示。系统分为前端展示层、后端业务层和数据存储层三个主要层次。
+    APPT平台采用前后端分离的架构\cite{wu2020frontend}，整体架构如图 \ref{fig:appt-architecture} 所示。系统分为前端展示层、后端业务层和数据存储层三个主要层次。
 
     \begin{figure}[htbp]
         \centering
@@ -233,7 +233,7 @@
 
     \subsection{RESTful API设计}
 
-    后端提供RESTful API接口，按照资源进行组织：
+    后端提供RESTful API接口\cite{wang2013restful}，按照资源进行组织：
 
     \begin{itemize}
         \item \textbf{认证接口}（/api/auth/*）：用户登录、注册、令牌刷新等认证相关操作。
@@ -283,7 +283,7 @@
 
     \subsection{数据库选型}
 
-    考虑到APPT平台的数据特点和性能需求，选择MySQL作为主要数据库：
+    考虑到APPT平台的数据特点和性能需求，选择MySQL\cite{hu2015mysql,lan2004mysql}作为主要数据库：
 
     \begin{itemize}
         \item \textbf{关系型数据}：用户、幻灯片、权限等数据具有明确的关系结构，适合使用关系型数据库。
@@ -526,7 +526,7 @@
 
     \subsection{协同算法原理}
 
-    APPT平台采用基于CRDT（Conflict-Free Replicated Data Type，无冲突复制数据类型）的协同算法实现实时协作编辑。CRDT是一种分布式数据结构的数学理论，能够确保在异步网络环境下，多个副本之间的数据最终保持一致，无需中央协调器解决冲突。
+    APPT平台采用基于CRDT（Conflict-Free Replicated Data Type，无冲突复制数据类型）的协同算法实现实时协作编辑\cite{lv2022crdt,algorithms2017crdt}。CRDT是一种分布式数据结构的数学理论，能够确保在异步网络环境下，多个副本之间的数据最终保持一致，无需中央协调器解决冲突。
 
     \subsubsection{CRDT基本概念}
 
@@ -611,15 +611,15 @@
         \end{tabular}
     \end{table}
 
-    CRDT算法的数学基础确保了系统的正确性和可靠性，使得APPT平台能够在分布式环境下提供稳定、高效的实时协作体验。
+    CRDT算法的数学基础确保了系统的正确性和可靠性，使得APPT平台能够在分布式环境下提供稳定、高效的实时协作体验\cite{sun2019otcrdt,lv2016stringcrdt}。
 
     \subsubsection{文档协同流程图}
 
-    APPT平台的文档协同流程采用条件分支设计，根据文档的协作状态动态选择独立编辑模式或实时协作模式。具体流程如图 \ref{fig:collaboration-flowchart} 所示。
+    APPT平台的文档协同流程\cite{li2020cscw,li1997cscw}采用条件分支设计，根据文档的协作状态动态选择独立编辑模式或实时协作模式。具体流程如图 \ref{fig:collaboration-flowchart} 所示。
 
     \begin{figure}[htbp]
         \centering
-        \begin{tikzpicture}[
+    \begin{tikzpicture}[
             node distance=1.0cm and 1.8cm,
             startstop/.style={rectangle, rounded corners, draw, fill=red!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
             process/.style={rectangle, draw, fill=blue!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
@@ -724,7 +724,7 @@
 
     \subsection{权限管理系统}
 
-    权限管理系统基于RBAC模型实现，具体实现细节如下：
+    权限管理系统基于RBAC模型实现\cite{zhang2013rbac,wu2002rbacweb,kuhlmann2013uml}，具体实现细节如下：
 
     \begin{itemize}
         \item \textbf{角色定义}：定义Owner、Editor、Commenter、Viewer四种角色，每种角色具有不同的权限集合。

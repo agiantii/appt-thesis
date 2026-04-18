@@ -21,8 +21,8 @@
 		\subsection{WebSocket实时通信技术}
 
 		WebSocket协议提供了全双工通信通道，是实现实时协作应用的关键技术。与传统HTTP轮询相比，WebSocket建立了持久连接，减少了延迟和带宽消耗。Hocuspocus作为Yjs的协作服务器，基于WebSocket协议实现了文档状态的多客户端同步。
-
-		在APPT平台中，前端Yjs客户端通过WebSocket连接Hocuspocus服务器，实现文档状态的实时同步。Hocuspocus服务器处理多客户端连接、文档加载和状态管理，并通过REST API与后端业务层交互进行数据持久化存储。
+% BUILD CHECK
+		在APPT平台中，前端Yjs客户端通过WebSocket连接Hocuspocus服务器，实现文档状态的实时同步\cite{zhou2019websocket,DNZS201028018}。Hocuspocus服务器处理多客户端连接、文档加载和状态管理，并通过REST API与后端业务层交互进行数据持久化存储。
 
 		\subsection{实时协作在文档编辑中的应用}
 
@@ -78,11 +78,11 @@
 
 		\subsection{Slidev技术架构与特点}
 
-		Slidev（slide + dev）是专门为开发者设计的现代幻灯片制作工具。它基于Vue.js组件系统，支持Markdown语法编写幻灯片内容，并提供了丰富的插件生态。Slidev的核心理念是将幻灯片制作与Web开发技术结合，支持代码高亮、实时预览和自定义主题。
+		Slidev（slide + dev）是专门为开发者设计的现代幻灯片制作工具\cite{slidevteam2026slidedoc}。它基于Vue.js组件系统，支持Markdown语法编写幻灯片内容，并提供了丰富的插件生态。Slidev的核心理念是将幻灯片制作与Web开发技术结合，支持代码高亮、实时预览和自定义主题。
 
 		\subsection{基于Markdown的幻灯片制作}
 
-		Markdown作为一种轻量级标记语言，因其简洁性和易读性在文档编写中广泛应用。基于Markdown的幻灯片工具如Reveal.js、Marp等，允许用户使用纯文本编写幻灯片，并通过CSS样式控制视觉效果。
+		Markdown作为一种轻量级标记语言，因其简洁性和易读性在文档编写中广泛应用。基于Markdown的幻灯片工具如Reveal.js、Marp等，允许用户使用纯文本编写幻灯片，并通过CSS样式控制视觉效果\cite{ZJGZ201603011,XXDL201613117}。
 
 		\subsection{开发者工具集成}
 
