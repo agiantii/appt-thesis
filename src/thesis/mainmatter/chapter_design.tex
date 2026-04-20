@@ -543,13 +543,10 @@
 
     Yjs采用分层文档模型设计，核心数据结构包括：
     \begin{itemize}
-        \item \textbf{YText}：富文本数据类型，支持字符级别的插入、删除和格式属性设置，用于表示幻灯片内容。
-        \item \textbf{YArray}：有序数组类型，支持元素的插入、删除和移动，用于管理幻灯片页面顺序。
-        \item \textbf{YMap}：键值对类型，支持属性的增删改查，用于存储幻灯片元数据和用户配置。
-        \item \textbf{Transaction}：事务机制，将多个操作打包为原子操作单元，确保操作的完整性。
+        \item \textbf{Y.Text}：富文本数据类型，支持字符级别的插入、删除和格式属性设置，用于表示幻灯片内容。
+        \item \textbf{Y.Array}：有序数组类型，支持元素的插入、删除和移动，用于管理幻灯片页面顺序。
+        \item \textbf{Y.Map}：键值对类型，支持属性的增删改查，用于存储幻灯片元数据和用户配置。
     \end{itemize}
-
-    文档状态通过逻辑时钟（Lamport Timestamp）进行版本控制，每个操作附带唯一的操作ID（客户端ID + 逻辑时钟），确保全局有序性。
 
     \subsubsection{冲突解决机制}
 
