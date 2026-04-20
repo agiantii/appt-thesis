@@ -1,6 +1,7 @@
 ## test
-test/**
-
+test/
+## temp
+temp/
 ## Output PDF files (but not assets)
 /*.pdf
 /src/**/*.pdf
