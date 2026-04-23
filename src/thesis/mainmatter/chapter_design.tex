@@ -16,39 +16,11 @@
 
     \subsection{设计目标}
 
-    本平台的设计目标在于构建一个功能完善、易用性强的智能幻灯片协作平台，具体目标包括：
-
-    \begin{itemize}
-        \item \textbf{实时协作支持}：基于现代Web技术实现多用户实时协作编辑，支持实时光标追踪和在线状态显示。
-
-        \item \textbf{权限管理完善}：设计基于RBAC模型的四级权限管理系统，实现细粒度的文档访问控制。
-
-        \item \textbf{AI辅助功能}：集成大语言模型API，支持幻灯片内容生成、语法适配和智能建议。
-
-        \item \textbf{版本控制简化}：实现直观的版本控制系统，提供版本历史查看、差异对比和一键回滚功能。
-
-        \item \textbf{用户体验优化}：降低技术使用门槛，为非技术用户提供友好的操作界面和简化的协作流程。
-
-        \item \textbf{系统性能稳定}：确保系统在高并发场景下的稳定性和响应速度。
-    \end{itemize}
+    本平台的设计目标在于构建一个功能完善、易用性强的智能幻灯片协作平台，具体目标包括：\textbf{实时协作支持}：基于现代Web技术实现多用户实时协作编辑，支持实时光标追踪和在线状态显示；\textbf{权限管理完善}：设计基于RBAC模型的四级权限管理系统，实现细粒度的文档访问控制；\textbf{AI辅助功能}：集成大语言模型API，支持幻灯片内容生成、语法适配和智能建议；\textbf{版本控制简化}：实现直观的版本控制系统，提供版本历史查看、差异对比和一键回滚功能；\textbf{用户体验优化}：降低技术使用门槛，为非技术用户提供友好的操作界面和简化的协作流程；\textbf{系统性能稳定}：确保系统在高并发场景下的稳定性和响应速度。
 
     \subsection{设计原则}
 
-    在系统设计过程中，遵循了以下设计原则：
-
-    \begin{itemize}
-        \item \textbf{模块化设计}：系统划分为独立的功能模块，便于维护和扩展。
-
-        \item \textbf{前后端分离}：实现前端展示层与后端业务层的完全分离，提高系统的灵活性和可维护性。
-
-        \item \textbf{实时优先}：优先考虑实时协作体验，采用WebSocket协议和CRDT算法确保低延迟的协作效果。
-
-        \item \textbf{安全可靠}：采用JWT认证和RBAC权限控制，确保用户数据和文档内容的安全性。
-
-        \item \textbf{用户友好}：设计直观的用户界面和简化的工作流程，降低非技术用户的学习成本。
-
-        \item \textbf{开放扩展}：提供插件化架构，支持功能模块的灵活扩展和第三方集成。
-    \end{itemize}
+    在系统设计过程中，遵循了以下设计原则：\textbf{模块化设计}：系统划分为独立的功能模块，便于维护和扩展；\textbf{前后端分离}：实现前端展示层与后端业务层的完全分离，提高系统的灵活性和可维护性；\textbf{实时优先}：优先考虑实时协作体验，采用WebSocket协议和CRDT算法确保低延迟的协作效果；\textbf{安全可靠}：采用JWT认证和RBAC权限控制，确保用户数据和文档内容的安全性；\textbf{用户友好}：设计直观的用户界面和简化的工作流程，降低非技术用户的学习成本；\textbf{开放扩展}：提供插件化架构，支持功能模块的灵活扩展和第三方集成。
 
     \section{系统总体架构}\label{sec:system-architecture}
 
@@ -117,181 +89,57 @@
 
     \subsection{前端展示层}
 
-    前端展示层负责用户界面的呈现与交互逻辑的处理，主要包含以下组件：
-
-    \begin{itemize}
-        \item \textbf{React应用}：采用React 19、TypeScript和Vite技术栈构建单页应用，具备响应式用户界面能力。
-
-        \item \textbf{CodeMirror 6编辑器}：内置的代码编辑工具，具备Markdown语法高亮和实时预览功能。
-
-        \item \textbf{Yjs客户端}：负责实时协作的客户端组件，通过WebSocket协议与后端协作服务器建立连接。
-
-        \item \textbf{Slidev预览组件}：实现幻灯片实时预览功能的组件，提供了Dev和Build两种预览模式。
-    \end{itemize}
+    前端展示层负责用户界面的呈现与交互逻辑的处理，主要包含以下组件：\textbf{React应用}：采用React 19、TypeScript和Vite技术栈构建单页应用，具备响应式用户界面能力；\textbf{CodeMirror 6编辑器}：内置的代码编辑工具，具备Markdown语法高亮和实时预览功能；\textbf{Yjs客户端}：负责实时协作的客户端组件，通过WebSocket协议与后端协作服务器建立连接；\textbf{Slidev预览组件}：实现幻灯片实时预览功能的组件，提供了Dev和Build两种预览模式。
 
     \subsection{后端业务层}
 
-    后端业务层负责业务逻辑处理和数据持久化，主要由以下模块构成：
-
-    \begin{itemize}
-        \item \textbf{NestJS框架}：构建在Node.js之上的渐进式框架，提供RESTful API接口。
-
-        \item \textbf{Hocuspocus服务器}：作为WebSocket协作服务器，负责处理Yjs文档的状态同步任务。
-
-        \item \textbf{业务模块}：涵盖用户管理、幻灯片管理、权限控制、AI辅助和版本控制等功能的组件集合。
-
-        \item \textbf{认证授权}：采用JWT认证系统与RBAC权限控制模块实现安全访问。
-    \end{itemize}
+    后端业务层负责业务逻辑处理和数据持久化，主要由以下模块构成：\textbf{NestJS框架}：构建在Node.js之上的渐进式框架，提供RESTful API接口；\textbf{Hocuspocus服务器}：作为WebSocket协作服务器，负责处理Yjs文档的状态同步任务；\textbf{业务模块}：涵盖用户管理、幻灯片管理、权限控制、AI辅助和版本控制等功能的组件集合；\textbf{认证授权}：采用JWT认证系统与RBAC权限控制模块实现安全访问。
 
     \subsection{数据存储层}
 
-    数据存储层负责数据持久化存储，主要包含以下存储组件：
-
-    \begin{itemize}
-        \item \textbf{MySQL数据库}：作为关系型数据库，用于存储用户信息、幻灯片内容、权限数据等结构化数据。
-
-        \item \textbf{对象存储}：采用阿里云OSS服务，负责存储上传的图片及其他静态资源文件。
-    \end{itemize}
+    数据存储层负责数据持久化存储，主要包含以下存储组件：\textbf{MySQL数据库}：作为关系型数据库，用于存储用户信息、幻灯片内容、权限数据等结构化数据；\textbf{对象存储}：采用阿里云OSS服务，负责存储上传的图片及其他静态资源文件。
 
     \section{前端架构设计}\label{sec:frontend-architecture}
 
     \subsection{技术栈选择}
 
-    前端部分选用了现代化的Web技术栈，具体的技术选择如下：
-
-    \begin{itemize}
-        \item \textbf{React 19.2.4}：选用最新的React版本，能够高效地完成用户界面渲染与状态管理任务。
-
-        \item \textbf{TypeScript 5.8}：作为类型安全的JavaScript超集，有助于提升代码质量并提高开发效率。
-
-        \item \textbf{Vite 6.2}：作为下一代前端构建工具，能够提供快速的开发体验并优化生产构建过程。
-
-        \item \textbf{React Router v7}：负责客户端的路由管理工作，支持动态路由和嵌套路由功能。
-
-        \item \textbf{CodeMirror 6}：作为现代化的代码编辑器，提供了丰富的编辑功能并支持插件系统扩展。
-    \end{itemize}
+    前端部分选用了现代化的Web技术栈，具体的技术选择如下：\textbf{React 19.2.4}：选用最新的React版本，能够高效地完成用户界面渲染与状态管理任务；\textbf{TypeScript 5.8}：作为类型安全的JavaScript超集，有助于提升代码质量并提高开发效率；\textbf{Vite 6.2}：作为下一代前端构建工具，能够提供快速的开发体验并优化生产构建过程；\textbf{React Router v7}：负责客户端的路由管理工作，支持动态路由和嵌套路由功能；\textbf{CodeMirror 6}：作为现代化的代码编辑器，提供了丰富的编辑功能并支持插件系统扩展。
 
     \subsection{组件化设计}
 
-    前端部分采用了组件化的设计模式，将系统功能拆分成可复用的组件模块，具体包括：
-
-    \begin{itemize}
-        \item \textbf{布局组件}：例如DashboardLayout、ResizablePanels等，负责页面布局和窗口管理任务。
-
-        \item \textbf{编辑器组件}：包括EditorHeader、EditorSidebar、EditorPreview等，共同实现幻灯片编辑功能。
-
-        \item \textbf{权限组件}：如PermissionModal、CollaboratorModal等，负责管理用户权限和协作成员信息。
-
-        \item \textbf{AI组件}：例如AIPanel、AISuggestion等，用于提供AI辅助功能的用户界面。
-
-        \item \textbf{版本控制组件}：包括VersionHistory、DiffViewer等，负责展示版本历史记录和内容差异信息。
-    \end{itemize}
+    前端部分采用了组件化的设计模式，将系统功能拆分成可复用的组件模块，具体包括：\textbf{布局组件}：例如DashboardLayout、ResizablePanels等，负责页面布局和窗口管理任务；\textbf{编辑器组件}：包括EditorHeader、EditorSidebar、EditorPreview等，共同实现幻灯片编辑功能；\textbf{权限组件}：如PermissionModal、CollaboratorModal等，负责管理用户权限和协作成员信息；\textbf{AI组件}：例如AIPanel、AISuggestion等，用于提供AI辅助功能的用户界面；\textbf{版本控制组件}：包括VersionHistory、DiffViewer等，负责展示版本历史记录和内容差异信息。
 
     \subsection{状态管理}
 
-    前端部分采用了分层化的状态管理策略，具体包括：
-
-    \begin{itemize}
-        \item \textbf{本地状态}：借助React的useState和useReducer钩子管理组件内部的状态数据。
-
-        \item \textbf{全局状态}：通过Context API管理跨组件的全局状态信息，例如用户认证状态和主题设置等。
-
-        \item \textbf{协作状态}：借助Yjs管理文档的实时协作状态，涵盖文档内容、光标位置和用户状态等信息。
-    \end{itemize}
+    前端部分采用了分层化的状态管理策略，具体包括：\textbf{本地状态}：借助React的useState和useReducer钩子管理组件内部的状态数据；\textbf{全局状态}：通过Context API管理跨组件的全局状态信息，例如用户认证状态和主题设置等；\textbf{协作状态}：借助Yjs管理文档的实时协作状态，涵盖文档内容、光标位置和用户状态等信息。
 
     \subsection{实时协作实现}
 
-    前端的实时协作功能基于Yjs库进行实现，具体的实现方案如下：
-
-    \begin{itemize}
-        \item \textbf{文档绑定}：将CodeMirror编辑器与Yjs文档实例进行绑定，从而实现编辑操作的实时同步。
-
-        \item \textbf{WebSocket连接}：借助@hocuspocus/provider建立与Hocuspocus服务器之间的WebSocket连接。
-
-        \item \textbf{光标追踪}：利用Yjs的awareness功能实现实时光标位置显示以及用户状态同步。
-
-        \item \textbf{冲突解决}：通过CRDT算法自动解决并发编辑产生的冲突，从而确保最终的一致性。
-    \end{itemize}
+    前端的实时协作功能基于Yjs库进行实现，具体的实现方案如下：\textbf{文档绑定}：将CodeMirror编辑器与Yjs文档实例进行绑定，从而实现编辑操作的实时同步；\textbf{WebSocket连接}：借助@hocuspocus/provider建立与Hocuspocus服务器之间的WebSocket连接；\textbf{光标追踪}：利用Yjs的awareness功能实现实时光标位置显示以及用户状态同步；\textbf{冲突解决}：通过CRDT算法自动解决并发编辑产生的冲突，从而确保最终的一致性。
 
     \section{后端架构设计}\label{sec:backend-architecture}
 
     \subsection{NestJS框架设计}
 
-    后端采用NestJS框架构建，具有以下特点：
-
-    \begin{itemize}
-        \item \textbf{模块化架构}：将系统功能划分为独立的模块，每个模块包含控制器、服务、实体等组件。
-
-        \item \textbf{依赖注入}：使用依赖注入容器管理组件之间的依赖关系，提高代码的可测试性和可维护性。
-
-        \item \textbf{中间件管道}：通过中间件管道处理请求和响应，支持身份验证、日志记录、错误处理等功能。
-
-        \item \textbf{拦截器}：使用拦截器实现数据转换、异常处理和性能监控。
-    \end{itemize}
+    后端采用NestJS框架构建，具有以下特点：\textbf{模块化架构}：将系统功能划分为独立的模块，每个模块包含控制器、服务、实体等组件；\textbf{依赖注入}：使用依赖注入容器管理组件之间的依赖关系，提高代码的可测试性和可维护性；\textbf{中间件管道}：通过中间件管道处理请求和响应，支持身份验证、日志记录、错误处理等功能；\textbf{拦截器}：使用拦截器实现数据转换、异常处理和性能监控。
 
     \subsection{RESTful API设计}
 
-    后端提供RESTful API接口 ，按照资源进行组织：
-
-    \begin{itemize}
-        \item \textbf{认证接口}（/api/auth/*）：用户登录、注册、令牌刷新等认证相关操作。
-
-        \item \textbf{用户管理}（/api/users/*）：用户信息查询、更新、密码重置等操作。
-
-        \item \textbf{空间管理}（/api/slide-spaces/*）：幻灯片空间的创建、查询、更新、删除及成员管理。
-
-        \item \textbf{幻灯片操作}（/api/slides/*）：幻灯片的CRUD操作、内容保存、权限设置等。
-
-        \item \textbf{版本控制}（/api/versions/*）：版本历史查询、版本创建、内容回滚等。
-
-        \item \textbf{评论系统}（/api/comments/*）：评论的增删改查及树形结构管理。
-
-        \item \textbf{AI辅助}（/api/ai/*）：AI内容生成、图像生成、智能建议等功能。
-    \end{itemize}
+    后端提供RESTful API接口 ，按照资源进行组织：\textbf{认证接口}（/api/auth/*）：用户登录、注册、令牌刷新等认证相关操作；\textbf{用户管理}（/api/users/*）：用户信息查询、更新、密码重置等操作；\textbf{空间管理}（/api/slide-spaces/*）：幻灯片空间的创建、查询、更新、删除及成员管理；\textbf{幻灯片操作}（/api/slides/*）：幻灯片的CRUD操作、内容保存、权限设置等；\textbf{版本控制}（/api/versions/*）：版本历史查询、版本创建、内容回滚等；\textbf{评论系统}（/api/comments/*）：评论的增删改查及树形结构管理；\textbf{AI辅助}（/api/ai/*）：AI内容生成、图像生成、智能建议等功能。
 
     \subsection{WebSocket协作服务}
 
-    后端通过Hocuspocus服务器提供WebSocket协作服务：
-
-    \begin{itemize}
-        \item \textbf{连接管理}：管理多个客户端的WebSocket连接，处理连接建立、维持和断开。
-
-        \item \textbf{文档同步}：同步Yjs文档的状态变化，确保所有客户端保持一致的文档状态。
-
-        \item \textbf{权限验证}：在文档加载和操作时验证用户权限，确保只有授权用户才能访问和编辑文档。
-
-        \item \textbf{数据持久化}：定期将协作文档内容保存到数据库，防止数据丢失。
-    \end{itemize}
+    后端通过Hocuspocus服务器提供WebSocket协作服务：\textbf{连接管理}：管理多个客户端的WebSocket连接，处理连接建立、维持和断开；\textbf{文档同步}：同步Yjs文档的状态变化，确保所有客户端保持一致的文档状态；\textbf{权限验证}：在文档加载和操作时验证用户权限，确保只有授权用户才能访问和编辑文档；\textbf{数据持久化}：定期将协作文档内容保存到数据库，防止数据丢失。
 
     \subsection{安全与认证}
 
-    后端采用多层安全防护机制：
-
-    \begin{itemize}
-        \item \textbf{JWT认证}：使用JSON Web Token进行用户身份认证，支持跨域访问和单点登录。
-
-        \item \textbf{RBAC权限控制}：基于角色的访问控制，定义Owner/Editor/Commenter/Viewer四级权限。
-
-        \item \textbf{数据验证}：使用class-validator进行请求参数验证，防止恶意数据输入。
-
-        \item \textbf{密码加密}：使用bcrypt算法对用户密码进行哈希存储，确保密码安全。
-    \end{itemize}
+    后端采用多层安全防护机制：\textbf{JWT认证}：使用JSON Web Token进行用户身份认证，支持跨域访问和单点登录；\textbf{RBAC权限控制}：基于角色的访问控制，定义Owner/Editor/Commenter/Viewer四级权限；\textbf{数据验证}：使用class-validator进行请求参数验证，防止恶意数据输入；\textbf{密码加密}：使用bcrypt算法对用户密码进行哈希存储，确保密码安全。
 
     \section{数据库设计}\label{sec:database-design}
 
     \subsection{数据库选型}
 
-    考虑到本平台的数据特点和性能需求，选择MySQL\cite{lan2004mysql,hu2015mysql} 作为主要数据库：
-
-    \begin{itemize}
-        \item \textbf{关系型数据}：用户、幻灯片、权限等数据具有明确的关系结构，适合使用关系型数据库。
-
-        \item \textbf{事务支持}：MySQL提供完整的事务支持，确保数据的一致性和完整性。
-
-        \item \textbf{成熟稳定}：MySQL是成熟的关系型数据库，具有丰富的功能和良好的性能表现。
-
-        \item \textbf{TypeORM集成}：使用TypeORM作为ORM框架，支持TypeScript类型检查和数据库迁移。
-    \end{itemize}
+    考虑到本平台的数据特点和性能需求，选择MySQL\cite{lan2004mysql,hu2015mysql} 作为主要数据库：\textbf{关系型数据}：用户、幻灯片、权限等数据具有明确的关系结构，适合使用关系型数据库；\textbf{事务支持}：MySQL提供完整的事务支持，确保数据的一致性和完整性；\textbf{成熟稳定}：MySQL是成熟的关系型数据库，具有丰富的功能和良好的性能表现；\textbf{TypeORM集成}：使用TypeORM作为ORM框架，支持TypeScript类型检查和数据库迁移。
 
     \subsection{核心表结构}
 % TODO
@@ -378,15 +226,7 @@
         \end{tabular}
     \end{table}
 
-    评论表的关键设计要点如下：
-
-    \begin{itemize}
-        \item \textbf{邻接表（reply\_id）}：\texttt{reply\_id} 字段指向同表中父评论的 \texttt{id}，构成邻接表（Adjacency List）模型。顶层评论的 \texttt{reply\_id} 为 \texttt{NULL}，子评论的 \texttt{reply\_id} 指向其直接父节点。邻接表写入成本低，插入新评论只需设置父节点引用，无需修改其他记录，适合高频评论写入场景。
-
-        \item \textbf{物化路径（path）}：\texttt{path} 字段存储从根节点到当前节点的完整路径字符串，格式如 \texttt{1-5-12}，其中每段数字为对应层级评论的 \texttt{id}。利用 SQL 前缀查询 \texttt{SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'}，可在不执行递归查询的情况下一次性获取任意评论节点下的全部子孙评论；删除某条评论及其所有回复时同样只需一条\texttt{DELETE FROM slide\_comments WHERE path LIKE '1-5-\%'} 语句，避免了递归删除带来的多次数据库往返。
-
-        \item \textbf{权限联动控制}：评论功能受双重权限约束。\texttt{slides} 表中的 \texttt{allow\_comment} 字段由幻灯片所有者控制，决定该文档是否开放评论；用户角色须为 \texttt{commenter} 及以上级别（\texttt{commenter}、\texttt{editor}、\texttt{owner}）方可发表评论，\texttt{viewer} 角色仅有只读权限。
-    \end{itemize}
+    评论表的关键设计要点如下：\textbf{邻接表（reply\_id）}：\texttt{reply\_id} 字段指向同表中父评论的 \texttt{id}，构成邻接表（Adjacency List）模型。顶层评论的 \texttt{reply\_id} 为 \texttt{NULL}，子评论的 \texttt{reply\_id} 指向其直接父节点。邻接表写入成本低，插入新评论只需设置父节点引用，无需修改其他记录，适合高频评论写入场景。\textbf{物化路径（path）}：\texttt{path} 字段存储从根节点到当前节点的完整路径字符串，格式如 \texttt{1-5-12}，其中每段数字为对应层级评论的 \texttt{id}。利用 SQL 前缀查询 \texttt{SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'}，可在不执行递归查询的情况下一次性获取任意评论节点下的全部子孙评论；删除某条评论及其所有回复时同样只需一条\texttt{DELETE FROM slide\_comments WHERE path LIKE '1-5-\%'} 语句，避免了递归删除带来的多次数据库往返。\textbf{权限联动控制}：评论功能受双重权限约束。\texttt{slides} 表中的 \texttt{allow\_comment} 字段由幻灯片所有者控制，决定该文档是否开放评论；用户角色须为 \texttt{commenter} 及以上级别（\texttt{commenter}、\texttt{editor}、\texttt{owner}）方可发表评论，\texttt{viewer} 角色仅有只读权限。
 
     \subsubsection{两表设计思路对比}
 
@@ -495,29 +335,13 @@
         \caption{智能幻灯片协作平台核心实体关系图}
         \label{fig:er-diagram}
     \end{figure}
-    主要关系包括：
-    \begin{itemize}
-        \item \textbf{用户与空间}：一个用户可以拥有多个幻灯片空间（一对多关系）。
-        \item \textbf{空间与幻灯片}：一个空间可以包含多个幻灯片（一对多关系）。
-        \item \textbf{幻灯片与版本}：一个幻灯片可以有多个版本（一对多关系）。
-        \item \textbf{用户与权限}：一个用户可以在多个幻灯片中拥有不同的权限（多对多关系）。
-        \item \textbf{幻灯片与评论}：一个幻灯片可以有多个评论（一对多关系）。
-    \end{itemize}
+    主要关系包括：\textbf{用户与空间}：一个用户可以拥有多个幻灯片空间（一对多关系）；\textbf{空间与幻灯片}：一个空间可以包含多个幻灯片（一对多关系）；\textbf{幻灯片与版本}：一个幻灯片可以有多个版本（一对多关系）；\textbf{用户与权限}：一个用户可以在多个幻灯片中拥有不同的权限（多对多关系）；\textbf{幻灯片与评论}：一个幻灯片可以有多个评论（一对多关系）。
 
     \section{核心功能实现}\label{sec:core-features}
 
     \subsection{实时协作编辑功能}
 
-    实时协作编辑功能基于Yjs CRDT\cite{lv2016stringcrdt,algorithms2017crdt}算法实现，具体实现细节如下：
-
-    \begin{itemize}
-        \item \textbf{文档结构设计}：将幻灯片文档设计为Yjs的YText类型，支持富文本编辑和格式标记。
-
-        \item \textbf{操作同步机制}：通过WebSocket连接同步编辑操作，使用增量更新减少网络传输量。
-
-        \item \textbf{冲突解决策略}：采用CRDT算法自动解决并发编辑冲突，确保最终一致性。
-        \item 
-    \end{itemize}
+    实时协作编辑功能基于Yjs CRDT\cite{lv2016stringcrdt,algorithms2017crdt}算法实现，具体实现细节如下：\textbf{文档结构设计}：将幻灯片文档设计为Yjs的YText类型，支持富文本编辑和格式标记；\textbf{操作同步机制}：通过WebSocket连接同步编辑操作，使用增量更新减少网络传输量；\textbf{冲突解决策略}：采用CRDT算法自动解决并发编辑冲突，确保最终一致性。
 
     \subsection{协同算法原理}
 
@@ -525,43 +349,19 @@
 
     \subsubsection{CRDT基本概念}
 
-    CRDT算法主要包含以下两种类型：
-    \begin{itemize}
-        \item \textbf{基于操作的CRDT（Op-based CRDT）}：通过同步操作序列的方式来达成一致性，其中每个操作都具备交换性、结合性和幂等性特征。
-        \item \textbf{基于状态的CRDT（State-based CRDT）}：通过同步完整状态或状态差异来实现一致性，状态合并操作需要满足交换律、结合律和幂等律的要求。
-    \end{itemize}
+    CRDT算法主要包含以下两种类型：\textbf{基于操作的CRDT（Op-based CRDT）}：通过同步操作序列的方式来达成一致性，其中每个操作都具备交换性、结合性和幂等性特征；\textbf{基于状态的CRDT（State-based CRDT）}：通过同步完整状态或状态差异来实现一致性，状态合并操作需要满足交换律、结合律和幂等律的要求。
 
-    本平台采用了Yjs库实现的基于操作的CRDT算法，该算法具有以下特点：
-    \begin{itemize}
-        \item \textbf{交换性}：操作的顺序不会影响最终结果，无论操作到达的顺序如何，最终状态都能够保持一致。
-        \item \textbf{结合性}：操作组合的方式不会影响最终结果，这为分组传输和批处理优化提供了支持。
-        \item \textbf{幂等性}：重复执行相同的操作不会改变状态，从而确保网络重传和重复消息不会引起数据不一致问题。
-    \end{itemize}
+    本平台采用了Yjs库实现的基于操作的CRDT算法，该算法具有以下特点：\textbf{交换性}：操作的顺序不会影响最终结果，无论操作到达的顺序如何，最终状态都能够保持一致；\textbf{结合性}：操作组合的方式不会影响最终结果，这为分组传输和批处理优化提供了支持；\textbf{幂等性}：重复执行相同的操作不会改变状态，从而确保网络重传和重复消息不会引起数据不一致问题。
 
     \subsubsection{Yjs文档模型设计}
 
-    Yjs采用分层文档模型设计，核心数据结构包括：
-    \begin{itemize}
-        \item \textbf{Y.Text}：富文本数据类型，支持字符级别的插入、删除和格式属性设置，用于表示幻灯片内容。
-        \item \textbf{Y.Array}：有序数组类型，支持元素的插入、删除和移动，用于管理幻灯片页面顺序。
-        \item \textbf{Y.Map}：键值对类型，支持属性的增删改查，用于存储幻灯片元数据和用户配置。
-    \end{itemize}
+    Yjs采用分层文档模型设计，核心数据结构包括：\textbf{Y.Text}：富文本数据类型，支持字符级别的插入、删除和格式属性设置，用于表示幻灯片内容；\textbf{Y.Array}：有序数组类型，支持元素的插入、删除和移动，用于管理幻灯片页面顺序；\textbf{Y.Map}：键值对类型，支持属性的增删改查，用于存储幻灯片元数据和用户配置。
 
     \subsubsection{冲突解决机制}
 
-    当多个用户同时编辑同一文档位置时，CRDT算法通过以下机制自动解决冲突：
-    \begin{enumerate}
-        \item \textbf{位置标识算法}：使用唯一标识符（ID）标记每个字符位置，而不是传统的位置索引。字符插入时生成新的唯一ID，删除时标记为墓碑状态。
-        \item \textbf{偏序关系定义}：基于操作ID的因果关系定义偏序关系，确保因果一致性。如果操作A在操作B之前发生，且操作B依赖于操作A的结果，则A必须优先于B执行。
-        \item \textbf{合并策略}：当并发操作无因果关系时，采用确定性合并策略。例如，字符插入冲突时，基于操作ID的字典序确定最终位置顺序。
-    \end{enumerate}
+    当多个用户同时编辑同一文档位置时，CRDT算法通过以下机制自动解决冲突：第一步，\textbf{位置标识算法}：使用唯一标识符（ID）标记每个字符位置，而不是传统的位置索引。字符插入时生成新的唯一ID，删除时标记为墓碑状态。第二步，\textbf{偏序关系定义}：基于操作ID的因果关系定义偏序关系，确保因果一致性。如果操作A在操作B之前发生，且操作B依赖于操作A的结果，则A必须优先于B执行。第三步，\textbf{合并策略}：当并发操作无因果关系时，采用确定性合并策略。例如，字符插入冲突时，基于操作ID的字典序确定最终位置顺序。
 
-    以文本编辑为例，假设用户A在位置P插入字符"X"，用户B在相同位置插入字符"Y"。传统方法会产生冲突，而CRDT算法通过以下步骤解决：
-    \begin{enumerate}
-        \item 为"X"生成唯一ID：\texttt{(clientA, timestamp1)}
-        \item 为"Y"生成唯一ID：\texttt{(clientB, timestamp2)}
-        \item 基于ID排序确定最终顺序：若\texttt{clientA < clientB}，则最终文本为"XY"；否则为"YX"
-    \end{enumerate}
+    以文本编辑为例，假设用户A在位置P插入字符"X"，用户B在相同位置插入字符"Y"。传统方法会产生冲突，而CRDT算法通过以下步骤解决：第一步，为"X"生成唯一ID：\texttt{(clientA, timestamp1)}；第二步，为"Y"生成唯一ID：\texttt{(clientB, timestamp2)}；第三步，基于ID排序确定最终顺序：若\texttt{clientA < clientB}，则最终文本为"XY"；否则为"YX"。
 
 
     \subsubsection{与传统协同算法的对比}
@@ -661,98 +461,27 @@
 
     流程的关键决策依据是文档是否存在协作者，具体实现逻辑如下所述：
 
-    \begin{enumerate}
-        \item \textbf{文档加载阶段}：用户打开文档时，系统加载文档内容和权限信息，同时查询该文档的协作者列表。
+    第一步，\textbf{文档加载阶段}：用户打开文档时，系统加载文档内容和权限信息，同时查询该文档的协作者列表。第二步，\textbf{协作状态判断}：检查文档是否有除当前用户外的其他协作者。如果文档为私有文档或只有当前用户有访问权限，则进入独立编辑模式；否则进入实时协作模式。第三步，\textbf{独立编辑模式}：适用于个人文档或私有编辑场景，编辑操作实时应用，提供流畅的本地编辑体验，定期或手动保存时将内容同步到后端MySQL数据库。第四步，\textbf{实时协作模式}\cite{cai2021collaborative}：适用于多人协作场景，初始化WebSocket连接，连接到Hocuspocus协作服务器；创建Yjs文档实例，并与CodeMirror编辑器绑定；通过CRDT算法自动同步文档状态，解决编辑冲突；支持实时光标追踪、用户状态显示等协作功能；定期将协作文档状态持久化到后端数据库，防止数据丢失。
 
-        \item \textbf{协作状态判断}：检查文档是否有除当前用户外的其他协作者。如果文档为私有文档或只有当前用户有访问权限，则进入独立编辑模式；否则进入实时协作模式。
-
-        \item \textbf{独立编辑模式}：适用于个人文档或私有编辑场景：
-        \begin{itemize}
-            \item 编辑操作实时应用，提供流畅的本地编辑体验。
-            \item 定期或手动保存时将内容同步到后端MySQL数据库。
-        \end{itemize}
-
-        \item \textbf{实时协作模式}\cite{cai2021collaborative}：适用于多人协作场景：
-        \begin{itemize}
-            \item 初始化WebSocket连接，连接到Hocuspocus协作服务器。
-            \item 创建Yjs文档实例，并与CodeMirror编辑器绑定。
-            \item 通过CRDT算法自动同步文档状态，解决编辑冲突。
-            \item 支持实时光标追踪、用户状态显示等协作功能。
-            \item 定期将协作文档状态持久化到后端数据库，防止数据丢失。
-        \end{itemize}
-
-        
-    \end{enumerate}
-
-    这种条件分支设计具有以下优势：
-    \begin{itemize}
-        \item \textbf{资源优化}：私有文档无需建立WebSocket连接，从而节省服务器资源。
-        \item \textbf{性能提升}：独立编辑模式减少了网络延迟，能够提供更快的响应速度。
-        \item \textbf{灵活适应}：能够根据实际协作需求动态调整技术方案。
-        \item \textbf{用户体验}：保持了编辑界面的一致性，用户无需关注底层技术差异。
-    \end{itemize}
+    这种条件分支设计具有以下优势：\textbf{资源优化}：私有文档无需建立WebSocket连接，从而节省服务器资源；\textbf{性能提升}：独立编辑模式减少了网络延迟，能够提供更快的响应速度；\textbf{灵活适应}：能够根据实际协作需求动态调整技术方案；\textbf{用户体验}：保持了编辑界面的一致性，用户无需关注底层技术差异。
 
     本平台通过智能化的协作状态判断与模式选择机制，在确保功能完整性的基础上，优化了系统性能与用户体验。这一设计实现了高效且灵活的文档协同编辑解决方案。
 
     \subsection{权限管理系统}
 
-    权限管理系统采用RBAC模型构建 ，具体实现包括以下方面：
-
-    \begin{itemize}
-        \item \textbf{角色定义}：定义Owner、Editor、Commenter、Viewer四种角色，每种角色具有不同的权限集合。
-
-        \item \textbf{权限分配}：通过slide\_user\_roles表记录用户在特定幻灯片中的角色和权限。
-
-        \item \textbf{权限验证}：在API接口和WebSocket连接中验证用户权限，阻止未授权操作。
-
-        \item \textbf{文档可见性}：支持公开和私有两种文档可见性设置，控制文档的访问范围。
-    \end{itemize}
+    权限管理系统采用RBAC模型构建 ，具体实现包括以下方面：\textbf{角色定义}：定义Owner、Editor、Commenter、Viewer四种角色，每种角色具有不同的权限集合；\textbf{权限分配}：通过slide\_user\_roles表记录用户在特定幻灯片中的角色和权限；\textbf{权限验证}：在API接口和WebSocket连接中验证用户权限，阻止未授权操作；\textbf{文档可见性}：支持公开和私有两种文档可见性设置，控制文档的访问范围。
 
     \subsection{AI辅助功能}
 
-    AI辅助功能通过集成大语言模型API实现，具体包括以下环节：
-
-    \begin{itemize}
-        \item \textbf{API集成}：集成通义千问等大语言模型API，支持文本生成和图像生成。
-
-        \item \textbf{提示词工程}：设计专门的提示词模板，提高AI生成内容与Slidev语法的适配性。
-
-        \item \textbf{上下文管理}：维护对话上下文，支持多轮交互和上下文相关的建议生成。
-
-        \item \textbf{结果处理}：对AI生成的内容进行格式化和语法检查，确保符合Slidev规范。
-    \end{itemize}
+    AI辅助功能通过集成大语言模型API实现，具体包括以下环节：\textbf{API集成}：集成通义千问等大语言模型API，支持文本生成和图像生成；\textbf{提示词工程}：设计专门的提示词模板，提高AI生成内容与Slidev语法的适配性；\textbf{上下文管理}：维护对话上下文，支持多轮交互和上下文相关的建议生成；\textbf{结果处理}：对AI生成的内容进行格式化和语法检查，确保符合Slidev规范。
 
     \subsection{版本控制系统}
 
-    版本控制系统旨在简化操作流程，具体实现包含以下要点：
-
-    \begin{itemize}
-        \item \textbf{自动保存}：定期自动保存文档内容，防止数据丢失。
-
-        \item \textbf{手动版本创建}：支持用户手动创建重要版本，并添加提交消息说明。
-
-        \item \textbf{差异对比}：使用diff算法计算版本间差异，并以可视化方式展示变化内容。
-
-        \item \textbf{一键回滚}：支持将文档内容快速回滚到任意历史版本。
-    \end{itemize}
+    版本控制系统旨在简化操作流程，具体实现包含以下要点：\textbf{自动保存}：定期自动保存文档内容，防止数据丢失；\textbf{手动版本创建}：支持用户手动创建重要版本，并添加提交消息说明；\textbf{差异对比}：使用diff算法计算版本间差异，并以可视化方式展示变化内容；\textbf{一键回滚}：支持将文档内容快速回滚到任意历史版本。
 
     \section{测试与评估}\label{sec:testing-evaluation}
 
-    为确保系统质量，对核心功能进行了黑盒测试。测试重点验证了实时协作、权限管理、AI辅助和版本控制等关键模块的功能完整性。测试结果表明，所有核心功能均正常运行，符合设计要求：
-
-    \begin{itemize}
-        \item \textbf{幻灯片创建与编辑模块}：可正常完成幻灯片的新建、标题修改、内容编辑、保存与删除操作，CodeMirror编辑器语法高亮正常，快捷键操作响应及时。
-
-        \item \textbf{Markdown实时预览模块}：编辑器输入内容可实时同步至右侧预览区，Markdown格式（标题、列表、代码块等）渲染正确，无格式错乱。
-
-        \item \textbf {多人实时协作编辑模块}：通过多浏览器标签页模拟多用户协作场景，实现编辑内容实时同步，可正常处理编辑冲突，保证内容不丢失、延迟控制在合理范围。
-
-        \item \textbf{版本管理与回滚模块}：可正常保存版本、查看历史版本记录、对比不同版本差异，一键回滚功能可正常执行，版本数据无丢失。
-
-        \item \textbf{评论与基础权限控制模块}：可对幻灯片内容添加评论、回复评论，角色权限（查看、编辑、评论）分配合理，功能执行正常。
-
-        \item \textbf{AI辅助功能模块}：可正常使用AI辅助功能进行内容生成和优化，生成内容符合Slidev语法规范，响应延迟较低。
-    \end{itemize}
+    为确保系统质量，对核心功能进行了黑盒测试。测试重点验证了实时协作、权限管理、AI辅助和版本控制等关键模块的功能完整性。测试结果表明，所有核心功能均正常运行，符合设计要求：\textbf{幻灯片创建与编辑模块}：可正常完成幻灯片的新建、标题修改、内容编辑、保存与删除操作，CodeMirror编辑器语法高亮正常，快捷键操作响应及时；\textbf{Markdown实时预览模块}：编辑器输入内容可实时同步至右侧预览区，Markdown格式（标题、列表、代码块等）渲染正确，无格式错乱；\textbf {多人实时协作编辑模块}：通过多浏览器标签页模拟多用户协作场景，实现编辑内容实时同步，可正常处理编辑冲突，保证内容不丢失、延迟控制在合理范围；\textbf{版本管理与回滚模块}：可正常保存版本、查看历史版本记录、对比不同版本差异，一键回滚功能可正常执行，版本数据无丢失；\textbf{评论与基础权限控制模块}：可对幻灯片内容添加评论、回复评论，角色权限（查看、编辑、评论）分配合理，功能执行正常；\textbf{AI辅助功能模块}：可正常使用AI辅助功能进行内容生成和优化，生成内容符合Slidev语法规范，响应延迟较低。
 
     以上测试结果证明，系统能够满足用户对智能幻灯片协作平台的基本需求。
 
