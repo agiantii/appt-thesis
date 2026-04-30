@@ -2,6 +2,9 @@
 test/
 ## temp
 temp/
+## .doc
+/*.doc
+/*.docx
 ## Output PDF files (but not assets)
 /*.pdf
 /src/**/*.pdf
