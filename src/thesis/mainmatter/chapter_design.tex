@@ -1,5 +1,5 @@
 \begin{cuzchapter}{系统设计与实现}{chap:design}
-\usetikzlibrary{calc}
+    \usetikzlibrary{calc}
 
     %---------------------------------------------------------------------------%
     %->> 系统设计与实现章节写作指南
@@ -17,19 +17,17 @@
     \subsection{设计目标}
     % 作者希望开发一个简单易用的智能幻灯片协作平台，包括实时协作、权限管理、AI辅助、版本控制等核心功能。
 
-
     % 本平台的设计目标如下：
     % 支持多用户实时协作编辑，编辑过程中光标位置能够实时追踪。
     % 权限控制基于RBAC模型，划分四级权限来管理文档访问。
     % AI辅助生成幻灯片内容，同时提供兼容Slidev语法的建议。
     % 版本控制方面，实现历史版本查看、差异对比和回滚操作。
-    
+
     作者希望开发一个功能完善、简单易上手的智能幻灯片协作平台，主要实现以下目标：
     \textbf{实时协作}：当多个用户实时协作编辑时，可以让光标实时追踪；
     \textbf{权限管理}：基于RBAC模型设计四级权限，实现文档访问控制；
     \textbf{AI辅助功能}：用AI辅助演讲者生成幻灯片，并提供合适于Slidev语法的智能建议；
     \textbf{简单的版本控制}：提供版本历史查看、差异对比和历史回滚等功能；
-
 
     \subsection{设计原则}
 
@@ -47,59 +45,59 @@
     \begin{figure}[htbp]
         \centering
         \begin{tikzpicture}[
-            node distance=2cm and 3cm,
-            layer/.style={rectangle, draw, rounded corners, fill=white, align=center, minimum width=4cm, minimum height=1.2cm},
-            component/.style={rectangle, draw, fill=white, align=center, minimum width=3.5cm, minimum height=1.2cm},
-            arrow/.style={->, >=stealth, thick},
-            label/.style={text width=4cm, align=center, font=\small}
-        ]
+                node distance=2cm and 3cm,
+                layer/.style={rectangle, draw, rounded corners, fill=white, align=center, minimum width=4cm, minimum height=1.2cm},
+                component/.style={rectangle, draw, fill=white, align=center, minimum width=3.5cm, minimum height=1.2cm},
+                arrow/.style={->, >=stealth, thick},
+                label/.style={text width=4cm, align=center, font=\small}
+            ]
 
-        \begin{scope}
-        % 定义层节点
-        \node[layer, fill=blue!10] (frontend) {前端展示层};
-        \node[layer, fill=green!10, below=3.5cm of frontend] (backend) {后端业务层};
-        \node[layer, fill=orange!10, below=3.5cm of backend] (storage) {数据存储层};
+            \begin{scope}
+                % 定义层节点
+                \node[layer, fill=blue!10] (frontend) {前端展示层};
+                \node[layer, fill=green!10, below=3.5cm of frontend] (backend) {后端业务层};
+                \node[layer, fill=orange!10, below=3.5cm of backend] (storage) {数据存储层};
 
-        % 前端组件
-        \node[component, fill=blue!5, left=2.5cm of frontend] (react) {React应用\\React 19 + TypeScript + Vite};
-        \node[component, fill=blue!5, right=2.5cm of frontend] (editor) {CodeMirror 6编辑器\\Markdown语法高亮};
-        \node[component, fill=blue!5, above=1.5cm of react] (yjs) {Yjs客户端\\实时协作};
-        \node[component, fill=blue!5, above=1.5cm of editor] (slidev) {Slidev预览组件\\实时预览};
+                % 前端组件
+                \node[component, fill=blue!5, left=2.5cm of frontend] (react) {React应用\\React 19 + TypeScript + Vite};
+                \node[component, fill=blue!5, right=2.5cm of frontend] (editor) {CodeMirror 6编辑器\\Markdown语法高亮};
+                \node[component, fill=blue!5, above=1.5cm of react] (yjs) {Yjs客户端\\实时协作};
+                \node[component, fill=blue!5, above=1.5cm of editor] (slidev) {Slidev预览组件\\实时预览};
 
-        % 后端组件
-        \node[component, fill=green!5, left=2.5cm of backend] (nest) {NestJS框架\\RESTful API};
-        \node[component, fill=green!5, right=2.5cm of backend] (hocus) {Hocuspocus服务器\\WebSocket协作};
-        \node[component, fill=green!5, above=1.5cm of nest] (business) {业务模块\\用户/幻灯片/权限管理};
-        \node[component, fill=green!5, above=1.5cm of hocus] (auth) {认证授权\\JWT + RBAC};
+                % 后端组件
+                \node[component, fill=green!5, left=2.5cm of backend] (nest) {NestJS框架\\RESTful API};
+                \node[component, fill=green!5, right=2.5cm of backend] (hocus) {Hocuspocus服务器\\WebSocket协作};
+                \node[component, fill=green!5, above=1.5cm of nest] (business) {业务模块\\用户/幻灯片/权限管理};
+                \node[component, fill=green!5, above=1.5cm of hocus] (auth) {认证授权\\JWT + RBAC};
 
-        % 存储组件
-        \node[component, fill=orange!5, left=2cm of storage] (mysql) {MySQL数据库\\结构化数据存储};
-        \node[component, fill=orange!5, right=2cm of storage] (oss) {对象存储(OSS)\\图片与静态资源};
+                % 存储组件
+                \node[component, fill=orange!5, left=2cm of storage] (mysql) {MySQL数据库\\结构化数据存储};
+                \node[component, fill=orange!5, right=2cm of storage] (oss) {对象存储(OSS)\\图片与静态资源};
 
-        % 连接线
-        \draw[arrow] (react) -- (frontend);
-        \draw[arrow] (editor) -- (frontend);
-        \draw[arrow] (yjs) -- (frontend);
-        \draw[arrow] (slidev) -- (frontend);
+                % 连接线
+                \draw[arrow] (react) -- (frontend);
+                \draw[arrow] (editor) -- (frontend);
+                \draw[arrow] (yjs) -- (frontend);
+                \draw[arrow] (slidev) -- (frontend);
 
-        \draw[arrow] (frontend) -- node[right] {HTTP/WebSocket} (backend);
+                \draw[arrow] (frontend) -- node[right] {HTTP/WebSocket} (backend);
 
-        \draw[arrow] (nest) -- (backend);
-        \draw[arrow] (hocus) -- (backend);
-        \draw[arrow] (business) -- (backend);
-        \draw[arrow] (auth) -- (backend);
+                \draw[arrow] (nest) -- (backend);
+                \draw[arrow] (hocus) -- (backend);
+                \draw[arrow] (business) -- (backend);
+                \draw[arrow] (auth) -- (backend);
 
-        \draw[arrow] (backend) -- node[right] {数据持久化} (storage);
+                \draw[arrow] (backend) -- node[right] {数据持久化} (storage);
 
-        \draw[arrow] (mysql) -- (storage);
-        \draw[arrow] (oss) -- (storage);
+                \draw[arrow] (mysql) -- (storage);
+                \draw[arrow] (oss) -- (storage);
 
-        % 标签
-        \node[label, above=0.5cm of frontend] {\textbf{用户界面与交互}};
-        \node[label, above=0.5cm of backend] {\textbf{业务逻辑处理}};
-        \node[label, above=0.5cm of storage] {\textbf{数据持久化存储}};
+                % 标签
+                \node[label, above=0.5cm of frontend] {\textbf{用户界面与交互}};
+                \node[label, above=0.5cm of backend] {\textbf{业务逻辑处理}};
+                \node[label, above=0.5cm of storage] {\textbf{数据持久化存储}};
 
-        \end{scope}
+            \end{scope}
         \end{tikzpicture}
         \caption{智能幻灯片协作平台整体架构图}
         \label{fig:appt-architecture}
@@ -140,15 +138,12 @@
     先绑定Yjs文档实例到CodeMirror编辑器，前端通过@hocuspocus/provider与Hocuspocus服务器建立WebSocket连接，
     后面就可以只需要相互传输增量，实现实时协作。
 
-
-    
     % 作者使用Yjs库来实现实时协作功能，具体实现方案如下：
     % % 前端的实时协作功能基于Yjs库进行实现，具体的实现方案如下：
     % \textbf{文档绑定}：将CodeMirror编辑器与Yjs文档实例进行绑定，实现编辑操作实时同步；
     % \textbf{WebSocket连接}：通过@hocuspocus/provider建立与Hocuspocus服务器之间WebSocket连接；
 
     \section{后端架构设计}\label{sec:backend-architecture}
-
 
     \subsection{NestJS框架设计}
     后端选用NestJs，每个模块大致有控制器、服务和实体。
@@ -167,22 +162,22 @@
 
     后端提供RESTful API接口，如表\ref{tab:api-modules}所示：
     \begin{table}[htbp]
-    \caption{后端 RESTful API 接口模块}
+        \caption{后端 RESTful API 接口模块}
         \label{tab:api-modules}
-    \centering
-    \begin{tabular}{lll}
-    \toprule
-    模块名称 & API 路径前缀 & 功能描述 \\
-    \midrule
-    认证接口   & /api/auth/*      & 用户登录、注册、令牌刷新等认证相关操作 \\
-    用户管理   & /api/users/*     & 用户信息查询、更新、密码重置等操作 \\
-    空间管理   & /api/slide-spaces/* & 幻灯片空间的创建、查询、更新、删除及成员管理 \\
-    幻灯片操作 & /api/slides/*    & 幻灯片的 CRUD 操作、内容保存、权限设置等 \\
-    版本控制   & /api/versions/*  & 版本历史查询、版本创建、内容回滚等 \\
-    评论系统   & /api/comments/*  & 评论的增删改查及树形结构管理 \\
-    AI 辅助    & /api/ai/*        & AI 内容生成、图像生成、智能建议等功能 \\
-    \bottomrule
-    \end{tabular}
+        \centering
+        \begin{tabular}{lll}
+            \toprule
+            模块名称  & API 路径前缀            & 功能描述                    \\
+            \midrule
+            认证接口  & /api/auth/*         & 用户登录、注册、令牌刷新等认证相关操作     \\
+            用户管理  & /api/users/*        & 用户信息查询、更新、密码重置等操作       \\
+            空间管理  & /api/slide-spaces/* & 幻灯片空间的创建、查询、更新、删除及成员管理  \\
+            幻灯片操作 & /api/slides/*       & 幻灯片的 CRUD 操作、内容保存、权限设置等 \\
+            版本控制  & /api/versions/*     & 版本历史查询、版本创建、内容回滚等       \\
+            评论系统  & /api/comments/*     & 评论的增删改查及树形结构管理          \\
+            AI 辅助 & /api/ai/*           & AI 内容生成、图像生成、智能建议等功能    \\
+            \bottomrule
+        \end{tabular}
     \end{table}
 
     % 后端提供RESTful API接口 ，主要有以下模块：
@@ -224,9 +219,8 @@
     % \textbf{关系型数据}：用户、幻灯片、权限等数据具有明确的关系结构，适合使用关系型数据库；
     % \textbf{事务支持}：MySQL提供完整的事务支持，确保数据的一致性和完整性；
 
-
     \subsection{核心表结构}
-% TODO
+    % TODO
     本平台共设计12个核心数据表，如表 \ref{tab:database-tables} 所示：
 
     \begin{table}[htbp]
@@ -235,20 +229,20 @@
         \centering
         \begin{tabular}{lll}
             \toprule
-            表名 & 中文名称 & 主要功能 \\
+            表名                  & 中文名称      & 主要功能          \\
             \midrule
-            users & 用户表 & 存储用户账户信息和认证数据 \\
-            slide\_spaces & 幻灯片空间表 & 组织和管理幻灯片集合 \\
-            slides & 幻灯片表 & 存储具体的幻灯片文档内容 \\
-            slide\_versions & 版本控制表 & 记录幻灯片的版本历史 \\
-            slide\_user\_roles & 用户角色表 & 定义用户在幻灯片中的权限 \\
-            slide\_comments & 评论表 & 存储对幻灯片的评论和回复 \\
-            snippets & 代码片段表 & 存储用户可复用的代码块 \\
-            registration\_codes & 注册码表 & 管理用户注册码信息 \\
-            slidev\_themes & Slidev主题表 & 存储Slidev主题配置 \\
-            slidev\_plugins & Slidev插件表 & 存储Slidev插件配置 \\
-            likes\_slide & 幻灯片点赞表 & 记录用户对幻灯片的点赞 \\
-            likes\_space & 空间点赞表 & 记录用户对空间的点赞 \\
+            users               & 用户表       & 存储用户账户信息和认证数据 \\
+            slide\_spaces       & 幻灯片空间表    & 组织和管理幻灯片集合    \\
+            slides              & 幻灯片表      & 存储具体的幻灯片文档内容  \\
+            slide\_versions     & 版本控制表     & 记录幻灯片的版本历史    \\
+            slide\_user\_roles  & 用户角色表     & 定义用户在幻灯片中的权限  \\
+            slide\_comments     & 评论表       & 存储对幻灯片的评论和回复  \\
+            snippets            & 代码片段表     & 存储用户可复用的代码块   \\
+            registration\_codes & 注册码表      & 管理用户注册码信息     \\
+            slidev\_themes      & Slidev主题表 & 存储Slidev主题配置  \\
+            slidev\_plugins     & Slidev插件表 & 存储Slidev插件配置  \\
+            likes\_slide        & 幻灯片点赞表    & 记录用户对幻灯片的点赞   \\
+            likes\_space        & 空间点赞表     & 记录用户对空间的点赞    \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -267,20 +261,20 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名 & 数据类型 & 约束 & 说明 \\
+            字段名              & 数据类型         & 约束                                & 说明              \\
             \midrule
-            id & bigint & PK，自增 & 文档唯一主键 \\
-            title & varchar(255) & NOT NULL & 文档标题 \\
-            content & longtext & NULLABLE & 幻灯片 Markdown 正文 \\
-            slide\_space\_id & bigint & FK $\rightarrow$ slide\_spaces.id & 所属空间ID \\
-            parent\_id & bigint & FK $\rightarrow$ slides.id & 父文档ID，根节点为NULL \\
-            allow\_comment & tinyint(1) & DEFAULT 1 & 是否允许评论 \\
-            created\_by & bigint & FK $\rightarrow$ users.id & 创建者用户ID \\
-            is\_public & tinyint(1) & DEFAULT 0 & 是否公开（0私有，1公开）\\
-            is\_build & tinyint(1) & DEFAULT 0 & 是否已编译生成预览 \\
-            preview\_url & varchar(255) & NULLABLE & 编译后预览地址 \\
-            created\_at & datetime & NOT NULL & 创建时间 \\
-            updated\_at & datetime & NOT NULL & 最近修改时间 \\
+            id               & bigint       & PK，自增                             & 文档唯一主键          \\
+            title            & varchar(255) & NOT NULL                          & 文档标题            \\
+            content          & longtext     & NULLABLE                          & 幻灯片 Markdown 正文 \\
+            slide\_space\_id & bigint       & FK $\rightarrow$ slide\_spaces.id & 所属空间ID          \\
+            parent\_id       & bigint       & FK $\rightarrow$ slides.id        & 父文档ID，根节点为NULL  \\
+            allow\_comment   & tinyint(1)   & DEFAULT 1                         & 是否允许评论          \\
+            created\_by      & bigint       & FK $\rightarrow$ users.id         & 创建者用户ID         \\
+            is\_public       & tinyint(1)   & DEFAULT 0                         & 是否公开（0私有，1公开）   \\
+            is\_build        & tinyint(1)   & DEFAULT 0                         & 是否已编译生成预览       \\
+            preview\_url     & varchar(255) & NULLABLE                          & 编译后预览地址         \\
+            created\_at      & datetime     & NOT NULL                          & 创建时间            \\
+            updated\_at      & datetime     & NOT NULL                          & 最近修改时间          \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -293,7 +287,6 @@
     % \texttt{allow\_comment} 与 \texttt{is\_public} 字段用来控制文档的相关权限，
     % \texttt{is\_build} 与 \texttt{preview\_url} 字段分别表示文档是否构建以及构建后的url。
 
-
     \subsubsection{slide\_comments 评论表}
 
     评论的树形结构通过\textbf{reply\_id}和\textbf{物化路径（path）}实现，
@@ -305,15 +298,15 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名 & 数据类型 & 约束 & 说明 \\
+            字段名         & 数据类型         & 约束                                  & 说明              \\
             \midrule
-            id & bigint & PK，自增 & 评论唯一主键 \\
-            slide\_id & bigint & FK $\rightarrow$ slides.id & 所属幻灯片ID \\
-            user\_id & bigint & FK $\rightarrow$ users.id & 评论发表者ID \\
-            content & text & NOT NULL & 评论正文内容 \\
-            path & varchar(255) & NULLABLE & 根节点到本节点的物化路径 \\
-            reply\_id & bigint & FK $\rightarrow$ slide\_comments.id & 父评论ID，顶层评论为NULL \\
-            created\_at & datetime & NOT NULL & 评论发布时间 \\
+            id          & bigint       & PK，自增                               & 评论唯一主键          \\
+            slide\_id   & bigint       & FK $\rightarrow$ slides.id          & 所属幻灯片ID         \\
+            user\_id    & bigint       & FK $\rightarrow$ users.id           & 评论发表者ID         \\
+            content     & text         & NOT NULL                            & 评论正文内容          \\
+            path        & varchar(255) & NULLABLE                            & 根节点到本节点的物化路径    \\
+            reply\_id   & bigint       & FK $\rightarrow$ slide\_comments.id & 父评论ID，顶层评论为NULL \\
+            created\_at & datetime     & NOT NULL                            & 评论发布时间          \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -343,23 +336,23 @@
         \centering
         \begin{tabular}{lll}
             \toprule
-            操作维度 & slides（文档树） & slide\_comments（评论树）\\
+            操作维度   & slides（文档树）          & slide\_comments（评论树）      \\
             \midrule
-            节点结构调整 & 需要（支持拖拽排序） & 不需要（评论发出后不移动）\\
+            节点结构调整 & 需要（支持拖拽排序）           & 不需要（评论发出后不移动）             \\
             % 子树展开方式 & 逐级展开（按需加载） & 一次性展开整个讨论串 \\
-            子树删除方式 & 递归逐节点删除 & 单条 \texttt{LIKE} 前缀匹配删除 \\
-            树形存储模式 & 仅\texttt{parent\_id}& \texttt{reply\_id} + 物化路径 \\
+            子树删除方式 & 递归逐节点删除              & 单条 \texttt{LIKE} 前缀匹配删除   \\
+            树形存储模式 & 仅\texttt{parent\_id} & \texttt{reply\_id} + 物化路径 \\
             \bottomrule
         \end{tabular}
     \end{table}
 
-    \textbf{为何文档树不使用物化路径？} 
+    \textbf{为何文档树不使用物化路径？}
     本平台支持用户拖拽来改调整目录树的结构，此时，目录树结构可能会经常变动。
     如果引入物化路径，那么我们每次移动一个节点，都需要更新该节点及其所有子孙节点的\texttt{path}字段，这样会大大增加计算复杂度。
     因此，文档树这边只维护\texttt{parent\_id}字段，移动节点的时候只需要修改该记录的父节点引用。
     删除文档节点时则通过递归遍历依次删除子节点。
 
-    \textbf{为何评论树引入物化路径？} 
+    \textbf{为何评论树引入物化路径？}
     \texttt{path}字段存储从根节点到当前节点的完整路径字符串，如\texttt{1-5-12}。
     评论一旦发布，它的结构就不会再发生变化。
     当新增一条评论时，只需要把父评论的\texttt{path}加上当前评论的\texttt{id}，就能得到该评论的\texttt{path}。
@@ -379,77 +372,77 @@
     \begin{figure}[!htbp]
         \centering
         \begin{tikzpicture}[
-            entity/.style={
-                rectangle, draw, rounded corners, fill=blue!10,
-                align=center, minimum width=3.8cm, minimum height=1.8cm,
-                text width=3.4cm, inner sep=0.4cm, font=\small
-            },
-            relationship/.style={
-                diamond, draw, fill=green!10, align=center,
-                minimum width=2.5cm, minimum height=1.4cm, inner sep=0.25cm, font=\small
-            },
-            arrow/.style={-, thick},
-            label/.style={font=\small},
-            scale=0.4, transform shape
-        ]
+                entity/.style={
+                        rectangle, draw, rounded corners, fill=blue!10,
+                        align=center, minimum width=3.8cm, minimum height=1.8cm,
+                        text width=3.4cm, inner sep=0.4cm, font=\small
+                    },
+                relationship/.style={
+                        diamond, draw, fill=green!10, align=center,
+                        minimum width=2.5cm, minimum height=1.4cm, inner sep=0.25cm, font=\small
+                    },
+                arrow/.style={-, thick},
+                label/.style={font=\small},
+                scale=0.4, transform shape
+            ]
 
-        % ==================== 实体节点（松散布局 + 上移调整） ====================
-        % 上层
-        \node[entity] (user)   at (0, 15) {用户表\\users};
-        \node[entity, right=10cm of user] (space) {幻灯片空间表\\slide\_spaces};
+            % ==================== 实体节点（松散布局 + 上移调整） ====================
+            % 上层
+            \node[entity] (user)   at (0, 15) {用户表\\users};
+            \node[entity, right=10cm of user] (space) {幻灯片空间表\\slide\_spaces};
 
-        % 中层（代码片段表上移）
-        \node[entity] (snippet) at (-6.5, 8.5) {代码片段表\\snippets};
-        \node[entity] (slide)   at (5, 7)     {幻灯片表\\slides};
-        \node[entity, right=8.5cm of slide] (comment) {评论表\\slide\_comments};
+            % 中层（代码片段表上移）
+            \node[entity] (snippet) at (-6.5, 8.5) {代码片段表\\snippets};
+            \node[entity] (slide)   at (5, 7)     {幻灯片表\\slides};
+            \node[entity, right=8.5cm of slide] (comment) {评论表\\slide\_comments};
 
-        % 下层（注册码表大幅上移）
-        \node[entity] (version) at (10, -1)    {版本控制表\\slide\_versions};
-        \node[entity] (role)    at (-4, -1)    {用户角色表\\slide\_user\_roles};
-        \node[entity] (regcode) at (-16.8, 8.8){注册码表\\registration\_codes};
+            % 下层（注册码表大幅上移）
+            \node[entity] (version) at (10, -1)    {版本控制表\\slide\_versions};
+            \node[entity] (role)    at (-4, -1)    {用户角色表\\slide\_user\_roles};
+            \node[entity] (regcode) at (-16.8, 8.8){注册码表\\registration\_codes};
 
-        % ==================== 关系节点（菱形） ====================
-        \node[relationship] (r_user_space)    at ($(user)!0.5!(space) + (0,-1.2)$) {拥有};
-        \node[relationship] (r_space_slide)   at ($(space)!0.5!(slide) + (0,-1.2)$) {包含};
-        \node[relationship] (r_slide_version) at ($(slide)!0.5!(version) + (0,-1.1)$) {版本化};
-        \node[relationship] (r_user_slide)    at ($(user)!0.5!(slide) + (-2.5,-2)$) {协作};
-        \node[relationship] (r_slide_comment) at ($(slide)!0.5!(comment) + (1.3,0)$) {评论};
-        \node[relationship] (r_user_role)     at ($(user)!0.5!(role) + (-1.4,-1.7)$) {授权};
-        \node[relationship] (r_user_regcode)  at ($(user)!0.5!(regcode) + (-2.2,-2.8)$) {使用};
-        \node[relationship] (r_user_snippet)  at ($(user)!0.5!(snippet) + (0,-1.2)$) {创建};
+            % ==================== 关系节点（菱形） ====================
+            \node[relationship] (r_user_space)    at ($(user)!0.5!(space) + (0,-1.2)$) {拥有};
+            \node[relationship] (r_space_slide)   at ($(space)!0.5!(slide) + (0,-1.2)$) {包含};
+            \node[relationship] (r_slide_version) at ($(slide)!0.5!(version) + (0,-1.1)$) {版本化};
+            \node[relationship] (r_user_slide)    at ($(user)!0.5!(slide) + (-2.5,-2)$) {协作};
+            \node[relationship] (r_slide_comment) at ($(slide)!0.5!(comment) + (1.3,0)$) {评论};
+            \node[relationship] (r_user_role)     at ($(user)!0.5!(role) + (-1.4,-1.7)$) {授权};
+            \node[relationship] (r_user_regcode)  at ($(user)!0.5!(regcode) + (-2.2,-2.8)$) {使用};
+            \node[relationship] (r_user_snippet)  at ($(user)!0.5!(snippet) + (0,-1.2)$) {创建};
 
-        % ==================== 连线（全部改为直线，无箭头） ====================
-        % 用户 1:N 拥有 空间
-        \draw[arrow] (user) -- node[pos=0.35, above, label] {1} (r_user_space);
-        \draw[arrow] (r_user_space) -- node[pos=0.65, above, label] {N} (space);
+            % ==================== 连线（全部改为直线，无箭头） ====================
+            % 用户 1:N 拥有 空间
+            \draw[arrow] (user) -- node[pos=0.35, above, label] {1} (r_user_space);
+            \draw[arrow] (r_user_space) -- node[pos=0.65, above, label] {N} (space);
 
-        % 空间 1:N 包含 幻灯片
-        \draw[arrow] (space) -- node[pos=0.35, right, label] {1} (r_space_slide);
-        \draw[arrow] (r_space_slide) -- node[pos=0.65, right, label] {N} (slide);
+            % 空间 1:N 包含 幻灯片
+            \draw[arrow] (space) -- node[pos=0.35, right, label] {1} (r_space_slide);
+            \draw[arrow] (r_space_slide) -- node[pos=0.65, right, label] {N} (slide);
 
-        % 幻灯片 1:N 版本化
-        \draw[arrow] (slide) -- node[pos=0.35, right, label] {1} (r_slide_version);
-        \draw[arrow] (r_slide_version) -- node[pos=0.65, right, label] {N} (version);
+            % 幻灯片 1:N 版本化
+            \draw[arrow] (slide) -- node[pos=0.35, right, label] {1} (r_slide_version);
+            \draw[arrow] (r_slide_version) -- node[pos=0.65, right, label] {N} (version);
 
-        % 用户 1:N 协作 幻灯片
-        \draw[arrow] (user) -- node[pos=0.35, left, label] {1} (r_user_slide);
-        \draw[arrow] (r_user_slide) -- node[pos=0.65, above, label] {N} (slide);
+            % 用户 1:N 协作 幻灯片
+            \draw[arrow] (user) -- node[pos=0.35, left, label] {1} (r_user_slide);
+            \draw[arrow] (r_user_slide) -- node[pos=0.65, above, label] {N} (slide);
 
-        % 幻灯片 1:N 评论
-        \draw[arrow] (slide) -- node[pos=0.4, above, label] {1} (r_slide_comment);
-        \draw[arrow] (r_slide_comment) -- node[pos=0.6, above, label] {N} (comment);
+            % 幻灯片 1:N 评论
+            \draw[arrow] (slide) -- node[pos=0.4, above, label] {1} (r_slide_comment);
+            \draw[arrow] (r_slide_comment) -- node[pos=0.6, above, label] {N} (comment);
 
-        % 用户 1:N 授权 角色
-        \draw[arrow] (user) -- node[pos=0.35, left, label] {1} (r_user_role);
-        \draw[arrow] (r_user_role) -- node[pos=0.65, right, label] {N} (role);
+            % 用户 1:N 授权 角色
+            \draw[arrow] (user) -- node[pos=0.35, left, label] {1} (r_user_role);
+            \draw[arrow] (r_user_role) -- node[pos=0.65, right, label] {N} (role);
 
-        % 用户 1:N 创建 代码片段
-        \draw[arrow] (user) -- node[pos=0.4, left=0.4cm, label] {1} (r_user_snippet);
-        \draw[arrow] (r_user_snippet) -- node[pos=0.6, right, label] {N} (snippet);
+            % 用户 1:N 创建 代码片段
+            \draw[arrow] (user) -- node[pos=0.4, left=0.4cm, label] {1} (r_user_snippet);
+            \draw[arrow] (r_user_snippet) -- node[pos=0.6, right, label] {N} (snippet);
 
-        % 用户 1:N 使用 注册码（直线连接）
-        \draw[arrow] (user) -- node[pos=0.38, left=0.5cm, label] {1} (r_user_regcode);
-        \draw[arrow] (r_user_regcode) -- node[pos=0.65, left, label] {N} (regcode);
+            % 用户 1:N 使用 注册码（直线连接）
+            \draw[arrow] (user) -- node[pos=0.38, left=0.5cm, label] {1} (r_user_regcode);
+            \draw[arrow] (r_user_regcode) -- node[pos=0.65, left, label] {N} (regcode);
 
         \end{tikzpicture}
         \caption{智能幻灯片协作平台核心实体关系图}
@@ -478,7 +471,6 @@
     CRDT算法主要包含两种类型，一种是基于操作的CRDT（Op-based CRDT），通过同步操作序列实现一致性，
     另一种是基于状态的CRDT（State-based CRDT），通过同步完整状态或状态差异实现一致性。
 
-
     本平台采用了Yjs库实现的基于操作的CRDT算法，
     这个算法处理并发的操作时，不会因为操作的顺序而改变最终的结果，以一个通俗的例子，无论是操作“A”+“B”还是“B”+“A”，其结果都是相同的，
     即使发生网络重传之类等意外情况时，我们可能会意外地执行多个相同的操作，最终的结果也不会受到影响。
@@ -498,7 +490,6 @@
     % TODO 文献引用
     \subsubsection{冲突解决机制}
 
-
     当多个用户同时编辑同一文档位置时，CRDT算法通过以下机制自动处理冲突：
     \begin{enumerate}
         \item  \textbf{位置标识算法}：使用唯一标识符（ID）标记每个字符位置，而不是传统的位置索引。字符插入时生成新的唯一ID，删除时标记为墓碑状态。
@@ -508,7 +499,7 @@
     % 第一步，\textbf{位置标识算法}：使用唯一标识符（ID）标记每个字符位置，而不是传统的位置索引。字符插入时生成新的唯一ID，删除时标记为墓碑状态。
     % 第二步，\textbf{偏序关系定义}：基于操作ID的因果关系定义偏序关系，确保因果一致性。如果操作A在操作B之前发生，且操作B依赖于操作A的结果，则A必须优先于B执行。
     % 第三步，\textbf{合并策略}：当并发操作无因果关系时，采用确定性合并策略。例如，字符插入冲突时，基于操作ID的字典序确定最终位置顺序。
-    
+
     以文本编辑为例，假设用户A在位置P插入字符"X"，用户B又在这个位置插入字符"Y"。
     传统方法会产生冲突，
     而CRDT算法通过以下步骤解决：
@@ -524,7 +515,6 @@
     % 第二步，为"Y"生成唯一ID：\texttt{(clientB, timestamp2)}；
     % 第三步，基于ID排序确定最终顺序：若\texttt{clientA < clientB}，则最终文本为"XY"；否则为"YX"。
 
-
     \subsubsection{与传统协同算法的对比}
 
     与传统基于操作转换（OT）的协同算法相比，CRDT算法具有以下优势：
@@ -534,13 +524,13 @@
         \centering
         \begin{tabular}{lll}
             \toprule
-            对比维度 & CRDT算法 & OT算法 \\
+            对比维度  & CRDT算法       & OT算法        \\
             \midrule
-            冲突解决 & 自动解决，无需中央协调器 & 需要中央服务器协调转换 \\
-            网络要求 & 支持直接同步 & 必须通过中央服务器 \\
-            算法复杂度 & 相对简单，基于数学理论 & 复杂，需要维护转换函数 \\
-            扩展性 & 容易扩展到大规模节点 & 中央服务器可能成为瓶颈 \\
-            离线支持 & 天然支持，本地操作独立 & 需要复杂的状态同步机制 \\
+            冲突解决  & 自动解决，无需中央协调器 & 需要中央服务器协调转换 \\
+            网络要求  & 支持直接同步       & 必须通过中央服务器   \\
+            算法复杂度 & 相对简单，基于数学理论  & 复杂，需要维护转换函数 \\
+            扩展性   & 容易扩展到大规模节点   & 中央服务器可能成为瓶颈 \\
+            离线支持  & 天然支持，本地操作独立  & 需要复杂的状态同步机制 \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -553,67 +543,67 @@
 
     \begin{figure}[htbp]
         \centering
-    \begin{tikzpicture}[
-            node distance=1.0cm and 1.8cm,
-            startstop/.style={rectangle, rounded corners, draw, fill=red!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
-            process/.style={rectangle, draw, fill=blue!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
-            decision/.style={rectangle, draw, fill=green!10, align=center, minimum width=2.2cm, minimum height=1.0cm, font=\scriptsize, text width=1.8cm},
-            io/.style={rectangle, draw, fill=yellow!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
-            connector/.style={circle, draw, fill=orange!10, align=center, minimum width=0.7cm, minimum height=0.7cm, font=\scriptsize},
-            arrow/.style={->, >=stealth, thick},
-            label/.style={font=\scriptsize},
-            scale=0.75
-        ]
+        \begin{tikzpicture}[
+                node distance=1.0cm and 1.8cm,
+                startstop/.style={rectangle, rounded corners, draw, fill=red!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
+                process/.style={rectangle, draw, fill=blue!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
+                decision/.style={rectangle, draw, fill=green!10, align=center, minimum width=2.2cm, minimum height=1.0cm, font=\scriptsize, text width=1.8cm},
+                io/.style={rectangle, draw, fill=yellow!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
+                connector/.style={circle, draw, fill=orange!10, align=center, minimum width=0.7cm, minimum height=0.7cm, font=\scriptsize},
+                arrow/.style={->, >=stealth, thick},
+                label/.style={font=\scriptsize},
+                scale=0.75
+            ]
 
-        % 定义节点
-        \node[startstop] (start) {用户打开文档};
-        \node[io, below=of start] (load) {加载文档内容\\与权限信息};
-        \node[decision, below=of load, yshift=-0.3cm] (check) {文档有\\协作者？};
+            % 定义节点
+            \node[startstop] (start) {用户打开文档};
+            \node[io, below=of start] (load) {加载文档内容\\与权限信息};
+            \node[decision, below=of load, yshift=-0.3cm] (check) {文档有\\协作者？};
 
-        % 左侧分支：无协作者（独立模式）
-        \node[process, left=of check, xshift=-1.2cm] (localEdit) {直接本地编辑\\使用CodeMirror};
-        \node[process, below=of localEdit, yshift=-1.2cm] (localSave) {定期保存到\\后端数据库};
-        \node[connector, below=of localSave, yshift=-1.2cm] (localEnd) {结束};
+            % 左侧分支：无协作者（独立模式）
+            \node[process, left=of check, xshift=-1.2cm] (localEdit) {直接本地编辑\\使用CodeMirror};
+            \node[process, below=of localEdit, yshift=-1.2cm] (localSave) {定期保存到\\后端数据库};
+            \node[connector, below=of localSave, yshift=-1.2cm] (localEnd) {结束};
 
-        % 右侧分支：有协作者（协同模式）
-        \node[process, right=of check, xshift=1.2cm] (initWs) {初始化WebSocket\\连接Hocuspocus};
-        \node[process, below=of initWs, yshift=-0.5cm] (initYjs) {创建Yjs文档实例\\绑定CodeMirror};
-        \node[process, below=of initYjs, yshift=-0.5cm] (sync) {同步文档状态\\使用CRDT算法};
-        \node[process, below=of sync, yshift=-0.5cm] (edit) {协同编辑\\实时冲突解决};
-        \node[process, below=of edit, yshift=-0.5cm] (persist) {保存到\\后端数据库};
-        \node[connector, below=of persist, yshift=-0.5cm] (collabEnd) {结束};
+            % 右侧分支：有协作者（协同模式）
+            \node[process, right=of check, xshift=1.2cm] (initWs) {初始化WebSocket\\连接Hocuspocus};
+            \node[process, below=of initWs, yshift=-0.5cm] (initYjs) {创建Yjs文档实例\\绑定CodeMirror};
+            \node[process, below=of initYjs, yshift=-0.5cm] (sync) {同步文档状态\\使用CRDT算法};
+            \node[process, below=of sync, yshift=-0.5cm] (edit) {协同编辑\\实时冲突解决};
+            \node[process, below=of edit, yshift=-0.5cm] (persist) {保存到\\后端数据库};
+            \node[connector, below=of persist, yshift=-0.5cm] (collabEnd) {结束};
 
-        % 连接线
-        \draw[arrow] (start) -- (load);
-        \draw[arrow] (load) -- (check);
+            % 连接线
+            \draw[arrow] (start) -- (load);
+            \draw[arrow] (load) -- (check);
 
-        % 左侧分支连接
-        \draw[arrow] (check) -- node[above, label] {否} (localEdit);
-        \draw[arrow] (localEdit) -- (localSave);
-        \draw[arrow] (localSave) -- (localEnd);
+            % 左侧分支连接
+            \draw[arrow] (check) -- node[above, label] {否} (localEdit);
+            \draw[arrow] (localEdit) -- (localSave);
+            \draw[arrow] (localSave) -- (localEnd);
 
-        % 右侧分支连接
-        \draw[arrow] (check) -- node[above, label] {是} (initWs);
-        \draw[arrow] (initWs) -- (initYjs);
-        \draw[arrow] (initYjs) -- (sync);
-        \draw[arrow] (sync) -- (edit);
-        \draw[arrow] (edit) -- (persist);
-        \draw[arrow] (persist) -- (collabEnd);
+            % 右侧分支连接
+            \draw[arrow] (check) -- node[above, label] {是} (initWs);
+            \draw[arrow] (initWs) -- (initYjs);
+            \draw[arrow] (initYjs) -- (sync);
+            \draw[arrow] (sync) -- (edit);
+            \draw[arrow] (edit) -- (persist);
+            \draw[arrow] (persist) -- (collabEnd);
 
-        % 添加虚线框区分模式
-        % 独立编辑模式虚线框
-        \coordinate (localBoxNW) at ($(localEdit.north west)+(-0.3,0.3)$);
-        \coordinate (localBoxSE) at ($(localSave.south east |- localEnd.south)+(0.3,-0.3)$);
-        \draw[dashed, gray, thick] (localBoxNW) rectangle (localBoxSE);
-        \coordinate (localLabelPos) at ($(localBoxNW)!0.5!(localBoxSE |- localBoxNW)$);
-        \node[gray, above=0.2cm] at (localLabelPos) {\textbf{独立编辑模式}};
+            % 添加虚线框区分模式
+            % 独立编辑模式虚线框
+            \coordinate (localBoxNW) at ($(localEdit.north west)+(-0.3,0.3)$);
+            \coordinate (localBoxSE) at ($(localSave.south east |- localEnd.south)+(0.3,-0.3)$);
+            \draw[dashed, gray, thick] (localBoxNW) rectangle (localBoxSE);
+            \coordinate (localLabelPos) at ($(localBoxNW)!0.5!(localBoxSE |- localBoxNW)$);
+            \node[gray, above=0.2cm] at (localLabelPos) {\textbf{独立编辑模式}};
 
-        % 实时协作模式虚线框
-        \coordinate (collabBoxNW) at ($(initWs.north west)+(-0.3,0.3)$);
-        \coordinate (collabBoxSE) at ($(persist.south east |- collabEnd.south)+(0.3,-0.3)$);
-        \draw[dashed, gray, thick] (collabBoxNW) rectangle (collabBoxSE);
-        \coordinate (collabLabelPos) at ($(collabBoxNW)!0.5!(collabBoxSE |- collabBoxNW)$);
-        \node[gray, above=0.2cm] at (collabLabelPos) {\textbf{实时协作模式}};
+            % 实时协作模式虚线框
+            \coordinate (collabBoxNW) at ($(initWs.north west)+(-0.3,0.3)$);
+            \coordinate (collabBoxSE) at ($(persist.south east |- collabEnd.south)+(0.3,-0.3)$);
+            \draw[dashed, gray, thick] (collabBoxNW) rectangle (collabBoxSE);
+            \coordinate (collabLabelPos) at ($(collabBoxNW)!0.5!(collabBoxSE |- collabBoxNW)$);
+            \node[gray, above=0.2cm] at (collabLabelPos) {\textbf{实时协作模式}};
 
         \end{tikzpicture}
         \caption{智能幻灯片协作平台文档协同流程图}
@@ -642,44 +632,199 @@
         \centering
         \begin{tabular}{lll}
             \toprule
-            角色 & 权限列表 \\
+            角色        & 权限列表                                               \\
             \midrule
             owner     & read, comment, edit, view\_history, manage, delete \\
-            editor    & read, comment, edit, view\_history \\
-            commenter & read, comment, view\_history \\
-            viewer    & read, view\_history \\
+            editor    & read, comment, edit, view\_history                 \\
+            commenter & read, comment, view\_history                       \\
+            viewer    & read, view\_history                                \\
             \bottomrule
         \end{tabular}
-\end{table}
+    \end{table}
     % 文档公开和私有两种设置，用来控制文档的访问范围。
-    
+
     \subsection{AI辅助功能}
 
     本平台集成了通义千问等大语言模型API，能够生成文本和图像，不仅支持多轮对话和大纲生成，也支持编辑器内联智能提示。
     平台将Slidev相关文档加入AI的知识库，让AI生成的内容更合适Slidev语法。
     % 最后对AI生成的内容做格式化和语法检查，确保它符合Slidev规范。
-    
-   \subsection{版本控制系统}
+
+    \subsection{版本控制系统}
 
     平台会定期保存文档内容到数据库，防止数据丢失，
     用户也可以自己手动操作，创建版本并添加提交消息。
     系统使用diff算法计算版本间的差异，可视化不同版本的差异，还能一键回滚到任意历史版本，让操作流程更加简单且符合大部分人的直觉。
 
+    % \section{测试与评估}\label{sec:testing-evaluation}
+
+    % 为保证系统质量，对核心功能进行了集成测试，重点验证实时协作、权限管理、AI辅助和版本控制等模块功能是否能正常使用，同时关注各个模式的使用体验。
+    % 测试结果显示所有核心功能均正常运行，符合前文开篇的设计要求。
+
+    % 在幻灯片创建与编辑操作中，可以正常新建幻灯片、修改标题、编辑内容、保存和删除等。
+    % % CodeMirror编辑器语法高亮，快捷键响应及时。
+    % Markdown渲染成Slidev构建的Web页面时，编辑器输入内容实时呈现在右侧预览区，标题、列表、代码块等Markdown格式可以正常渲染出来，没有出现格式错乱。
+    % 在多人实时协作编辑测试中，作者通过多个浏览器模拟多用户场景，编辑内容能实时同步，冲突处理正常，内容不丢失，即使在多用户编辑的情况下，延迟在合理范围之内。
+    % 版本管理与回滚功能中，测试了保存版本、查看历史记录、对比差异和回滚操作，均能正常操作，不会丢失版本数据。
+    % 在评论与基础权限控制测试时，添加评论和回复评论正常，角色权限分配合理。
+    % AI辅助功能可用于内容生成和优化，生成内容符合Slidev语法，响应延迟在可以接受的程度。
+
+    % 以上测试结果说明，系统能够满足用户对智能幻灯片协作平台的基本需求。
     \section{测试与评估}\label{sec:testing-evaluation}
 
-    为保证系统质量，对核心功能进行了集成测试，重点验证实时协作、权限管理、AI辅助和版本控制等模块功能是否能正常使用，同时关注各个模式的使用体验。
-    测试结果显示所有核心功能均正常运行，符合前文开篇的设计要求。
+    为保证系统质量，对核心功能进行了集成测试，重点验证实时协作、权限管理和版本控制等模块功能是否能正常使用，
+    同时关注各个模式的使用体验。测试结果显示所有核心功能均正常运行，符合前文开篇的设计要求。
 
-    在幻灯片创建与编辑操作中，可以正常新建幻灯片、修改标题、编辑内容、保存和删除等。
-    % CodeMirror编辑器语法高亮，快捷键响应及时。
-    Markdown渲染成Slidev构建的Web页面时，编辑器输入内容实时呈现在右侧预览区，标题、列表、代码块等Markdown格式可以正常渲染出来，没有出现格式错乱。
-    在多人实时协作编辑测试中，作者通过多个浏览器模拟多用户场景，编辑内容能实时同步，冲突处理正常，内容不丢失，即使在多用户编辑的情况下，延迟在合理范围之内。
-    版本管理与回滚功能中，测试了保存版本、查看历史记录、对比差异和回滚操作，均能正常操作，不会丢失版本数据。
-    在评论与基础权限控制测试时，添加评论和回复评论正常，角色权限分配合理。
-    AI辅助功能可用于内容生成和优化，生成内容符合Slidev语法，响应延迟在可以接受的程度。
+    % \subsection{幻灯片创建与编辑}
+    % 幻灯片创建与编辑模块测试包括新建幻灯片、修改标题、编辑内容、保存、删除、编辑器语法高亮及快捷键响应等操作，如\ref{tab:test-slide-crud}表所示。
 
-    以上测试结果说明，系统能够满足用户对智能幻灯片协作平台的基本需求。
+    % \begin{table}[htbp]
+    %     \caption{集成测试用例：幻灯片创建与编辑}
+    %     \label{tab:test-slide-crud}
+    %     \centering
+    %     \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+    %         \toprule
+    %         用例名称    & 输入项描述                    & 测试数据              & 预期结果              & 是否通过 \\
+    %         \midrule
+    %         新建幻灯片   & 在指定空间内创建新幻灯片，输入标题        & 空间ID=1，标题=“测试幻灯片” & 提示创建成功，空间下出现新幻灯片  & 通过   \\
+    %         \addlinespace
+    %         修改标题    & 编辑已有幻灯片的标题字段             & 标题改为“新标题”         & 标题更新成功，列表中显示新标题   & 通过   \\
+    %         \addlinespace
+    %         编辑内容    & 使用编辑器修改幻灯片正文             & 输入多行Markdown文本    & 内容保存后可正确回显        & 通过   \\
+    %         \addlinespace
+    %         保存幻灯片   & 编辑后执行保存操作                & 修改任意内容后点击保存       & 提示保存成功，更新时间刷新     & 通过   \\
+    %         \addlinespace
+    %         删除幻灯片   & 删除指定幻灯片                  & 删除“测试幻灯片”         & 幻灯片从列表消失，关联数据级联清除 & 通过   \\
+    %         \addlinespace
+    %         编辑器语法高亮 & 在CodeMirror中写入Markdown语法 & 输入\#\#标题、列表项      & 关键字高亮显示，符合预期      & 通过   \\
+    %         \addlinespace
+    %         快捷键响应   & 使用常用快捷键（如Ctrl+S保存）       & 按下Ctrl+S          & 触发保存动作，编辑器无卡顿     & 通过   \\
+    %         \bottomrule
+    %     \end{tabular}
+    % \end{table}
 
+    % \subsection{Markdown渲染}
+    % Markdown渲染模块测试包含标题、列表、代码块等格式的实时预览效果，如\ref{tab:test-markdown}表所示。
+
+    % \begin{table}[htbp]
+    %     \caption{集成测试用例：Markdown渲染}
+    %     \label{tab:test-markdown}
+    %     \centering
+    %     \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+    %         \toprule
+    %         用例名称   & 输入项描述         & 测试数据              & 预期结果          & 是否通过 \\
+    %         \midrule
+    %         标题渲染   & 输入多级标题语法      & \#一级、\#\#二级       & 右侧预览呈现对应层级标题  & 通过   \\
+    %         \addlinespace
+    %         列表渲染   & 输入有序/无序列表     & -项目1、1.步骤1        & 预览显示正确项目符号和编号 & 通过   \\
+    %         \addlinespace
+    %         代码块渲染  & 输入围栏代码块       & \`\`\`js...\`\`\` & 预览区代码高亮，格式保留  & 通过   \\
+    %         \addlinespace
+    %         混合内容渲染 & 同时包含标题、列表、代码块 & 组合上述多种元素          & 所有元素样式正确，无错乱  & 通过   \\
+    %         \bottomrule
+    %     \end{tabular}
+    % \end{table}
+
+    \subsection{多人实时协作编辑}
+    多人实时协作编辑模块利用多开浏览器测试多用户同时编辑时的内容同步与冲突处理能力，如\ref{tab:test-collab}表所示。
+
+    \begin{table}[htbp]
+        \caption{集成测试用例：多人实时协作编辑}
+        \label{tab:test-collab}
+        \centering
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+            \toprule
+            用例名称       & 输入项描述          & 测试数据             & 预期结果          & 是否通过 \\
+            \midrule
+            内容实时同步     & 用户A、B同时编辑同一幻灯片 & A输入文字，B观察编辑区     & B的编辑区实时显示A的修改 & 通过   \\
+            \addlinespace
+            冲突处理       & 两人同时修改同一段落     & A和B在相同位置分别输入不同内容 & 编辑器的内容一致   & 通过   \\
+            % \addlinespace
+            % 多用户编辑不丢失内容 & 3人及以上同时在不同区域编辑 & 3个浏览器同时添加段落      & 所有修改均被保留，无覆盖  & 通过   \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsection{版本管理与回滚}
+    版本管理与回滚模块测试保存版本、查看历史、对比差异和回滚等操作，如\ref{tab:test-version}表所示。
+
+    \begin{table}[htbp]
+        \caption{集成测试用例：版本管理与回滚}
+        \label{tab:test-version}
+        \centering
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+            \toprule
+            用例名称    & 输入项描述        & 测试数据            & 预期结果                & 是否通过 \\
+            \midrule
+            保存新版本   & 编辑内容后提交版本    & 修改内容，输入提交信息“v1” & 生成新版本号，历史列表中出现该版本   & 通过   \\
+            \addlinespace
+            查看历史记录  & 打开版本列表       & 点击版本历史          & 显示所有提交信息、时间     & 通过   \\
+            \addlinespace
+            对比版本差异  & 选择两个版本进行差异比较 & 选择v1和v2         & 正确可视化内容的差异           & 通过   \\
+            \addlinespace
+            回滚到指定版本 & 执行回滚到旧版本     & 对v1执行回滚         & 当前内容恢复为v1状态 & 通过   \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsection{评论功能}
+    评论功能模块测试在幻灯片下添加评论和回复评论的正常操作，如\ref{tab:test-comment}表所示。
+
+    \begin{table}[htbp]
+        \caption{集成测试用例：评论功能}
+        \label{tab:test-comment}
+        \centering
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+            \toprule
+            用例名称 & 输入项描述       & 测试数据           & 预期结果             & 是否通过 \\
+            \midrule
+            添加评论 & 用户在幻灯片下发表评论 & 输入文本“寄存器部分能不能具体一点”       & 评论区能显示新增的评论内容& 通过   \\
+            \addlinespace
+            回复评论 & 对已有评论进行回复   & 点击某评论回复，输入“可以的” & 回复嵌套显示，引用关系正确    & 通过   \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsection{权限控制}
+    权限控制模块测试owner、editor、commenter、viewer四种角色进行操作时是否能正常地校验权限，如\ref{tab:test-permission}表所示。
+
+    \begin{table}[htbp]
+        \caption{集成测试用例：权限控制}
+        \label{tab:test-permission}
+        \centering
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+            \toprule
+            用例名称        & 输入项描述                & 测试数据            & 预期结果           & 是否通过 \\
+            \midrule
+            owner权限     & owner角色执行管理、删除等操作    & owner删除幻灯片      & 操作成功           & 通过   \\
+            \addlinespace
+            editor权限    & editor角色编辑内容但无管理权限   & editor尝试删除幻灯片   & 操作被拒绝，并提示用户无权操作 & 通过   \\
+            \addlinespace
+            commenter权限 & commenter可查看和评论，不可编辑 & commenter尝试编辑内容 & 编辑区只读，无法编辑     & 通过   \\
+            \addlinespace
+            viewer权限    & viewer仅可查看和历史，不可评论   & viewer尝试输入评论    & 评论请求被拦截，并提示用户无法评论    & 通过   \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    % \subsection{AI辅助功能}
+    % AI辅助功能模块测试了内容生成、优化及Slidev语法合规性，如\ref{tab:test-ai}表所示。
+
+    % \begin{table}[htbp]
+    %     \caption{集成测试用例：AI辅助功能}
+    %     \label{tab:test-ai}
+    %     \centering
+    %     \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+    %         \toprule
+    %         用例名称       & 输入项描述       & 测试数据              & 预期结果              & 是否通过 \\
+    %         \midrule
+    %         AI内容生成     & 使用AI生成幻灯片大纲 & 输入主题“项目进度”        & 返回符合Slidev语法的内容片段 & 通过   \\
+    %         \addlinespace
+    %         AI内容优化     & 对已有内容进行润色   & 提交一段粗糙文本          & 返回优化后文本，逻辑通顺，语法正确 & 通过   \\
+    %         \addlinespace
+    %         Slidev语法合规 & 检查生成内容语法    & 生成内容中包含Slidev特有指令 & 指令正确，可被Slidev解析   & 通过   \\
+    %         \bottomrule
+    %     \end{tabular}
+    % \end{table}
 
     % 为确保系统质量，对核心功能进行了集成测试。
     % 测试重点验证了实时协作、权限管理、AI辅助和版本控制等关键模块的功能完整性。
