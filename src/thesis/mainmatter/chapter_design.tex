@@ -626,18 +626,33 @@
     \texttt{slide\_user\_roles}表记录用户在特定幻灯片中的角色和权限，
     加载文档时，会校验用户权限，阻止未授权操作。
     文档可以设置为公开或私有，当文档设置为私有时，必须要Viewer及以上权限的角色才能够访问文档。
+    % \begin{table}[htbp]
+    %     \caption{Slide角色权限对照表}
+    %     \label{tab:slide-permissions}
+    %     \centering
+    %     \begin{tabular}{lll}
+    %         \toprule
+    %         角色        & 权限列表                                               \\
+    %         \midrule
+    %         owner     & read, comment, edit, view\_history, manage, delete \\
+    %         editor    & read, comment, edit, view\_history                 \\
+    %         commenter & read, comment, view\_history                       \\
+    %         viewer    & read, view\_history                                \\
+    %         \bottomrule
+    %     \end{tabular}
+    % \end{table}
     \begin{table}[htbp]
         \caption{Slide角色权限对照表}
         \label{tab:slide-permissions}
         \centering
         \begin{tabular}{lll}
             \toprule
-            角色        & 权限列表                                               \\
+            角色        & 权限列表                    \\
             \midrule
-            owner     & read, comment, edit, view\_history, manage, delete \\
-            editor    & read, comment, edit, view\_history                 \\
-            commenter & read, comment, view\_history                       \\
-            viewer    & read, view\_history                                \\
+            owner     & 查看，评论，编辑，查看历史，管理，删除 \\
+            editor    & 查看，评论，编辑，查看历史         \\
+            commenter & 查看，评论，查看历史             \\
+            viewer    & 查看，查看历史                 \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -733,11 +748,11 @@
         \centering
         \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
             \toprule
-            用例名称       & 输入项描述          & 测试数据             & 预期结果          & 是否通过 \\
+            用例名称   & 输入项描述          & 测试数据             & 预期结果          & 是否通过 \\
             \midrule
-            内容实时同步     & 用户A、B同时编辑同一幻灯片 & A输入文字，B观察编辑区     & B的编辑区实时显示A的修改 & 通过   \\
+            内容实时同步 & 用户A、B同时编辑同一幻灯片 & A输入文字，B观察编辑区     & B的编辑区实时显示A的修改 & 通过   \\
             \addlinespace
-            冲突处理       & 两人同时修改同一段落     & A和B在相同位置分别输入不同内容 & 编辑器的内容一致   & 通过   \\
+            冲突处理   & 两人同时修改同一段落     & A和B在相同位置分别输入不同内容 & 编辑器的内容一致      & 通过   \\
             % \addlinespace
             % 多用户编辑不丢失内容 & 3人及以上同时在不同区域编辑 & 3个浏览器同时添加段落      & 所有修改均被保留，无覆盖  & 通过   \\
             \bottomrule
@@ -753,15 +768,15 @@
         \centering
         \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
             \toprule
-            用例名称    & 输入项描述        & 测试数据            & 预期结果                & 是否通过 \\
+            用例名称    & 输入项描述        & 测试数据            & 预期结果              & 是否通过 \\
             \midrule
-            保存新版本   & 编辑内容后提交版本    & 修改内容，输入提交信息“v1” & 生成新版本号，历史列表中出现该版本   & 通过   \\
+            保存新版本   & 编辑内容后提交版本    & 修改内容，输入提交信息“v1” & 生成新版本号，历史列表中出现该版本 & 通过   \\
             \addlinespace
-            查看历史记录  & 打开版本列表       & 点击版本历史          & 显示所有提交信息、时间     & 通过   \\
+            查看历史记录  & 打开版本列表       & 点击版本历史          & 显示所有提交信息、时间       & 通过   \\
             \addlinespace
-            对比版本差异  & 选择两个版本进行差异比较 & 选择v1和v2         & 正确可视化内容的差异           & 通过   \\
+            对比版本差异  & 选择两个版本进行差异比较 & 选择v1和v2         & 正确可视化内容的差异        & 通过   \\
             \addlinespace
-            回滚到指定版本 & 执行回滚到旧版本     & 对v1执行回滚         & 当前内容恢复为v1状态 & 通过   \\
+            回滚到指定版本 & 执行回滚到旧版本     & 对v1执行回滚         & 当前内容恢复为v1状态       & 通过   \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -775,11 +790,11 @@
         \centering
         \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
             \toprule
-            用例名称 & 输入项描述       & 测试数据           & 预期结果             & 是否通过 \\
+            用例名称 & 输入项描述       & 测试数据               & 预期结果          & 是否通过 \\
             \midrule
-            添加评论 & 用户在幻灯片下发表评论 & 输入文本“寄存器部分能不能具体一点”       & 评论区能显示新增的评论内容& 通过   \\
+            添加评论 & 用户在幻灯片下发表评论 & 输入文本“寄存器部分能不能具体一点” & 评论区能显示新增的评论内容 & 通过   \\
             \addlinespace
-            回复评论 & 对已有评论进行回复   & 点击某评论回复，输入“可以的” & 回复嵌套显示，引用关系正确    & 通过   \\
+            回复评论 & 对已有评论进行回复   & 点击某评论回复，输入“可以的”    & 回复嵌套显示，引用关系正确 & 通过   \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -793,15 +808,15 @@
         \centering
         \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
             \toprule
-            用例名称        & 输入项描述                & 测试数据            & 预期结果           & 是否通过 \\
+            用例名称        & 输入项描述                & 测试数据            & 预期结果              & 是否通过 \\
             \midrule
-            owner权限     & owner角色执行管理、删除等操作    & owner删除幻灯片      & 操作成功           & 通过   \\
+            owner权限     & owner角色执行管理、删除等操作    & owner删除幻灯片      & 操作成功              & 通过   \\
             \addlinespace
-            editor权限    & editor角色编辑内容但无管理权限   & editor尝试删除幻灯片   & 操作被拒绝，并提示用户无权操作 & 通过   \\
+            editor权限    & editor角色编辑内容但无管理权限   & editor尝试删除幻灯片   & 操作被拒绝，并提示用户无权操作   & 通过   \\
             \addlinespace
-            commenter权限 & commenter可查看和评论，不可编辑 & commenter尝试编辑内容 & 编辑区只读，无法编辑     & 通过   \\
+            commenter权限 & commenter可查看和评论，不可编辑 & commenter尝试编辑内容 & 编辑区只读，无法编辑        & 通过   \\
             \addlinespace
-            viewer权限    & viewer仅可查看和历史，不可评论   & viewer尝试输入评论    & 评论请求被拦截，并提示用户无法评论    & 通过   \\
+            viewer权限    & viewer仅可查看和历史，不可评论   & viewer尝试输入评论    & 评论请求被拦截，并提示用户无法评论 & 通过   \\
             \bottomrule
         \end{tabular}
     \end{table}
