@@ -59,15 +59,17 @@
                 \node[layer, fill=orange!10, below=3.5cm of backend] (storage) {数据存储层};
 
                 % 前端组件
-                \node[component, fill=blue!5, left=2.5cm of frontend] (react) {React应用\\React 19 + TypeScript + Vite};
-                \node[component, fill=blue!5, right=2.5cm of frontend] (editor) {CodeMirror 6编辑器\\Markdown语法高亮};
+                \node[component, fill=blue!5, left=2.5cm of frontend] (react) {React应用};
+                % \node[component, fill=blue!5, left=2.5cm of frontend] (react) {React应用\\React 19 + TypeScript + Vite};
+                \node[component, fill=blue!5, right=2.5cm of frontend] (editor) {CodeMirror编辑器};
+                % \node[component, fill=blue!5, right=2.5cm of frontend] (editor) {CodeMirror 6编辑器\\Markdown语法高亮};
                 \node[component, fill=blue!5, above=1.5cm of react] (yjs) {Yjs客户端\\实时协作};
                 \node[component, fill=blue!5, above=1.5cm of editor] (slidev) {Slidev预览组件\\实时预览};
 
                 % 后端组件
                 \node[component, fill=green!5, left=2.5cm of backend] (nest) {NestJS框架\\RESTful API};
                 \node[component, fill=green!5, right=2.5cm of backend] (hocus) {Hocuspocus服务器\\WebSocket协作};
-                \node[component, fill=green!5, above=1.5cm of nest] (business) {业务模块\\用户/幻灯片/权限管理};
+                % \node[component, fill=green!5, above=1.5cm of nest] (business) {业务模块\\用户/幻灯片/权限管理};
                 \node[component, fill=green!5, above=1.5cm of hocus] (auth) {认证授权\\JWT + RBAC};
 
                 % 存储组件
@@ -84,7 +86,7 @@
 
                 \draw[arrow] (nest) -- (backend);
                 \draw[arrow] (hocus) -- (backend);
-                \draw[arrow] (business) -- (backend);
+                % \draw[arrow] (business) -- (backend);
                 \draw[arrow] (auth) -- (backend);
 
                 \draw[arrow] (backend) -- node[right] {数据持久化} (storage);
