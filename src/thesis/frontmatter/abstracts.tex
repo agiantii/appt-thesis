@@ -26,7 +26,7 @@
 	同时还可以使用丰富的插件和主题实现许多有趣的动画效果和视觉呈现。
 
 	平台前端选用React，后端使用NestJS，通过Yjs的CRDT算法实现无冲突的实时协作编辑，支持多用户协同编辑和实时光标追踪；
-	设计合适的RBAC模型来实现权限管理，而不会过于复杂或是过于简陋；支持简单的版本控制，提供版本历史查看、差异对比和回滚功能。
+	设计合适的RBAC模型来实现编辑、查阅、评论等权限管理；支持简单的版本控制，提供版本历史查看、差异对比和回滚功能。
 
 
 	% 平台采用React + TypeScript + Vite构建前端，CodeMirror编辑器和Yjs协作库；
@@ -53,15 +53,16 @@
 
 \vspace{-0.5cm}
 \begin{englishabstract}
-	{Intelligent Slideshow Collaboration Platform; Real-time Collaboration; Yjs; Slidev; Permission Management}\setlength{\parskip}{0pt}
-% Traditional slideshow tools have certain limitations in team collaboration, version control, and AI intelligent assistance.
-The author designs and implements an intelligent slideshow collaboration platform that supports real-time collaboration, permission management, AI assistance, and simplified version control.
-It helps presenters conveniently create slides using Markdown syntax adapted to Slidev, allowing them to focus solely on content creation rather than formatting.
-Meanwhile, rich plugins and themes are available to achieve various interesting animation effects and visual presentations.
+	{Intelligent Slide Collaboration Platform; Real-time Collaboration; Yjs; Slidev; Permission Management}\setlength{\parskip}{0pt}\linespread{0.95}\selectfont 
 
-The platform adopts React for the frontend and NestJS for the backend, utilizing the Yjs CRDT algorithm to achieve conflict-free real-time collaborative editing, supporting multi-user collaborative editing and real-time cursor tracking.
-An appropriate RBAC model is designed for permission management, without being overly complex or too simplistic.
-A simplified version control system is built, providing version history viewing, difference comparison, and rollback functionality.
+	The author designed and implemented an intelligent slide collaboration platform that supports real-time collaboration, permission management, AI assistance, and simplified version control. 
+	It enables presenters to conveniently create slides using Markdown adapted for Slidev, allowing them to focus on content creation rather than layout. 
+	At the same time, it employs a rich set of plugins and themes to achieve diverse animation effects and visual presentations.
+
+	The platform adopts React for the frontend and NestJS for the backend. It achieves conflict-free real-time collaborative editing via Yjs's CRDT algorithm, supporting multi-user co-editing and real-time cursor tracking. 
+	An appropriate RBAC model is designed to manage permissions such as editing, viewing, and commenting. It also supports simple version control, providing version history viewing, diff comparison, and rollback functionality.
+
+
 \end{englishabstract}
 % \vspace{-0.5cm}
 % \begin{englishabstract}
