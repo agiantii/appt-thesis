@@ -625,37 +625,23 @@
     % 本平台通过智能化的协作状态判断与模式选择机制，在确保功能完整性的基础上，优化了系统性能与用户体验。这一设计实现了高效且灵活的文档协同编辑解决方案。
 
     \subsection{权限管理系统}
-    权限管理系统采用RBAC模型，定义了Owner、Editor、Commenter、Viewer四种角色，如表\ref{tab:slide-permissions}所示。
+    权限管理系统采用RBAC模型，定义了owner、editor、commenter、viewer四种角色，如表\ref{tab:slide-permissions}所示。
     \texttt{slide\_user\_roles}表记录用户在特定幻灯片中的角色和权限，
     加载文档时，会校验用户权限，阻止未授权操作。
-    文档可以设置为公开或私有，当文档设置为私有时，必须要Viewer及以上权限的角色才能够访问文档。
-    % \begin{table}[htbp]
-    %     \caption{Slide角色权限对照表}
-    %     \label{tab:slide-permissions}
-    %     \centering
-    %     \begin{tabular}{lll}
-    %         \toprule
-    %         角色        & 权限列表                                               \\
-    %         \midrule
-    %         owner     & read, comment, edit, view\_history, manage, delete \\
-    %         editor    & read, comment, edit, view\_history                 \\
-    %         commenter & read, comment, view\_history                       \\
-    %         viewer    & read, view\_history                                \\
-    %         \bottomrule
-    %     \end{tabular}
-    % \end{table}
+    文档可以设置为公开或私有，当文档设置为私有时，必须要viewer及以上权限的角色才能够访问文档。
+
     \begin{table}[htbp]
         \caption{Slide角色权限对照表}
         \label{tab:slide-permissions}
         \centering
         \begin{tabular}{lll}
             \toprule
-            角色        & 权限列表                    \\
+            角色        & 权限列表                \\
             \midrule
             owner     & 查看，评论，编辑，查看历史，管理，删除 \\
-            editor    & 查看，评论，编辑，查看历史         \\
-            commenter & 查看，评论，查看历史             \\
-            viewer    & 查看，查看历史                 \\
+            editor    & 查看，评论，编辑，查看历史       \\
+            commenter & 查看，评论，查看历史          \\
+            viewer    & 查看，查看历史             \\
             \bottomrule
         \end{tabular}
     \end{table}
