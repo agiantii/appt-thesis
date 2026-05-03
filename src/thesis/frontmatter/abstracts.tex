@@ -14,19 +14,21 @@
 \begin{chineseabstract}
 	{智能幻灯片协作平台；实时协作；Yjs；Slidev；权限管理}\setlength{\parskip}{0pt}\linespread{0.95}\selectfont 
 
-	% 针对传统幻灯片工具在团队协作、版本控制及AI辅助方面的不足，本文设计并实现了一个智能幻灯片协作平台。
-	% 平台前端采用React，后端基于NestJS，利用Yjs的CRDT算法实现了多用户实时协作编辑与光标追踪；
-	% 设计了合适的RBAC权限模型实现权限管理，并构建了简化版本控制系统，支持版本历史查看、差异对比和回滚。
-	% 平台支持用户使用适配Slidev的Markdown语法制作幻灯片，专注于内容创作，同时提供丰富的插件与主题，实现动画效果与视觉呈现。
-	
+		幻灯片是表达演讲者想法的重要工具，而常见的幻灯片工具需要用户花费较多的精力在布局排版上，
+		而非内容创作。
+		% 针对传统幻灯片工具在团队协作、版本控制及AI辅助方面的不足，本文设计并实现了一个智能幻灯片协作平台。
+		% 平台前端采用React，后端基于NestJS，利用Yjs的CRDT算法实现了多用户实时协作编辑与光标追踪；
+		% 设计了合适的RBAC权限模型实现权限管理，并构建了简化版本控制系统，支持版本历史查看、差异对比和回滚。
+		% 平台支持用户使用适配Slidev的Markdown语法制作幻灯片，专注于内容创作，同时提供丰富的插件与主题，实现动画效果与视觉呈现。
+		
 
-	% 传统幻灯片工具在团队协作、版本控制和AI智能辅助方面存在一定局限。
-	作者设计并实现了一个智能幻灯片协作平台，支持实时协作、权限管理、AI辅助和简化的版本控制，
-	能够帮助演讲者很方便地使用适配于Slidev的Markdown语法来制作幻灯片，只需要关注内容创作而非排版。
-	同时还可以使用丰富的插件和主题实现许多有趣的动画效果和视觉呈现。
+		% 传统幻灯片工具在团队协作、版本控制和AI智能辅助方面存在一定局限。
+		为解决以上问题，作者基于Slidev设计并实现了一个智能幻灯片协作平台，支持实时协作、权限管理、AI辅助和简化的版本控制，
+		能够帮助演讲者很方便地使用适配于Slidev的Markdown语法来制作幻灯片，只需要关注内容创作而非排版。
+		同时还可以使用丰富的插件和主题实现许多有趣的动画效果和视觉呈现。
 
-	平台前端选用React，后端使用NestJS，通过Yjs的CRDT算法实现无冲突的实时协作编辑，支持多用户协同编辑和实时光标追踪；
-	设计合适的RBAC模型来实现编辑、查阅、评论等权限管理；支持简单的版本控制，提供版本历史查看、差异对比和回滚功能。
+		平台前端选用React，后端使用NestJS，通过Yjs的CRDT算法实现无冲突的实时协作编辑，支持多用户协同编辑和实时光标追踪；
+		设计合适的RBAC模型来实现编辑、查阅、评论等权限管理；支持简单的版本控制，提供版本历史查看、差异对比和回滚功能。
 
 
 	% 平台采用React + TypeScript + Vite构建前端，CodeMirror编辑器和Yjs协作库；
@@ -53,15 +55,13 @@
 
 \vspace{-0.5cm}
 \begin{englishabstract}
-	{Intelligent Slide Collaboration Platform; Real-time Collaboration; Yjs; Slidev; Permission Management}\setlength{\parskip}{0pt}\linespread{0.95}\selectfont 
+{Smart Slide Collaboration Platform; Real-time Collaboration; Yjs; Slidev; Permission Management}\setlength{\parskip}{0pt}\linespread{0.95}\selectfont
 
-	The author designed and implemented an intelligent slide collaboration platform that supports real-time collaboration, permission management, AI assistance, and simplified version control. 
-	It enables presenters to conveniently create slides using Markdown adapted for Slidev, allowing them to focus on content creation rather than layout. 
-	At the same time, it employs a rich set of plugins and themes to achieve diverse animation effects and visual presentations.
+Slides are an essential tool for conveying a speaker's ideas, yet common slide tools often require users to invest significant effort in layout and formatting rather than content creation.
 
-	The platform adopts React for the frontend and NestJS for the backend. It achieves conflict-free real-time collaborative editing via Yjs's CRDT algorithm, supporting multi-user co-editing and real-time cursor tracking. 
-	An appropriate RBAC model is designed to manage permissions such as editing, viewing, and commenting. It also supports simple version control, providing version history viewing, diff comparison, and rollback functionality.
+To address these issues, the author has designed and implemented an intelligent slide collaboration platform based on Slidev, supporting real-time collaboration, permission management, AI assistance, and simplified version control. It enables speakers to conveniently create slides using Markdown syntax adapted for Slidev, allowing them to focus solely on content creation rather than layout. At the same time, a rich set of plugins and themes can be used to achieve a variety of engaging animation effects and visual presentations.
 
+The platform's frontend is built with React, and the backend uses NestJS. Conflict-free real-time collaborative editing is achieved through Yjs's CRDT algorithm, supporting multi-user co-editing and real-time cursor tracking. An appropriate RBAC model is designed to manage permissions such as editing, viewing, and commenting. Simple version control is supported, providing version history viewing, diff comparison, and rollback functionality.
 
 \end{englishabstract}
 % \vspace{-0.5cm}
