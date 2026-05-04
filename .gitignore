@@ -1,5 +1,8 @@
 ## test
 test/
+
+## 根目录drawio，信息保存在figure/xxx.drawio.png中
+/drawio 
 ## temp
 temp/
 ## .doc

@@ -12,22 +12,22 @@
     % 4. 实现细节：介绍系统的具体实现方法和过程
     % 5. 测试与评估：说明系统的测试方法和评估结果
 
-    \section{设计目标}\label{sec:design-goals}
+    % \section{设计目标}\label{sec:design-goals}
 
-    % \subsection{设计目标}
-    % 作者希望开发一个简单易用的智能幻灯片协作平台，包括实时协作、权限管理、AI辅助、版本控制等核心功能。
+    % % \subsection{设计目标}
+    % % 作者希望开发一个简单易用的智能幻灯片协作平台，包括实时协作、权限管理、AI辅助、版本控制等核心功能。
 
-    % 本平台的设计目标如下：
-    % 支持多用户实时协作编辑，编辑过程中光标位置能够实时追踪。
-    % 权限控制基于RBAC模型，划分四级权限来管理文档访问。
-    % AI辅助生成幻灯片内容，同时提供兼容Slidev语法的建议。
-    % 版本控制方面，实现历史版本查看、差异对比和回滚操作。
+    % % 本平台的设计目标如下：
+    % % 支持多用户实时协作编辑，编辑过程中光标位置能够实时追踪。
+    % % 权限控制基于RBAC模型，划分四级权限来管理文档访问。
+    % % AI辅助生成幻灯片内容，同时提供兼容Slidev语法的建议。
+    % % 版本控制方面，实现历史版本查看、差异对比和回滚操作。
 
-    作者希望开发一个功能完善、简单易上手的智能幻灯片协作平台，主要实现以下目标：
-    \textbf{实时协作}：当多个用户实时协作编辑时，可以让光标实时追踪；
-    \textbf{权限管理}：基于RBAC模型设计四级权限，实现文档访问控制；
-    \textbf{AI辅助功能}：用AI辅助演讲者生成幻灯片，并提供合适于Slidev语法的智能建议；
-    \textbf{简单的版本控制}：提供版本历史查看、差异对比和历史回滚等功能；
+    % 作者希望开发一个功能完善、简单易上手的智能幻灯片协作平台，主要实现以下目标：
+    % \textbf{实时协作}：当多个用户实时协作编辑时，可以让光标实时追踪；
+    % \textbf{权限管理}：基于RBAC模型设计四级权限，实现文档访问控制；
+    % \textbf{AI辅助功能}：用AI辅助演讲者生成幻灯片，并提供合适于Slidev语法的智能建议；
+    % \textbf{简单的版本控制}：提供版本历史查看、差异对比和历史回滚等功能；
 
     % \subsection{设计原则}
 
@@ -637,54 +637,6 @@
     \texttt{slide\_user\_roles}表记录用户在特定幻灯片中的角色和权限，
     加载文档时，会校验用户权限，阻止未授权操作。
     文档可以设置为公开或私有，当文档设置为私有时，必须要viewer及以上权限的角色才能够访问文档。
-% js代码暂时用python渲染
-    % \begin{listing}[H]
-%     \centering
-%     \caption{文档权限检查方法}
-%     \label{code:checkSlidePermission}
-%     \begin{pythoncode}
-%     /**
-%      * 检查文档权限
-%      */
-%     private async checkSlidePermission(
-%       slideId: number,
-%       user: any,
-%       requiredRoles: SlideRole[] | undefined,
-%       requiredPermission: AuthPermissions | undefined,
-%     ): Promise<boolean> {
-%       // 获取文档信息
-%       const slide = await this.slideRepo.findOne({
-%         where: { id: slideId },
-%       });
-%       if (!slide) {
-%         throw new NotFoundException('文档不存在');
-%       }
-%       // 公开文档允许 viewer 访问
-%       if (slide.isPublic && requiredRoles?.includes('viewer')) {
-%         return true;
-%       }
-%       // 未登录用户无法访问非公开文档
-%       if (!user) {
-%         throw new ForbiddenException('请先登录');
-%       }
-%       // 检查用户在文档中的角色
-%       const userRole = await this.slideUserRoleRepo.findOne({
-%         where: {
-%           slideId: slideId,
-%           userId: user.userId,
-%         },
-%       });
-%       // 确定用户的实际角色（创建者为 owner，否则查表）
-%       let actualRole: SlideRole | null = null;
-%       if (slide.createdBy === user.userId) {
-%         actualRole = 'owner';
-%       } else if (userRole) {
-%         actualRole = userRole.role;
-%       }
-%       return this.validatePermission(actualRole, requiredRoles, requiredPermission);
-%     }
-%     \end{pythoncode}
-% \end{listing}
     \begin{table}[htbp]
         \caption{Slide角色权限对照表}
         \label{tab:slide-permissions}
@@ -702,6 +654,56 @@
     \end{table}
     % 文档公开和私有两种设置，用来控制文档的访问范围。
 
+    \subsubsection{具体实现}
+    采用AOP，具体代码如\ref{code:checkSlidePermission}
+\begin{listing}[H]
+    \centering
+    \caption{文档权限检查方法}
+    \label{code:checkSlidePermission}
+    \begin{jscode}
+     /**
+   * 检查文档权限
+   */
+  private async checkSlidePermission(
+    slideId: number,
+    user: any,
+    requiredRoles: SlideRole[] | undefined,
+    requiredPermission: AuthPermissions | undefined,
+  ): Promise<boolean> {
+    // 获取文档信息
+    const slide = await this.slideRepo.findOne({
+      where: { id: slideId },
+    });
+
+    if (!slide) {
+      throw new NotFoundException('文档不存在');
+    }
+
+    // 公开文档，可以不需要read权限
+    if (slide.isPublic && !requiredPermission?.includes("read")) {
+      return true;
+    }
+
+    // 检查用户在文档中的角色
+    const userRole = await this.slideUserRoleRepo.findOne({
+      where: {
+        slideId: slideId,
+        userId: user.userId,
+      },
+    });
+
+    // 确定用户的实际角色（创建者为 owner）
+    let actualRole: SlideRole | null = null;
+    if (slide.createdBy === user.userId) {
+      actualRole = 'owner';
+    } else if (userRole) {
+      actualRole = userRole.role;
+    }
+
+    return this.validatePermission(actualRole,requiredPermission);
+  }
+    \end{jscode}
+\end{listing}
     \subsection{AI辅助功能}
 
     本平台集成了通义千问等大语言模型API，能够生成文本和图像，不仅支持多轮对话和大纲生成，也支持编辑器内联智能提示。
