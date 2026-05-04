@@ -1,0 +1,170 @@
+\begin{cuzchapter}{系统测试}{chap:test}
+     \section{测试与评估}\label{sec:testing-evaluation}
+
+    为保证系统质量，对核心功能进行了集成测试，重点验证实时协作、权限管理和版本控制等模块功能是否能正常使用，
+    同时关注各个模式的使用体验。测试结果显示所有核心功能均正常运行，符合前文开篇的设计要求。
+
+    % \subsection{幻灯片创建与编辑}
+    % 幻灯片创建与编辑模块测试包括新建幻灯片、修改标题、编辑内容、保存、删除、编辑器语法高亮及快捷键响应等操作，如\ref{tab:test-slide-crud}表所示。
+
+    % \begin{table}[htbp]
+    %     \caption{集成测试用例：幻灯片创建与编辑}
+    %     \label{tab:test-slide-crud}
+    %     \centering
+    %     \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+    %         \toprule
+    %         用例名称    & 输入项描述                    & 测试数据              & 预期结果              & 是否通过 \\
+    %         \midrule
+    %         新建幻灯片   & 在指定空间内创建新幻灯片，输入标题        & 空间ID=1，标题=“测试幻灯片” & 提示创建成功，空间下出现新幻灯片  & 通过   \\
+    %         \addlinespace
+    %         修改标题    & 编辑已有幻灯片的标题字段             & 标题改为“新标题”         & 标题更新成功，列表中显示新标题   & 通过   \\
+    %         \addlinespace
+    %         编辑内容    & 使用编辑器修改幻灯片正文             & 输入多行Markdown文本    & 内容保存后可正确回显        & 通过   \\
+    %         \addlinespace
+    %         保存幻灯片   & 编辑后执行保存操作                & 修改任意内容后点击保存       & 提示保存成功，更新时间刷新     & 通过   \\
+    %         \addlinespace
+    %         删除幻灯片   & 删除指定幻灯片                  & 删除“测试幻灯片”         & 幻灯片从列表消失，关联数据级联清除 & 通过   \\
+    %         \addlinespace
+    %         编辑器语法高亮 & 在CodeMirror中写入Markdown语法 & 输入\#\#标题、列表项      & 关键字高亮显示，符合预期      & 通过   \\
+    %         \addlinespace
+    %         快捷键响应   & 使用常用快捷键（如Ctrl+S保存）       & 按下Ctrl+S          & 触发保存动作，编辑器无卡顿     & 通过   \\
+    %         \bottomrule
+    %     \end{tabular}
+    % \end{table}
+
+    % \subsection{Markdown渲染}
+    % Markdown渲染模块测试包含标题、列表、代码块等格式的实时预览效果，如\ref{tab:test-markdown}表所示。
+
+    % \begin{table}[htbp]
+    %     \caption{集成测试用例：Markdown渲染}
+    %     \label{tab:test-markdown}
+    %     \centering
+    %     \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+    %         \toprule
+    %         用例名称   & 输入项描述         & 测试数据              & 预期结果          & 是否通过 \\
+    %         \midrule
+    %         标题渲染   & 输入多级标题语法      & \#一级、\#\#二级       & 右侧预览呈现对应层级标题  & 通过   \\
+    %         \addlinespace
+    %         列表渲染   & 输入有序/无序列表     & -项目1、1.步骤1        & 预览显示正确项目符号和编号 & 通过   \\
+    %         \addlinespace
+    %         代码块渲染  & 输入围栏代码块       & \`\`\`js...\`\`\` & 预览区代码高亮，格式保留  & 通过   \\
+    %         \addlinespace
+    %         混合内容渲染 & 同时包含标题、列表、代码块 & 组合上述多种元素          & 所有元素样式正确，无错乱  & 通过   \\
+    %         \bottomrule
+    %     \end{tabular}
+    % \end{table}
+
+    \subsection{多人实时协作编辑}
+    多人实时协作编辑模块利用多开浏览器测试多用户同时编辑时的内容同步与冲突处理能力，如\ref{tab:test-collab}表所示。
+
+    \begin{table}[htbp]
+        \caption{集成测试用例：多人实时协作编辑}
+        \label{tab:test-collab}
+        \centering
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+            \toprule
+            用例名称   & 输入项描述          & 测试数据             & 预期结果          & 是否通过 \\
+            \midrule
+            内容实时同步 & 用户A、B同时编辑同一幻灯片 & A输入文字，B观察编辑区     & B的编辑区实时显示A的修改 & 通过   \\
+            \addlinespace
+            冲突处理   & 两人同时修改同一段落     & A和B在相同位置分别输入不同内容 & 编辑器的内容一致      & 通过   \\
+            % \addlinespace
+            % 多用户编辑不丢失内容 & 3人及以上同时在不同区域编辑 & 3个浏览器同时添加段落      & 所有修改均被保留，无覆盖  & 通过   \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsection{版本管理与回滚}
+    版本管理与回滚模块测试保存版本、查看历史、对比差异和回滚等操作，如\ref{tab:test-version}表所示。
+
+    \begin{table}[htbp]
+        \caption{集成测试用例：版本管理与回滚}
+        \label{tab:test-version}
+        \centering
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+            \toprule
+            用例名称    & 输入项描述        & 测试数据            & 预期结果              & 是否通过 \\
+            \midrule
+            保存新版本   & 编辑内容后提交版本    & 修改内容，输入提交信息“v1” & 生成新版本号，历史列表中出现该版本 & 通过   \\
+            \addlinespace
+            查看历史记录  & 打开版本列表       & 点击版本历史          & 显示所有提交信息、时间       & 通过   \\
+            \addlinespace
+            对比版本差异  & 选择两个版本进行差异比较 & 选择v1和v2         & 正确可视化内容的差异        & 通过   \\
+            \addlinespace
+            回滚到指定版本 & 执行回滚到旧版本     & 对v1执行回滚         & 当前内容恢复为v1状态       & 通过   \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsection{评论功能}
+    评论功能模块测试在幻灯片下添加评论和回复评论，如\ref{tab:test-comment}表所示。
+
+    \begin{table}[htbp]
+        \caption{集成测试用例：评论功能}
+        \label{tab:test-comment}
+        \centering
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+            \toprule
+            用例名称 & 输入项描述       & 测试数据               & 预期结果          & 是否通过 \\
+            \midrule
+            添加评论 & 用户在幻灯片下发表评论 & 输入文本“寄存器部分能不能具体一点” & 评论区能显示新增的评论内容 & 通过   \\
+            \addlinespace
+            回复评论 & 对已有评论进行回复   & 点击某评论回复，输入“可以的”    & 回复嵌套显示，引用关系正确 & 通过   \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsection{权限控制}
+    权限控制模块测试owner、editor、commenter、viewer四种角色进行操作时是否能正常地校验权限，如\ref{tab:test-permission}表所示。
+
+    \begin{table}[htbp]
+        \caption{集成测试用例：权限控制}
+        \label{tab:test-permission}
+        \centering
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+            \toprule
+            用例名称        & 输入项描述                & 测试数据            & 预期结果              & 是否通过 \\
+            \midrule
+            owner权限     & owner角色执行管理、删除等操作    & owner删除幻灯片      & 操作成功              & 通过   \\
+            \addlinespace
+            editor权限    & editor角色编辑内容但无管理权限   & editor尝试删除幻灯片   & 操作被拒绝，并提示用户无权操作   & 通过   \\
+            \addlinespace
+            commenter权限 & commenter可查看和评论，不可编辑 & commenter尝试编辑内容 & 编辑区只读，无法编辑        & 通过   \\
+            \addlinespace
+            viewer权限    & viewer仅可查看和历史，不可评论   & viewer尝试输入评论    & 评论请求被拦截，并提示用户无法评论 & 通过   \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    % \subsection{AI辅助功能}
+    % AI辅助功能模块测试了内容生成、优化及Slidev语法合规性，如\ref{tab:test-ai}表所示。
+
+    % \begin{table}[htbp]
+    %     \caption{集成测试用例：AI辅助功能}
+    %     \label{tab:test-ai}
+    %     \centering
+    %     \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+    %         \toprule
+    %         用例名称       & 输入项描述       & 测试数据              & 预期结果              & 是否通过 \\
+    %         \midrule
+    %         AI内容生成     & 使用AI生成幻灯片大纲 & 输入主题“项目进度”        & 返回符合Slidev语法的内容片段 & 通过   \\
+    %         \addlinespace
+    %         AI内容优化     & 对已有内容进行润色   & 提交一段粗糙文本          & 返回优化后文本，逻辑通顺，语法正确 & 通过   \\
+    %         \addlinespace
+    %         Slidev语法合规 & 检查生成内容语法    & 生成内容中包含Slidev特有指令 & 指令正确，可被Slidev解析   & 通过   \\
+    %         \bottomrule
+    %     \end{tabular}
+    % \end{table}
+
+    % 为确保系统质量，对核心功能进行了集成测试。
+    % 测试重点验证了实时协作、权限管理、AI辅助和版本控制等关键模块的功能完整性。
+    % 测试结果表明，所有核心功能均正常运行，符合设计要求：
+    % \textbf{幻灯片创建与编辑模块}：可正常完成幻灯片的新建、标题修改、内容编辑、保存与删除操作，CodeMirror编辑器语法高亮正常，快捷键操作响应及时；
+    % \textbf{Markdown实时预览模块}：编辑器输入内容可实时同步至右侧预览区，Markdown格式（标题、列表、代码块等）渲染正确，无格式错乱；
+    % \textbf{多人实时协作编辑模块}：通过多浏览器标签页模拟多用户协作场景，实现编辑内容实时同步，可正常处理编辑冲突，保证内容不丢失、延迟控制在合理范围；
+    % \textbf{版本管理与回滚模块}：可正常保存版本、查看历史版本记录、对比不同版本差异，一键回滚功能可正常执行，版本数据无丢失；
+    % \textbf{评论与基础权限控制模块}：可对幻灯片内容添加评论、回复评论，角色权限（查看、编辑、评论）分配合理，功能执行正常；
+    % \textbf{AI辅助功能模块}：可正常使用AI辅助功能进行内容生成和优化，生成内容符合Slidev语法规范，响应延迟较低。
+
+    % 以上测试结果证明，系统能够满足用户对智能幻灯片协作平台的基本需求。
+\end{cuzchapter}
