@@ -169,16 +169,20 @@
         \centering
         \begin{tabular}{lll}
             \toprule
-            模块名称  & API 路径前缀            & 功能描述                    \\
+            模块名称     & API 路径前缀                             & 功能描述               \\
             \midrule
             % 认证接口  & /api/auth/*         & 用户登录、注册、令牌刷新等认证相关操作     \\
-            用户管理  & /api/users/*        & 用户信息查询、更新、密码重置等       \\
-            空间管理  & /api/slide-spaces/* & 幻灯片空间的创建、查询、更新等  \\
-            幻灯片管理 & /api/slides/*       & 幻灯片的创建、预览链接获取等 \\
-            幻灯片协作者管理 & /api/slides/:slideId/collaborators/*    & 幻灯片的协作者的权限管理 \\
-            版本控制  & /api/versions/*     & 版本历史查询、版本创建、内容回滚等       \\
-            评论系统  & /api/comments/*     & 评论的增删改查及树形结构管理          \\
-            AI 辅助 & /api/ai/*           & AI 内容生成、图像生成、智能建议等    \\
+            用户管理     & /api/users/*                         & 用户信息查询、更新、密码重置等    \\
+            空间管理     & /api/slide-spaces/*                  & 幻灯片空间的创建、查询、更新等    \\
+            代码片段     & /api/snippets/*                      & 代码片段的创建、查询、更新等     \\
+            幻灯片管理    & /api/slides/*                        & 幻灯片的创建、预览链接获取等     \\
+            幻灯片协作者管理 & /api/slides/:slideId/collaborators/* & 幻灯片的协作者的权限管理       \\
+            版本控制     & /api/versions/*                      & 版本历史查询、版本创建、内容回滚等  \\
+            评论系统     & /api/comments/*                      & 评论的增删改查及树形结构管理     \\
+            AI 辅助    & /api/ai/*                            & AI 内容生成、图像生成、智能建议等 \\
+            主题管理     & /api/theme/*                         & 幻灯片主题的查询、更新等       \\
+            插件管理     & /api/plugins/*                       & 幻灯片插件的查询、更新等       \\
+            注册码管理    & /api/registration-codes/*            & 注册的生成、查询等          \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -205,7 +209,9 @@
     % \textbf{数据持久化}：定期将协作文档内容保存到数据库。
 
     \subsection{安全与认证}
-    平台通过JWT认证，使用自定义class-validator校验请求参数，防止恶意输入，利用bcrypt算法加密用户密码。
+    平台通过JWT对用户进行认证，并设置合理的过期时间。
+    使用class-validator校验请求参数，校验参数长度、数据类型、数据内容格式等，防止恶意输入。
+    利用bcrypt算法加密用户密码。
 
     % 后端包括多层安全防护：
     % \textbf{JWT认证}：用JSON Web Token进行用户身份认证；
@@ -217,7 +223,10 @@
 
     \subsection{数据库选型}
 
-    用户、幻灯片和权限等数据结构较为明确，适合用MySQL这样的关系型数据库管理，不仅管理方便，而且运行速度快、安全可靠性强\cite{lan2004mysql,hu2015mysql}。
+    用户、幻灯片和权限等表之间的关联关系较为清晰，存在明确的“多对多”、“一对多”等实体关系，
+    适合用MySQL这样的关系型数据库管理，
+    不仅管理方便，
+    而且运行速度快、安全可靠性强\cite{lan2004mysql,hu2015mysql}。
     % 主要有以下方面的考量：
     % \textbf{关系型数据}：用户、幻灯片、权限等数据具有明确的关系结构，适合使用关系型数据库；
     % \textbf{事务支持}：MySQL提供完整的事务支持，确保数据的一致性和完整性；
@@ -256,7 +265,13 @@
 
     \subsubsection{slides 幻灯片表}
 
-    幻灯片表存储每个幻灯片文档的标题、内容与状态信息。\texttt{slides}表通过\texttt{parent\_id}字段自关联，这样，空间内的文档就可以支持任意深度的树形结构，如表\ref{tab:slides} 所示。
+    幻灯片表存储每个幻灯片文档的标题、内容与状态信息。
+    \texttt{slides}表通过\texttt{parent\_id}字段自关联，
+    这样，空间内的文档就可以支持任意深度的树形结构。
+    并且由于每个幻灯片空间内的文档只能由该空间所有者创建，
+    表\texttt{slides}的\texttt{created\_by}字段一定和\texttt{slide\_spaces}表的\texttt{owner\_id}字段相同，
+    将\texttt{created\_by}作为冗余字段，可以在部分接口做查询时候减少内联接，增加查询速度。
+    如表\ref{tab:slides} 所示。
 
     \begin{table}[htbp]
         \caption{slides 幻灯片表结构}
@@ -465,29 +480,25 @@
     后端的Hocuspocus服务器负责接收这些更新，并通过CRDT算法自动合并来自不同用户的并发编辑，
     同时持久化到数据库，
     保证文档在各个用户之间是一致的。
-    后端Hocuspocus服务器主要通过\ref{code:Hocuspocus}中的函数实现后端Webocket的权限校验、文档加载与持久化。
-
-    \begin{listing}
+    后端Hocuspocus服务器主要通过代码段\ref{code:Hocuspocus}中的函数实现后端Webocket的权限校验、文档加载与持久化，
+    代码中的注释分别说明了每个钩子内部所实现的功能。
+    \begin{listing}[htp]
         \caption{Hocuspocus提供的生命周期钩子以及实现的功能}
         \label{code:Hocuspocus}
         \begin{jscode}
-   this.server = new Server({
-      // 文档初始化钩子：初始化时，从数据库中加载文档
-      async onLoadDocument(data: onLoadDocumentPayload) {
-      },
-      // 文档存储钩子：文档编辑操作合并后，持久化到数据库
-      async onStoreDocument(data: onStoreDocumentPayload) {
-      },
-      // 认证钩子：连接前，验证 JWT Token，并校验是否有对应权限
-      async onAuthenticate(data: onAuthenticatePayload) {
-      },
-      // 连接钩子
-      async onConnect(data: onConnectPayload) {
-      },
-      // 断开连接钩子
-      async onDisconnect(data: onDisconnectPayload) {
-      },
-    });
+            this.server = new Server({
+                    // 文档初始化钩子：初始化时，从数据库中加载文档
+                    async onLoadDocument(data: onLoadDocumentPayload) {},
+                    // 文档存储钩子：文档编辑操作合并后，持久化到数据库
+                    async onStoreDocument(data: onStoreDocumentPayload) {},
+                    // 认证钩子：连接前，验证JWT Token，并校验是否有对应权限
+                    async onAuthenticate(data: onAuthenticatePayload) {},
+                    // 连接钩子：记录日志
+                    async onConnect(data: onConnectPayload) {},
+                    // 断开连接钩子：记录日志
+                    async onDisconnect(data: onDisconnectPayload) {},
+                })
+
         \end{jscode}
     \end{listing}
     % 例如当多个用户同时在同一位置插入文本时，Yjs 会根据预定义的顺序规则（通常结合插入位置、用户标识和时间戳）确定最终结果，保证所有客户端最终收敛到完全一致的状态，为用户带来自然流畅的实时协作体验。
@@ -577,8 +588,6 @@
 
     \subsubsection{文档协同流程图}
 
-
-
     本平台的文档协同流程可以用分支结构清晰地表示出来，能够依据文档的协作状态选择独立编辑模式还是实时协作模式。具体流程详见图\ref{fig:collaboration-flowchart}。
 
     \begin{figure}[htbp]
@@ -662,7 +671,8 @@
     % 本平台通过智能化的协作状态判断与模式选择机制，在确保功能完整性的基础上，优化了系统性能与用户体验。这一设计实现了高效且灵活的文档协同编辑解决方案。
 
     \subsection{权限管理系统}
-    权限管理系统采用RBAC模型，定义了owner、editor、commenter、viewer四种角色，如表\ref{tab:slide-permissions}所示。
+    权限管理系统采用RBAC模型，定义了owner、editor、commenter、viewer四种角色，
+    其对应的权限如表\ref{tab:slide-permissions}所示。
     \texttt{slide\_user\_roles}表记录用户在特定幻灯片中的角色和权限，
     加载文档时，会校验用户权限，阻止未授权操作。
     文档可以设置为公开或私有，当文档设置为私有时，必须要viewer及以上权限的角色才能够访问文档。
@@ -683,14 +693,72 @@
     \end{table}
     % 文档公开和私有两种设置，用来控制文档的访问范围。
 
-    在Nest
-  
+    后端通过NestJS Guard机制实现权限校验，先将\texttt{SlidePermissionGuard}全局注入到NestJS，由
+    \texttt{@RequirePermission()}装饰器触发，未设置该装饰器的接口则会直接放行，
+    其守卫的核心权限判断实现如代码段\ref{code:validatePermission}所示，
+    从上下文中获取当前请求的用户角色，并与装饰器中所声明需要的权限相比对，以此实现权限校验。
+    \begin{listing}[htbp]
+        \caption{权限验证核心逻辑}
+        \label{code:validatePermission}
+        \begin{jscode}
+            private validatePermission(
+            actualRole: SlideRole | null,
+            requiredPermission: AuthPermissions | undefined,
+            ): boolean {
+                    // 如果需要权限检查
+                    if (requiredPermission && actualRole) {
+                            // PERMISSIONS是由上文中Slide角色权限对照表映射的字典
+                            const rolePermissions = PERMISSIONS[actualRole];
+                            if (rolePermissions.includes(requiredPermission as string)) {
+                                    return true;
+                                }
+                            throw new ForbiddenException('您不符合权限要求');
+                        }
+                    throw new ForbiddenException('您没有权限执行此操作');
+                }
+        \end{jscode}
+    \end{listing}
+
+   而在需要权限校验的接口中，只需按代码段\ref{code:api-persmission-example}所示声明即可。
+%    而在需要权限校验的接口中，只需按代码段\ref{code:api-persmission-example}所示方式，在对应接口上的装饰器中声明所需要的权限即可。
+    \begin{listing}
+        \caption{@RequirePermission装饰器使用示例}
+        \label{code:api-persmission-example}
+        \begin{jscode}
+        @RequirePermission(AuthPermissions.READ)
+        @Get('slides/detail/:id')
+        async findOne(
+            id: number,
+        ){
+            //具体实现略
+        }
+        \end{jscode}
+    \end{listing}
     \subsection{AI辅助功能}
 
     本平台集成了通义千问等大语言模型API，能够生成文本和图像，不仅支持多轮对话和大纲生成，也支持编辑器内联智能提示。
     平台将Slidev相关文档加入AI的知识库，让AI生成的内容更合适Slidev语法。
     % 最后对AI生成的内容做格式化和语法检查，确保它符合Slidev规范。
-
+\begin{listing}
+    \caption{生成AI大纲核心代码}
+    \begin{jscode}
+    async *streamGenerateOutline(
+        dto: GenerateOutlineDto, 
+        signal?: AbortSignal): AsyncIterable<string> {
+    const stream = await this.client.chat.completions.create({
+      model: this.model,
+      stream: true,
+      messages: [
+        // 根据Slidev相关文档构建提示词
+        { role: 'system', content: this.buildOutlineSystemPromptBySlideDocs(dto) },
+        // 根据用户需求（选用的主题、生成的页数）以及用户上传的参考文档构建提示词
+        { role: 'user', content: this.buildOutlineUserPromptByReferenceDocsAndRequirement(dto)},
+      ],
+    });
+    yield* this.streamChunks(stream, signal, 'Generate-outline');
+  }
+    \end{jscode}
+\end{listing}
     \subsection{版本控制系统}
 
     平台会定期保存文档内容到数据库，防止数据丢失，
@@ -711,7 +779,6 @@
     % AI辅助功能可用于内容生成和优化，生成内容符合Slidev语法，响应延迟在可以接受的程度。
 
     % 以上测试结果说明，系统能够满足用户对智能幻灯片协作平台的基本需求。
-   
 
     % \section{小结}\label{sec:design-summary}
 
