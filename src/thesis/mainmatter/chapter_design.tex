@@ -470,9 +470,9 @@
 
     \section{核心功能实现}\label{sec:core-features}
 
-    \subsection{实时协作编辑功能}
+    \subsection{幻灯片文档创作}
 
-    \subsubsection{具体实现方案}
+    \subsubsection{实时协作具体实现}
     本平台将幻灯片文档的内容定义为Yjs中的Y.Text类型，并与CodeMirror编辑器绑定，
     当用户在CodeMirror中编辑内容时，内容的变更会立即转换为Yjs的更新操作，
     % 同时，来自其他用户的远程更新也能实时反映到编辑器界面。
@@ -586,78 +586,88 @@
 
     % CRDT算法的数学理论保障了系统的正确性与可靠性，从而为本平台提供了稳定且高效的实时协作体验 。
 
-    \subsubsection{文档协同流程图}
+    \subsubsection{文档编辑流程}
 
-    本平台的文档协同流程可以用分支结构清晰地表示出来，能够依据文档的协作状态选择独立编辑模式还是实时协作模式。具体流程详见图\ref{fig:collaboration-flowchart}。
+    本平台的文档编辑流程可以用分支结构清晰地表示出来，能够依据文档的协作状态选择独立编辑模式还是实时协作模式。
+    独立模式下，不需要建立Websocket连接，会定期自动保存内容，也可以手动保存或是建立版本，
+    而在实时协作模式，需要按照上文所述的步骤，与后端建立Websocket连接。
+    具体流程详见图\ref{fig:collaboration-flowchart}。
+    % 本平台的文档协同流程可以用分支结构清晰地表示出来，能够依据文档的协作状态选择独立编辑模式还是实时协作模式。具体流程详见图\ref{fig:collaboration-flowchart}。
 
     \begin{figure}[htbp]
         \centering
-        \begin{tikzpicture}[
-                node distance=1.0cm and 1.8cm,
-                startstop/.style={rectangle, rounded corners, draw, fill=red!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
-                process/.style={rectangle, draw, fill=blue!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
-                decision/.style={rectangle, draw, fill=green!10, align=center, minimum width=2.2cm, minimum height=1.0cm, font=\scriptsize, text width=1.8cm},
-                io/.style={rectangle, draw, fill=yellow!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
-                connector/.style={circle, draw, fill=orange!10, align=center, minimum width=0.7cm, minimum height=0.7cm, font=\scriptsize},
-                arrow/.style={->, >=stealth, thick},
-                label/.style={font=\scriptsize},
-                scale=0.75
-            ]
-
-            % 定义节点
-            \node[startstop] (start) {用户打开文档};
-            \node[io, below=of start] (load) {加载文档内容\\与权限信息};
-            \node[decision, below=of load, yshift=-0.3cm] (check) {文档有\\协作者？};
-
-            % 左侧分支：无协作者（独立模式）
-            \node[process, left=of check, xshift=-1.2cm] (localEdit) {直接本地编辑\\使用CodeMirror};
-            \node[process, below=of localEdit, yshift=-1.2cm] (localSave) {定期保存到\\后端数据库};
-            \node[connector, below=of localSave, yshift=-1.2cm] (localEnd) {结束};
-
-            % 右侧分支：有协作者（协同模式）
-            \node[process, right=of check, xshift=1.2cm] (initWs) {初始化WebSocket\\连接Hocuspocus};
-            \node[process, below=of initWs, yshift=-0.5cm] (initYjs) {创建Yjs文档实例\\绑定CodeMirror};
-            \node[process, below=of initYjs, yshift=-0.5cm] (sync) {同步文档状态\\使用CRDT算法};
-            \node[process, below=of sync, yshift=-0.5cm] (edit) {协同编辑\\实时冲突解决};
-            \node[process, below=of edit, yshift=-0.5cm] (persist) {保存到\\后端数据库};
-            \node[connector, below=of persist, yshift=-0.5cm] (collabEnd) {结束};
-
-            % 连接线
-            \draw[arrow] (start) -- (load);
-            \draw[arrow] (load) -- (check);
-
-            % 左侧分支连接
-            \draw[arrow] (check) -- node[above, label] {否} (localEdit);
-            \draw[arrow] (localEdit) -- (localSave);
-            \draw[arrow] (localSave) -- (localEnd);
-
-            % 右侧分支连接
-            \draw[arrow] (check) -- node[above, label] {是} (initWs);
-            \draw[arrow] (initWs) -- (initYjs);
-            \draw[arrow] (initYjs) -- (sync);
-            \draw[arrow] (sync) -- (edit);
-            \draw[arrow] (edit) -- (persist);
-            \draw[arrow] (persist) -- (collabEnd);
-
-            % 添加虚线框区分模式
-            % 独立编辑模式虚线框
-            \coordinate (localBoxNW) at ($(localEdit.north west)+(-0.3,0.3)$);
-            \coordinate (localBoxSE) at ($(localSave.south east |- localEnd.south)+(0.3,-0.3)$);
-            \draw[dashed, gray, thick] (localBoxNW) rectangle (localBoxSE);
-            \coordinate (localLabelPos) at ($(localBoxNW)!0.5!(localBoxSE |- localBoxNW)$);
-            \node[gray, above=0.2cm] at (localLabelPos) {\textbf{独立编辑模式}};
-
-            % 实时协作模式虚线框
-            \coordinate (collabBoxNW) at ($(initWs.north west)+(-0.3,0.3)$);
-            \coordinate (collabBoxSE) at ($(persist.south east |- collabEnd.south)+(0.3,-0.3)$);
-            \draw[dashed, gray, thick] (collabBoxNW) rectangle (collabBoxSE);
-            \coordinate (collabLabelPos) at ($(collabBoxNW)!0.5!(collabBoxSE |- collabBoxNW)$);
-            \node[gray, above=0.2cm] at (collabLabelPos) {\textbf{实时协作模式}};
-
-        \end{tikzpicture}
-        \caption{智能幻灯片协作平台文档协同流程图}
+        \caption{文档编辑流程图}
         \label{fig:collaboration-flowchart}
+        \includegraphics[width=0.9\textwidth]{figures/drawio/文档编辑流程图.drawio.png}
     \end{figure}
+    % \begin{figure}[htbp]
+    %     \centering
+    %     \begin{tikzpicture}[
+    %             node distance=1.0cm and 1.8cm,
+    %             startstop/.style={circle, rounded corners, draw, fill=red!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
+    %             process/.style={rectangle, draw, fill=blue!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
+    %             decision/.style={diamond, draw, fill=green!10, align=center, minimum width=2.2cm, minimum height=1.0cm, font=\scriptsize, text width=1.8cm},
+    %             io/.style={rectangle, draw, fill=yellow!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
+    %             connector/.style={circle, draw, fill=orange!10, align=center, minimum width=0.7cm, minimum height=0.7cm, font=\scriptsize},
+    %             arrow/.style={->, >=stealth, thick},
+    %             label/.style={font=\scriptsize},
+    %             scale=0.75
+    %         ]
+
+    %         % 定义节点
+    %         \node[startstop] (start) {用户打开文档};
+    %         \node[io, below=of start] (load) {加载文档内容\\与权限信息};
+    %         \node[decision, below=of load, yshift=-0.3cm] (check) {文档有\\协作者？};
+
+    %         % 左侧分支：无协作者（独立模式）
+    %         \node[process, left=of check, xshift=-1.2cm] (localEdit) {直接本地编辑\\使用CodeMirror};
+    %         \node[process, below=of localEdit, yshift=-1.2cm] (localSave) {定期保存到\\后端数据库};
+    %         \node[connector, below=of localSave, yshift=-1.2cm] (localEnd) {结束};
+
+    %         % 右侧分支：有协作者（协同模式）
+    %         \node[process, right=of check, xshift=1.2cm] (initWs) {初始化WebSocket\\连接Hocuspocus};
+    %         \node[process, below=of initWs, yshift=-0.5cm] (initYjs) {创建Yjs文档实例\\绑定CodeMirror};
+    %         \node[process, below=of initYjs, yshift=-0.5cm] (sync) {同步文档状态\\使用CRDT算法};
+    %         \node[process, below=of sync, yshift=-0.5cm] (edit) {协同编辑\\实时冲突解决};
+    %         \node[process, below=of edit, yshift=-0.5cm] (persist) {保存到\\后端数据库};
+    %         \node[connector, below=of persist, yshift=-0.5cm] (collabEnd) {结束};
+
+    %         % 连接线
+    %         \draw[arrow] (start) -- (load);
+    %         \draw[arrow] (load) -- (check);
+
+    %         % 左侧分支连接
+    %         \draw[arrow] (check) -- node[above, label] {否} (localEdit);
+    %         \draw[arrow] (localEdit) -- (localSave);
+    %         \draw[arrow] (localSave) -- (localEnd);
+
+    %         % 右侧分支连接
+    %         \draw[arrow] (check) -- node[above, label] {是} (initWs);
+    %         \draw[arrow] (initWs) -- (initYjs);
+    %         \draw[arrow] (initYjs) -- (sync);
+    %         \draw[arrow] (sync) -- (edit);
+    %         \draw[arrow] (edit) -- (persist);
+    %         \draw[arrow] (persist) -- (collabEnd);
+
+    %         % 添加虚线框区分模式
+    %         % 独立编辑模式虚线框
+    %         \coordinate (localBoxNW) at ($(localEdit.north west)+(-0.3,0.3)$);
+    %         \coordinate (localBoxSE) at ($(localSave.south east |- localEnd.south)+(0.3,-0.3)$);
+    %         \draw[dashed, gray, thick] (localBoxNW) rectangle (localBoxSE);
+    %         \coordinate (localLabelPos) at ($(localBoxNW)!0.5!(localBoxSE |- localBoxNW)$);
+    %         \node[gray, above=0.2cm] at (localLabelPos) {\textbf{独立编辑模式}};
+
+    %         % 实时协作模式虚线框
+    %         \coordinate (collabBoxNW) at ($(initWs.north west)+(-0.3,0.3)$);
+    %         \coordinate (collabBoxSE) at ($(persist.south east |- collabEnd.south)+(0.3,-0.3)$);
+    %         \draw[dashed, gray, thick] (collabBoxNW) rectangle (collabBoxSE);
+    %         \coordinate (collabLabelPos) at ($(collabBoxNW)!0.5!(collabBoxSE |- collabBoxNW)$);
+    %         \node[gray, above=0.2cm] at (collabLabelPos) {\textbf{实时协作模式}};
+
+    %     \end{tikzpicture}
+    %     \caption{智能幻灯片协作平台文档协同流程图}
+    %     \label{fig:collaboration-flowchart}
+    % \end{figure}
 
     % 流程的关键决策依据是文档是否存在协作者，具体实现逻辑如下所述：
 
@@ -696,7 +706,7 @@
     后端通过NestJS Guard机制实现权限校验，先将\texttt{SlidePermissionGuard}全局注入到NestJS，由
     \texttt{@RequirePermission()}装饰器触发，未设置该装饰器的接口则会直接放行，
     其守卫的核心权限判断实现如代码段\ref{code:validatePermission}所示，
-    从上下文中获取当前请求的用户角色，并与装饰器中所声明需要的权限相比对，以此实现权限校验。
+    从上下文中获取当前请求的用户角色，并与装饰器中所声明需要的权限相比对，实现权限校验。
     \begin{listing}[htbp]
         \caption{权限验证核心逻辑}
         \label{code:validatePermission}
@@ -719,31 +729,58 @@
         \end{jscode}
     \end{listing}
 
-   而在需要权限校验的接口中，只需按代码段\ref{code:api-persmission-example}所示声明即可。
-%    而在需要权限校验的接口中，只需按代码段\ref{code:api-persmission-example}所示方式，在对应接口上的装饰器中声明所需要的权限即可。
+    而在需要权限校验的接口中，只需按代码段\ref{code:api-persmission-example}所示声明即可。
+    %    而在需要权限校验的接口中，只需按代码段\ref{code:api-persmission-example}所示方式，在对应接口上的装饰器中声明所需要的权限即可。
     \begin{listing}
         \caption{@RequirePermission装饰器使用示例}
         \label{code:api-persmission-example}
         \begin{jscode}
-        @RequirePermission(AuthPermissions.READ)
-        @Get('slides/detail/:id')
-        async findOne(
+            @RequirePermission(AuthPermissions.READ)
+            @Get('slides/detail/:id')
+            async findOne(
             id: number,
-        ){
-            //具体实现略
-        }
+            ){
+                    //具体实现略
+                }
         \end{jscode}
     \end{listing}
-    \subsection{AI辅助功能}
+   \subsection{AI辅助功能}
 
-    本平台集成了通义千问等大语言模型API，能够生成文本和图像，不仅支持多轮对话和大纲生成，也支持编辑器内联智能提示。
-    平台将Slidev相关文档加入AI的知识库，让AI生成的内容更合适Slidev语法。
-    % 最后对AI生成的内容做格式化和语法检查，确保它符合Slidev规范。
-\begin{listing}
-    \caption{生成AI大纲核心代码}
+本平台深度集成通义千问大语言模型API，能够高效生成文本内容和图像素材。
+不仅支持多轮对话、大纲生成，还支持编辑器内联编辑，
+极大提升了Slidev演示文稿的创作效率。
+平台特别将Slidev官方文档、主题模板语法规范以及最佳实践案例加入到AI的知识库中，
+使AI生成的内容天然符合Slidev的Markdown语法、前端组件使用规范以及主题样式要求。
+
+\subsubsection{大纲智能生成}
+
+% 大纲生成是平台AI辅助的核心入口之一，流程如图\ref{fig:ai-generate-flowchart}所示：
+
+% \begin{figure}[htbp]
+%     \centering
+%     \includegraphics[width=0.5\textwidth]{figures/drawio/AI大纲流程图.drawio.png}
+%     \caption{大纲生成}
+%     \label{fig:ai-generate-flowchart}
+% \end{figure}
+% \begin{enumerate}
+%     \item 用户输入需求：选择主题风格、期望页数、演讲主题、目标受众等关键信息。
+%     \item 可选上传参考文档：平台解析用户上传的PDF、Word或Markdown参考材料，提取关键内容。
+%     \item 系统构建提示词：
+%     \begin{itemize}
+%         \item 系统提示（System Prompt）：包含Slidev语法规范、结构化演示文稿最佳实践、主题适配要求等。
+%         \item 用户提示（User Prompt）：融合用户需求与参考文档提取的内容。
+%     \end{itemize}
+%     \item 调用大模型流式生成：采用流式输出（Streaming），实时返回大纲结构·。
+%     \item 后处理：平台对生成的大纲进行结构校验、幻灯片页数控制，并可一键转换为Slidev Markdown格式。
+% \end{enumerate}
+具体实现如代码段\ref{code:ai-outline-generate}所示：
+
+\begin{listing}[htpb]
+    \caption{大模型生成大纲核心代码}
+    \label{code:ai-outline-generate}
     \begin{jscode}
     async *streamGenerateOutline(
-        dto: GenerateOutlineDto, 
+        dto: GenerateOutlineDto,
         signal?: AbortSignal): AsyncIterable<string> {
     const stream = await this.client.chat.completions.create({
       model: this.model,
@@ -756,9 +793,48 @@
       ],
     });
     yield* this.streamChunks(stream, signal, 'Generate-outline');
-  }
+    }
     \end{jscode}
 \end{listing}
+
+\subsubsection{文生图（Text-to-Image）}
+
+平台支持根据用户描述或幻灯片内容自动生成适配Slidev风格的图像，流程如下：
+
+\begin{enumerate}
+    \item 用户输入图像生成提示词（可结合当前幻灯片上下文自动增强）。
+    \item 平台调用DashScope API（通义千问图像模型，如qwen-image-plus）。
+    \item 创建异步图像生成任务。
+    \item 轮询任务状态，直至生成完成。
+    \item 将图像上传至OSS对象存储，返回可直接在Slidev中引用的URL。
+    \item 可选：生成多张变体供用户选择，或根据Slidev主题色调进行风格适配。
+\end{enumerate}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[options]{figures/drawio/AI生图流程图.drawio.png}
+% \end{figure}
+具体实现如代码段\ref{code:ai-image-generate}所示：
+
+\begin{listing}
+    \caption{大模型文生图核心代码}
+    \label{code:ai-image-generate}
+    \begin{jscode}
+    async generateImage(dto: GenerateImageDto): Promise<string> {
+    const apiKey = this.configService.get<string>('DASHSCOPE_API_KEY');
+    const imageModel = this.configService.get<string>('QWEN_IMAGE_MODEL') || 'qwen-image-plus';
+    if (!apiKey) throw new Error('DASHSCOPE_API_KEY is not configured');
+    
+    // 创建图像生成任务
+    const taskId = await this.createImageTask(apiKey, imageModel, dto.prompt, dto.size);
+    
+    // 轮询获取图像生成结果，并存储到OSS，返回图像URL
+    return this.pollImageTask(taskId, apiKey);
+    }
+    \end{jscode}
+\end{listing}
+
+
     \subsection{版本控制系统}
 
     平台会定期保存文档内容到数据库，防止数据丢失，
