@@ -273,16 +273,16 @@
 
     \subsection{重点表结构详解}
 
-    本节主要介绍\texttt{slides}（幻灯片表）与\texttt{slide\_comments}（评论表）两张表的字段设计。
+    本节主要介绍slides（幻灯片表）与slide\_comments（评论表）两张表的字段设计。
 
     \subsubsection{slides 幻灯片表}
 
     幻灯片表存储每个幻灯片文档的标题、内容与状态信息。
-    \texttt{slides}表通过\texttt{parent\_id}字段自关联，
+    slides表通过parent\_id字段自关联，
     这样，空间内的文档就可以支持任意深度的树形结构。
     并且由于每个幻灯片空间内的文档只能由该空间所有者创建，
-    表\texttt{slides}的\texttt{created\_by}字段一定和\texttt{slide\_spaces}表的\texttt{owner\_id}字段相同，
-    将\texttt{created\_by}作为冗余字段，可以在部分接口做查询时候减少内联接，增加查询速度。
+    表slides的created\_by字段一定和slide\_spaces表的owner\_id字段相同，
+    将created\_by作为冗余字段，可以在部分接口做查询时候减少内联接，增加查询速度。
     如表\ref{tab:slides} 所示。
 
     \begin{table}[htbp]
@@ -309,13 +309,13 @@
         \end{tabular}
     \end{table}
 
-    % \texttt{parent\_id}是文档的核心字段，自关联到同表的\texttt{id}，实现任意深度的树形结构；
-    % % 根文档的 \texttt{parent\_id} 为 \texttt{NULL}。
+    % parent\_id是文档的核心字段，自关联到同表的id，实现任意深度的树形结构；
+    % % 根文档的 parent\_id 为 NULL。
     % % 用户可以通过拖拽来调整文档在目录树的位置，而这种变化
     % % 平台支持用户通过拖拽方式调整文档在目录树中的位置，即节点的父子关系可动态变更，
-    % % 因此 \texttt{slides} 表仅使用邻接表而不引入物化路径。
-    % \texttt{allow\_comment} 与 \texttt{is\_public} 字段用来控制文档的相关权限，
-    % \texttt{is\_build} 与 \texttt{preview\_url} 字段分别表示文档是否构建以及构建后的url。
+    % % 因此 slides 表仅使用邻接表而不引入物化路径。
+    % allow\_comment 与 is\_public 字段用来控制文档的相关权限，
+    % is\_build 与 preview\_url 字段分别表示文档是否构建以及构建后的url。
 
     \subsubsection{slide\_comments 评论表}
 
@@ -341,24 +341,24 @@
         \end{tabular}
     \end{table}
 
-    % \textbf{reply\_id}：\texttt{reply\_id}字段指向同表中父评论的\texttt{id}。
-    % 顶层评论的\texttt{reply\_id}为\texttt{NULL}，
-    % 子评论的\texttt{reply\_id}指向其直接相邻的父评论。
+    % \textbf{reply\_id}：reply\_id字段指向同表中父评论的id。
+    % 顶层评论的reply\_id为NULL，
+    % 子评论的reply\_id指向其直接相邻的父评论。
     % % 邻接表写入成本低，插入新评论只需设置父节点引用，无需修改其他记录，适合高频评论写入场景。
-    % \textbf{物化路径（path）}：\texttt{path}字段存储从根节点到当前节点的完整路径字符串，
-    % 如\texttt{1-5-12}。
-    % 我们可以使用如\texttt{SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'}的SQL查询语句，一次性获取任意评论节点下的所有子孙评论，不需要递归查询；
-    % 删除某条评论及其所有回复时同样也只需要一条如\texttt{DELETE FROM slide\_comments WHERE path LIKE '1-5-\%'}的SQL语句，
+    % \textbf{物化路径（path）}：path字段存储从根节点到当前节点的完整路径字符串，
+    % 如1-5-12。
+    % 我们可以使用如SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'的SQL查询语句，一次性获取任意评论节点下的所有子孙评论，不需要递归查询；
+    % 删除某条评论及其所有回复时同样也只需要一条如DELETE FROM slide\_comments WHERE path LIKE '1-5-\%'的SQL语句，
     % 不需要递归删除。
     % \textbf{权限联动控制}：
-    % 评论功能受双重权限约束。\texttt{slides} 表中的 \texttt{allow\_comment} 字段由幻灯片所有者控制；
-    % 用户角色须为 \texttt{commenter} 及以上级别（\texttt{commenter}、\texttt{editor}、\texttt{owner}）方可发表评论，\texttt{viewer} 角色仅有只读权限。
+    % 评论功能受双重权限约束。slides 表中的 allow\_comment 字段由幻灯片所有者控制；
+    % 用户角色须为 commenter 及以上级别（commenter、editor、owner）方可发表评论，viewer 角色仅有只读权限。
 
     \subsubsection{两表设计思路对比}
 
-    \texttt{slides}与\texttt{slide\_comments}都采用树形结构来组织数据，不过它们在节点移动和删除上有显而易见的差别。
+    slides与slide\_comments都采用树形结构来组织数据，不过它们在节点移动和删除上有显而易见的差别。
     两者在存储策略上也完全不同，具体对比可见表 \ref{tab:design-contrast}。
-    % \texttt{slides} 与 \texttt{slide\_comments} 均以树形结构组织数据，但两者在节点移动、子树展开和删除三个维度上的使用模式截然不同，由此导致了存储策略的根本差异，具体如表 \ref{tab:design-contrast} 所示。
+    % slides 与 slide\_comments 均以树形结构组织数据，但两者在节点移动、子树展开和删除三个维度上的使用模式截然不同，由此导致了存储策略的根本差异，具体如表 \ref{tab:design-contrast} 所示。
 
     \begin{table}[htbp]
         \caption{两表树形存储策略对比}
@@ -370,29 +370,29 @@
             \midrule
             节点结构调整 & 需要（支持拖拽排序）           & 不需要（评论发出后不移动）             \\
             % 子树展开方式 & 逐级展开（按需加载） & 一次性展开整个讨论串 \\
-            子树删除方式 & 递归逐节点删除              & 单条 \texttt{LIKE} 前缀匹配删除   \\
-            树形存储模式 & 仅\texttt{parent\_id} & \texttt{reply\_id} + 物化路径 \\
+            子树删除方式 & 递归逐节点删除              & 单条 LIKE 前缀匹配删除   \\
+            树形存储模式 & 仅parent\_id & reply\_id + 物化路径 \\
             \bottomrule
         \end{tabular}
     \end{table}
 
     \textbf{为何文档树不使用物化路径？}
     本平台支持用户拖拽来改调整目录树的结构，此时，目录树结构可能会经常变动。
-    如果引入物化路径，那么我们每次移动一个节点，都需要更新该节点及其所有子孙节点的\texttt{path}字段，这样会大大增加计算复杂度。
-    因此，文档树这边只维护\texttt{parent\_id}字段，移动节点的时候只需要修改该记录的父节点引用。
+    如果引入物化路径，那么我们每次移动一个节点，都需要更新该节点及其所有子孙节点的path字段，这样会大大增加计算复杂度。
+    因此，文档树这边只维护parent\_id字段，移动节点的时候只需要修改该记录的父节点引用。
     删除文档节点时则通过递归遍历依次删除子节点。
 
     \textbf{为何评论树引入物化路径？}
-    \texttt{path}字段存储从根节点到当前节点的完整路径字符串，如\texttt{1-5-12}。
+    path字段存储从根节点到当前节点的完整路径字符串，如1-5-12。
     评论一旦发布，它的结构就不会再发生变化。
-    当新增一条评论时，只需要把父评论的\texttt{path}加上当前评论的\texttt{id}，就能得到该评论的\texttt{path}。
-    我们可以使用如\texttt{SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'}的SQL查询语句，一次性获取任意评论节点下的所有子孙评论，不需要递归查询；
-    删除某条评论及其所有回复时同样也只需要一条如\texttt{DELETE FROM slide\_comments WHERE path LIKE '1-5-\%'}的SQL语句，不需要递归删除。
+    当新增一条评论时，只需要把父评论的path加上当前评论的id，就能得到该评论的path。
+    我们可以使用如SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'的SQL查询语句，一次性获取任意评论节点下的所有子孙评论，不需要递归查询；
+    删除某条评论及其所有回复时同样也只需要一条如DELETE FROM slide\_comments WHERE path LIKE '1-5-\%'的SQL语句，不需要递归删除。
     % 另外，评论操作中最频繁的两个场景，正好是物化路径比较擅长的：
-    % 一个是展开某条评论下的所有回复，这时候只需要执行如\texttt{SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'}这样一条SQL查询，
+    % 一个是展开某条评论下的所有回复，这时候只需要执行如SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'这样一条SQL查询，
     % 就可以一次性把整个子树取出来，不用递归；另一个是删除某条评论以及它下面的所有子孙回复，
-    % 同样可以通过类似 \texttt{DELETE FROM slide\_comments WHERE path LIKE '1-5-\%'} 的单条语句搞定，
-    % 这样就避免了逐节点递归删除带来的多次数据库往返。物化路径用冗余一个 \texttt{path} 字段作为代价，
+    % 同样可以通过类似 DELETE FROM slide\_comments WHERE path LIKE '1-5-\%' 的单条语句搞定，
+    % 这样就避免了逐节点递归删除带来的多次数据库往返。物化路径用冗余一个 path 字段作为代价，
     % 把子树查询和删除的复杂度从递归所需的 $O(n)$ 次查询降到了常数次。在评论这种结构固定、子树操作又比较频繁的场景下，这个做法的性价比确实很高。
 
     \subsection{核心实体关系图}
@@ -573,16 +573,16 @@
     % 传统方法会产生冲突，
     % 而CRDT算法通过以下步骤解决：
     % \begin{enumerate}
-    %     \item 为"X"生成唯一ID：\texttt{(clientA, timestamp1)}；
-    %     \item 为"Y"生成唯一ID：\texttt{(clientB, timestamp2)}；
-    %     \item 基于ID排序确定最终顺序：若\texttt{clientA < clientB}，则最终文本为"XY"；否则为"YX"。
+    %     \item 为"X"生成唯一ID：(clientA, timestamp1)；
+    %     \item 为"Y"生成唯一ID：(clientB, timestamp2)；
+    %     \item 基于ID排序确定最终顺序：若clientA < clientB，则最终文本为"XY"；否则为"YX"。
     % \end{enumerate}
-    % % 第一步，为"X"生成唯一ID：\texttt{(clientA, timestamp1)}；
-    % % 第二步，为"Y"生成唯一ID：\texttt{(clientB, timestamp2)}；
-    % % 第三步，基于ID排序确定最终顺序：若\texttt{clientA < clientB}，则最终文本为"XY"；否则为"YX"。
-    % % 第一步，为"X"生成唯一ID：\texttt{(clientA, timestamp1)}；
-    % % 第二步，为"Y"生成唯一ID：\texttt{(clientB, timestamp2)}；
-    % % 第三步，基于ID排序确定最终顺序：若\texttt{clientA < clientB}，则最终文本为"XY"；否则为"YX"。
+    % % 第一步，为"X"生成唯一ID：(clientA, timestamp1)；
+    % % 第二步，为"Y"生成唯一ID：(clientB, timestamp2)；
+    % % 第三步，基于ID排序确定最终顺序：若clientA < clientB，则最终文本为"XY"；否则为"YX"。
+    % % 第一步，为"X"生成唯一ID：(clientA, timestamp1)；
+    % % 第二步，为"Y"生成唯一ID：(clientB, timestamp2)；
+    % % 第三步，基于ID排序确定最终顺序：若clientA < clientB，则最终文本为"XY"；否则为"YX"。
 
     % \subsubsection{与传统协同算法的对比}
 
@@ -703,7 +703,7 @@
     \subsection{权限管理系统}
     权限管理系统采用RBAC模型，定义了owner、editor、commenter、viewer四种角色，
     其对应的权限如表\ref{tab:slide-permissions}所示。
-    \texttt{slide\_user\_roles}表记录用户在特定幻灯片中的角色和权限，
+    slide\_user\_roles表记录用户在特定幻灯片中的角色和权限，
     加载文档时，会校验用户权限，阻止未授权操作。
     文档可以设置为公开或私有，当文档设置为私有时，必须要viewer及以上权限的角色才能够访问文档。
     \begin{table}[htbp]
@@ -723,9 +723,9 @@
     \end{table}
     % 文档公开和私有两种设置，用来控制文档的访问范围。
 
-    后端通过NestJS Guard机制实现权限校验，先将\texttt{SlidePermissionGuard}全局注入到NestJS，由如
-    \texttt{@RequirePermission(AuthPermissions.READ)}的装饰器触发，未设置该装饰器的接口则会直接放行，
-    % \texttt{@RequirePermission()}装饰器触发，未设置该装饰器的接口则会直接放行，
+    后端通过NestJS Guard机制实现权限校验，先将SlidePermissionGuard全局注入到NestJS，由如
+    @RequirePermission(AuthPermissions.READ)的装饰器触发，未设置该装饰器的接口则会直接放行，
+    % @RequirePermission()装饰器触发，未设置该装饰器的接口则会直接放行，
     其守卫的核心权限判断实现如图\ref{fig:validatePermission}所示，
     % 其守卫的核心权限判断实现如代码段\ref{code:validatePermission}所示，
     从上下文中获取当前请求的用户角色，并与装饰器中所声明需要的权限相比对，实现权限校验。
