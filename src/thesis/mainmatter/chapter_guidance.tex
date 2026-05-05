@@ -34,11 +34,11 @@
     \subsection{平台界面概览}
 
     本平台的主要界面包括：
-    \textbf{工作台}：用户登录后的主界面，显示幻灯片空间、最近幻灯片和快捷操作入口，如图 \ref{fig:home-interface} 所示；
-    \textbf{编辑器}：幻灯片编辑界面，分为编辑器区域、预览区域和侧边栏功能面板，如图 \ref{fig:editor-interface} 所示；
-    \textbf{空间管理}：管理幻灯片空间的界面，支持空间创建和文档组织，如图 \ref{fig:slideSpace-interface} 所示；
+    \textbf{工作台}：用户登录后的主界面，显示幻灯片空间、最近幻灯片和快捷操作入口，如图\ref{fig:home-interface}所示；
+    \textbf{编辑器}：幻灯片编辑界面，分为编辑器区域、预览区域和侧边栏功能面板，如图\ref{fig:editor-interface}所示；
+    \textbf{空间管理}：管理幻灯片空间的界面，支持空间创建和文档组织，如图\ref{fig:slideSpace-interface}所示；
     \textbf{设置页面}：用户个人设置和系统配置界面，包括账户信息、主题偏好等；
-    \textbf{协作面板}：当前幻灯片权限的管理面板，如图 \ref{fig:permission-panel-interface} 所示。
+    \textbf{协作面板}：当前幻灯片权限的管理面板，如图\ref{fig:permission-panel-interface}所示。
 
     \begin{figure}[htbp]
         \centering
@@ -72,7 +72,7 @@
 
     \subsection{实时协作编辑}
 
-    本平台使用Yjs的CRDT算法实现无冲突的实时协作编辑，支持多用户同时编辑同一文档，如\ref{fig:shared-doc-presentation-interface}所示。
+    本平台使用Yjs的CRDT算法实现无冲突的实时协作编辑，支持多用户同时编辑同一文档，如图\ref{fig:shared-doc-presentation-interface}所示。
     实时协作前，用户需要在编辑器右上角的协作面板中点击“邀请成员”按钮，输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（owner/editor/commenter/viewer）。
     某个用户编辑文档时，其他用户可以在编辑器中看到其实时的光标位置和选中的内容，不同用户用不同颜色区分。
     协作面板还会实时显示当前在线的协作者列表，包括头像、用户名和编辑状态。
@@ -248,7 +248,7 @@
 
     \subsection{代码片段管理}
 
-    用户可以很方便管理和使用自己常用的代码片段，如图\ref{fig:snippets-interface}所示。
+    用户可以很方便地管理和使用自己常用的代码片段，如图\ref{fig:snippets-interface}所示。
     在编辑器中选中代码内容，右键选择“保存为代码片段”，再输入片段名称和描述信息，代码片段就会保存到用户的个人片段库中。
     想要插入代码片段时，点击插入菜单里的“代码片段”选项，就能从片段库中选择需要的片段插入到当前光标位置，还可以在编辑器输入代码片段名称的前缀，触发对应代码提示。
     用户可以在设置页面的代码片段管理界面查看、编辑个人代码片段。
