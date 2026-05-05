@@ -376,13 +376,15 @@
         \end{tabular}
     \end{table}
 
-    为何文档树不使用物化路径？
+    文档树不使用物化路径的原因：
+    % 为何文档树不使用物化路径？
     本平台支持用户拖拽来改调整目录树的结构，此时，目录树结构可能会经常变动。
     如果引入物化路径，那么我们每次移动一个节点，都需要更新该节点及其所有子孙节点的path字段，这样会大大增加计算复杂度。
     因此，文档树这边只维护parent\_id字段，移动节点的时候只需要修改该记录的父节点引用。
     删除文档节点时则通过递归遍历依次删除子节点。
 
-    为何评论树引入物化路径？
+    评论树引入物化路径的原因：
+    % 为何评论树引入物化路径？
     path字段存储从根节点到当前节点的完整路径字符串，如1-5-12。
     评论一旦发布，它的结构就不会再发生变化。
     当新增一条评论时，只需要把父评论的path加上当前评论的id，就能得到该评论的path。
@@ -398,86 +400,91 @@
     \subsection{核心实体关系图}
 
     本平台的核心实体关系如图 \ref{fig:er-diagram} 所示：
-
-    \begin{figure}[!htbp]
+    \begin{figure}
         \centering
-        \begin{tikzpicture}[
-                entity/.style={
-                        rectangle, draw, rounded corners, fill=blue!10,
-                        align=center, minimum width=3.8cm, minimum height=1.8cm,
-                        text width=3.4cm, inner sep=0.4cm, font=\small
-                    },
-                relationship/.style={
-                        diamond, draw, fill=green!10, align=center,
-                        minimum width=2.5cm, minimum height=1.4cm, inner sep=0.25cm, font=\small
-                    },
-                arrow/.style={-, thick},
-                label/.style={font=\small},
-                scale=0.4, transform shape
-            ]
-
-            % ==================== 实体节点（松散布局 + 上移调整） ====================
-            % 上层
-            \node[entity] (user)   at (0, 15) {用户表\\users};
-            \node[entity, right=10cm of user] (space) {幻灯片空间表\\slide\_spaces};
-
-            % 中层（代码片段表上移）
-            \node[entity] (snippet) at (-6.5, 8.5) {代码片段表\\snippets};
-            \node[entity] (slide)   at (5, 7)     {幻灯片表\\slides};
-            \node[entity, right=8.5cm of slide] (comment) {评论表\\slide\_comments};
-
-            % 下层（注册码表大幅上移）
-            \node[entity] (version) at (10, -1)    {版本控制表\\slide\_versions};
-            \node[entity] (role)    at (-4, -1)    {用户角色表\\slide\_user\_roles};
-            \node[entity] (regcode) at (-16.8, 8.8){注册码表\\registration\_codes};
-
-            % ==================== 关系节点（菱形） ====================
-            \node[relationship] (r_user_space)    at ($(user)!0.5!(space) + (0,-1.2)$) {拥有};
-            \node[relationship] (r_space_slide)   at ($(space)!0.5!(slide) + (0,-1.2)$) {包含};
-            \node[relationship] (r_slide_version) at ($(slide)!0.5!(version) + (0,-1.1)$) {版本化};
-            \node[relationship] (r_user_slide)    at ($(user)!0.5!(slide) + (-2.5,-2)$) {协作};
-            \node[relationship] (r_slide_comment) at ($(slide)!0.5!(comment) + (1.3,0)$) {评论};
-            \node[relationship] (r_user_role)     at ($(user)!0.5!(role) + (-1.4,-1.7)$) {授权};
-            \node[relationship] (r_user_regcode)  at ($(user)!0.5!(regcode) + (-2.2,-2.8)$) {使用};
-            \node[relationship] (r_user_snippet)  at ($(user)!0.5!(snippet) + (0,-1.2)$) {创建};
-
-            % ==================== 连线（全部改为直线，无箭头） ====================
-            % 用户 1:N 拥有 空间
-            \draw[arrow] (user) -- node[pos=0.35, above, label] {1} (r_user_space);
-            \draw[arrow] (r_user_space) -- node[pos=0.65, above, label] {N} (space);
-
-            % 空间 1:N 包含 幻灯片
-            \draw[arrow] (space) -- node[pos=0.35, right, label] {1} (r_space_slide);
-            \draw[arrow] (r_space_slide) -- node[pos=0.65, right, label] {N} (slide);
-
-            % 幻灯片 1:N 版本化
-            \draw[arrow] (slide) -- node[pos=0.35, right, label] {1} (r_slide_version);
-            \draw[arrow] (r_slide_version) -- node[pos=0.65, right, label] {N} (version);
-
-            % 用户 1:N 协作 幻灯片
-            \draw[arrow] (user) -- node[pos=0.35, left, label] {1} (r_user_slide);
-            \draw[arrow] (r_user_slide) -- node[pos=0.65, above, label] {N} (slide);
-
-            % 幻灯片 1:N 评论
-            \draw[arrow] (slide) -- node[pos=0.4, above, label] {1} (r_slide_comment);
-            \draw[arrow] (r_slide_comment) -- node[pos=0.6, above, label] {N} (comment);
-
-            % 用户 1:N 授权 角色
-            \draw[arrow] (user) -- node[pos=0.35, left, label] {1} (r_user_role);
-            \draw[arrow] (r_user_role) -- node[pos=0.65, right, label] {N} (role);
-
-            % 用户 1:N 创建 代码片段
-            \draw[arrow] (user) -- node[pos=0.4, left=0.4cm, label] {1} (r_user_snippet);
-            \draw[arrow] (r_user_snippet) -- node[pos=0.6, right, label] {N} (snippet);
-
-            % 用户 1:N 使用 注册码（直线连接）
-            \draw[arrow] (user) -- node[pos=0.38, left=0.5cm, label] {1} (r_user_regcode);
-            \draw[arrow] (r_user_regcode) -- node[pos=0.65, left, label] {N} (regcode);
-
-        \end{tikzpicture}
-        \caption{智能幻灯片协作平台核心实体关系图}
+        \caption{核心实体关系图}
         \label{fig:er-diagram}
+        \includegraphics[width=0.9\textwidth]{figures/drawio/核心实体关系图.drawio.png}
     \end{figure}
+    % \begin{figure}[!htbp]
+    %     \centering
+    %     \begin{tikzpicture}[
+    %             entity/.style={
+    %                     rectangle, draw, rounded corners, fill=blue!10,
+    %                     align=center, minimum width=3.8cm, minimum height=1.8cm,
+    %                     text width=3.4cm, inner sep=0.4cm, font=\small
+    %                 },
+    %             relationship/.style={
+    %                     diamond, draw, fill=green!10, align=center,
+    %                     minimum width=2.5cm, minimum height=1.4cm, inner sep=0.25cm, font=\small
+    %                 },
+    %             arrow/.style={-, thick},
+    %             label/.style={font=\small},
+    %             scale=0.4, transform shape
+    %         ]
+
+    %         % ==================== 实体节点（松散布局 + 上移调整） ====================
+    %         % 上层
+    %         \node[entity] (user)   at (0, 15) {用户表\\users};
+    %         \node[entity, right=10cm of user] (space) {幻灯片空间表\\slide\_spaces};
+
+    %         % 中层（代码片段表上移）
+    %         \node[entity] (snippet) at (-6.5, 8.5) {代码片段表\\snippets};
+    %         \node[entity] (slide)   at (5, 7)     {幻灯片表\\slides};
+    %         \node[entity, right=8.5cm of slide] (comment) {评论表\\slide\_comments};
+
+    %         % 下层（注册码表大幅上移）
+    %         \node[entity] (version) at (10, -1)    {版本控制表\\slide\_versions};
+    %         \node[entity] (role)    at (-4, -1)    {用户角色表\\slide\_user\_roles};
+    %         \node[entity] (regcode) at (-16.8, 8.8){注册码表\\registration\_codes};
+
+    %         % ==================== 关系节点（菱形） ====================
+    %         \node[relationship] (r_user_space)    at ($(user)!0.5!(space) + (0,-1.2)$) {拥有};
+    %         \node[relationship] (r_space_slide)   at ($(space)!0.5!(slide) + (0,-1.2)$) {包含};
+    %         \node[relationship] (r_slide_version) at ($(slide)!0.5!(version) + (0,-1.1)$) {版本化};
+    %         \node[relationship] (r_user_slide)    at ($(user)!0.5!(slide) + (-2.5,-2)$) {协作};
+    %         \node[relationship] (r_slide_comment) at ($(slide)!0.5!(comment) + (1.3,0)$) {评论};
+    %         \node[relationship] (r_user_role)     at ($(user)!0.5!(role) + (-1.4,-1.7)$) {授权};
+    %         \node[relationship] (r_user_regcode)  at ($(user)!0.5!(regcode) + (-2.2,-2.8)$) {使用};
+    %         \node[relationship] (r_user_snippet)  at ($(user)!0.5!(snippet) + (0,-1.2)$) {创建};
+
+    %         % ==================== 连线（全部改为直线，无箭头） ====================
+    %         % 用户 1:N 拥有 空间
+    %         \draw[arrow] (user) -- node[pos=0.35, above, label] {1} (r_user_space);
+    %         \draw[arrow] (r_user_space) -- node[pos=0.65, above, label] {N} (space);
+
+    %         % 空间 1:N 包含 幻灯片
+    %         \draw[arrow] (space) -- node[pos=0.35, right, label] {1} (r_space_slide);
+    %         \draw[arrow] (r_space_slide) -- node[pos=0.65, right, label] {N} (slide);
+
+    %         % 幻灯片 1:N 版本化
+    %         \draw[arrow] (slide) -- node[pos=0.35, right, label] {1} (r_slide_version);
+    %         \draw[arrow] (r_slide_version) -- node[pos=0.65, right, label] {N} (version);
+
+    %         % 用户 1:N 协作 幻灯片
+    %         \draw[arrow] (user) -- node[pos=0.35, left, label] {1} (r_user_slide);
+    %         \draw[arrow] (r_user_slide) -- node[pos=0.65, above, label] {N} (slide);
+
+    %         % 幻灯片 1:N 评论
+    %         \draw[arrow] (slide) -- node[pos=0.4, above, label] {1} (r_slide_comment);
+    %         \draw[arrow] (r_slide_comment) -- node[pos=0.6, above, label] {N} (comment);
+
+    %         % 用户 1:N 授权 角色
+    %         \draw[arrow] (user) -- node[pos=0.35, left, label] {1} (r_user_role);
+    %         \draw[arrow] (r_user_role) -- node[pos=0.65, right, label] {N} (role);
+
+    %         % 用户 1:N 创建 代码片段
+    %         \draw[arrow] (user) -- node[pos=0.4, left=0.4cm, label] {1} (r_user_snippet);
+    %         \draw[arrow] (r_user_snippet) -- node[pos=0.6, right, label] {N} (snippet);
+
+    %         % 用户 1:N 使用 注册码（直线连接）
+    %         \draw[arrow] (user) -- node[pos=0.38, left=0.5cm, label] {1} (r_user_regcode);
+    %         \draw[arrow] (r_user_regcode) -- node[pos=0.65, left, label] {N} (regcode);
+
+    %     \end{tikzpicture}
+    %     \caption{智能幻灯片协作平台核心实体关系图}
+    %     \label{fig:er-diagram}
+    % \end{figure}
     % 主要关系包括：用户与空间：一个用户可以拥有多个幻灯片空间（一对多关系）；空间与幻灯片：一个空间可以包含多个幻灯片（一对多关系）；幻灯片与版本：一个幻灯片可以有多个版本（一对多关系）；用户与权限：一个用户可以在多个幻灯片中拥有不同的权限（多对多关系）；幻灯片与评论：一个幻灯片可以有多个评论（一对多关系）。
 
     \section{核心功能实现}\label{sec:core-features}
