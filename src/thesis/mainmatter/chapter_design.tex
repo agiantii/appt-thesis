@@ -148,7 +148,8 @@
     \subsection{实时协作实现}
 
     本平台的实时协作功能用Yjs库实现。
-    先绑定Yjs文档实例到CodeMirror编辑器，前端通过@hocuspocus/provider与Hocuspocus服务器建立WebSocket连接，
+    先绑定Yjs构建的Y.Doc文档实例到CodeMirror编辑器，
+    前端通过@hocuspocus/provider与Hocuspocus服务器建立WebSocket连接，
     后面就可以只需要相互传输增量，实现实时协作。
 
     % 作者使用Yjs库来实现实时协作功能，具体实现方案如下：
@@ -249,7 +250,7 @@
 
     \subsubsection{users 用户表}
 
-    用户表存储账户信息，包括用户名、密码哈希值、头像URL等主要信息，
+    用户表存储账户信息，包括用户名、密码哈希值、头像URL等字段，
     用户上传的头像图片将存储至OSS（Object Storage Service，对象存储服务），将返回的URL作为用户头像信息。
     % 同时，每个用户的注册都需要注册码，通过使用registration\_code\_id来记录。
     如表\ref{tab:users}所示。    
@@ -277,8 +278,9 @@
 
     \subsubsection{slide\_spaces 幻灯片空间表}
 
-    幻灯片空间表存储幻灯片空间的基本信息，包括空间名称、所有者用户ID等。
-    
+    幻灯片空间表存储幻灯片空间的基本信息，包括空间名称、所有者用户ID等字段，
+    is\_public仅用于表明幻灯片空间的基本信息是否公开，当它为1时，
+    并不代表整个幻灯片空间的所有幻灯片公开，
     如表\ref{tab:slide-spaces}所示。
 
     \begin{table}[htbp]
@@ -321,7 +323,7 @@
             \midrule
             id              & bigint       & 否      & 文档唯一主键               \\
             title           & varchar(200) & 否      & 文档标题                 \\
-            content         & longtext     & 是      & 幻灯片Markdown正文        \\
+            content         & longtext     & 是      & 幻灯片Markdown源码       \\
             slide\_space\_id & bigint      & 否      & 所属空间ID               \\
             parent\_id      & bigint       & 是      & 父文档ID，根节点为NULL       \\
             allow\_comment  & tinyint      & 否      & 是否允许评论（1允许，0禁止）      \\
@@ -337,7 +339,10 @@
 
     \subsubsection{slide\_versions 版本控制表}
 
-    版本控制表记录幻灯片的版本历史，每次保存生成一条新记录，如表\ref{tab:slide-versions}所示。
+    版本控制表记录幻灯片的版本历史，
+    包括版本内容快照、提交说明、创建者用户ID等字段。
+    每个版本的幻灯片源码都会完整存为一条记录，
+    如表\ref{tab:slide-versions}所示。
 
     \begin{table}[htbp]
         \caption{slide\_versions 版本控制表结构}
@@ -359,7 +364,10 @@
 
     \subsubsection{slide\_user\_roles 用户角色表}
 
-    用户角色表定义用户在幻灯片中的角色，实现RBAC权限控制，如表\ref{tab:slide-user-roles}所示。
+    用户角色表定义用户在幻灯片中的角色，
+    主要包括幻灯片ID、用户ID、角色等字段，
+    用于控制幻灯片协作者的权限。
+    如表\ref{tab:slide-user-roles}所示。
 
     \begin{table}[htbp]
         \caption{slide\_user\_roles 用户角色表结构}
@@ -381,7 +389,7 @@
     \subsubsection{slide\_comments 评论表}
 
     评论表通过reply\_id和path字段实现评论的树形结构。
-    reply\_id指向父评论id，顶层评论的reply\_id为NULL；
+    reply\_id指向父评论id，顶层评论的reply\_id为NULL。
     % path存储从根节点到当前节点的完整路径（如1-5-12），
     % 可以借助LIKE前缀匹配一次性获取子树的所有节点，避免递归查询。
 
@@ -419,8 +427,12 @@
 
     \subsubsection{snippets 代码片段表}
 
-    代码片段表用于存储用户创建的代码块，支持跨文档快速复用。每个代码片段关联到特定用户，
-    用户可在编辑幻灯片时检索并插入已保存的片段，避免重复编写相似代码，提升工作效率。
+    代码片段表用于存储用户创建的自定义代码片段，
+    用户在编辑幻灯片时，编辑器会根据片段名称前缀检索显示需要插入的代码片段。
+    user\_id字段用于表明改代码片段的所属用户。
+    % 避免重复编写相似代码，提升工作效率。
+    % 代码片段表用于存储用户创建的代码块，支持跨文档快速复用。每个代码片段关联到特定用户，
+    % 用户可在编辑幻灯片时检索并插入已保存的片段，避免重复编写相似代码，提升工作效率。
     如表\ref{tab:snippets}所示。
 
     \begin{table}[htbp]
@@ -443,8 +455,9 @@
 
     \subsubsection{registration\_codes 注册码表}
 
-    注册码表用于管理平台的注册准入机制，系统管理员可生成注册码并分发给目标用户。
-    每个注册码包含有效期和使用状态信息，注册时需校验注册码的有效性和是否已被使用，从而控制用户注册权限。
+    注册码表用于管理平台的注册码，
+    每个注册码包含有效期、使用状态等信息，
+    用户注册时需校验注册码的有效性以及是否已被使用。
     如表\ref{tab:registration-codes}所示。
 
     \begin{table}[htbp]
@@ -460,7 +473,7 @@
             is\_used    & tinyint     & 否      & 是否已使用（0未用，1已用） \\
             used\_by    & bigint      & 是      & 使用者ID       \\
             used\_at    & datetime    & 是      & 使用时间        \\
-            created\_by & bigint      & 是      & 创建者（管理员ID）   \\
+            % created\_by & bigint      & 是      & 创建者（管理员ID）   \\
             created\_at & datetime    & 否      & 创建时间        \\
             expires\_at & datetime    & 是      & 过期时间        \\
             \bottomrule
@@ -469,9 +482,16 @@
 
     \subsubsection{slidev\_themes 主题表}
 
-    Slidev主题表存储平台可用的主题配置，通过npm包名唯一标识每个主题。
-    用户创建幻灯片时可从已有主题中选择应用，系统根据package\_name拉取对应npm包以加载主题样式，
-    同时也支持管理员后续扩展更多社区或自定义主题。如表\ref{tab:slidev-themes}所示。
+    Slidev主题表存储平台可用的主题配置，
+    通过npm包名标识每个主题，系统根据npm包名拉取对应npm包加载到系统，
+    如slidev-theme-meetup@1.5.3，
+    它的npm包名为slidev-theme-meetup@1.5.3，
+    主题名称为slidev-theme-meetup，
+    而预览图URL用于显示主题的风格和样式，帮助用户挑选自己喜欢的主题。
+    % 用户创建幻灯片时可从已有主题中选择应用，
+    % 系统根据package\_name拉取对应npm包以加载主题样式，
+    % 同时也支持管理员后续扩展更多社区或自定义主题。
+    如表\ref{tab:slidev-themes}所示。
 
     \begin{table}[htbp]
         \caption{slidev\_themes 主题表结构}
@@ -493,9 +513,13 @@
 
     \subsubsection{slidev\_plugins 插件表}
 
-    Slidev插件表存储平台可用的插件配置，基于npm生态进行扩展。
-    每个插件通过package\_name唯一标识，用户在排版幻灯片时可选择启用所需插件以增强演示效果，
-    管理员也可根据需求引入新的社区插件。如表\ref{tab:slidev-plugins}所示。
+    Slidev插件表存储平台可用的Slidev插件信息，
+    npm包名与插件名称的用途和上文主题表中npm包名与主题名称的用途类似，
+    唯一的区别就是没有预览图URL，因为插件作为功能性的拓展，无法通过预览图片
+    详细知道使用效果、如何使用。
+    % 每个插件通过package\_name唯一标识，用户在排版幻灯片时可选择启用所需插件以增强演示效果，
+    % 管理员也可根据需求引入新的社区插件。
+    如表\ref{tab:slidev-plugins}所示。
 
     \begin{table}[htbp]
         \caption{slidev\_plugins 插件表结构}
