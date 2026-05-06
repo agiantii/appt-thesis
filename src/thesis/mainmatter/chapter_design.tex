@@ -245,7 +245,7 @@
 
     \subsection{核心表结构}
     % TODO
-    本平台共设计12个核心数据表，如表 \ref{tab:database-tables} 所示：
+    本平台的核心数据设计如表 \ref{tab:database-tables} 所示：
 
     \begin{table}[htbp]
         \caption{智能幻灯片协作平台核心数据表}
@@ -259,14 +259,14 @@
             slide\_spaces       & 幻灯片空间表    & 组织和管理幻灯片集合    \\
             slides              & 幻灯片表      & 存储具体的幻灯片文档内容  \\
             slide\_versions     & 版本控制表     & 记录幻灯片的版本历史    \\
-            slide\_user\_roles  & 用户角色表     & 定义用户在幻灯片中的权限  \\
+            slide\_user\_roles  & 幻灯片的用户角色表     & 定义用户在幻灯片中的角色  \\
             slide\_comments     & 评论表       & 存储对幻灯片的评论和回复  \\
             snippets            & 代码片段表     & 存储用户可复用的代码块   \\
             registration\_codes & 注册码表      & 管理用户注册码信息     \\
             slidev\_themes      & Slidev主题表 & 存储Slidev主题配置  \\
             slidev\_plugins     & Slidev插件表 & 存储Slidev插件配置  \\
-            likes\_slide        & 幻灯片点赞表    & 记录用户对幻灯片的点赞   \\
-            likes\_space        & 空间点赞表     & 记录用户对空间的点赞    \\
+            % likes\_slide        & 幻灯片点赞表    & 记录用户对幻灯片的点赞   \\
+            % likes\_space        & 空间点赞表     & 记录用户对空间的点赞    \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -404,7 +404,7 @@
         \centering
         \caption{核心实体关系图}
         \label{fig:er-diagram}
-        \includegraphics[width=0.9\textwidth]{figures/drawio/核心实体关系图.drawio.png}
+        \includegraphics[width=0.9\textwidth]{figures/drawio/核心实体关系图-v2.drawio.png}
     \end{figure}
     % \begin{figure}[!htbp]
     %     \centering
