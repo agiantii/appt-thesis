@@ -195,7 +195,7 @@
             AI 辅助    & /api/ai/*                            & AI 内容生成、图像生成、智能建议等 \\
             主题管理     & /api/theme/*                         & 幻灯片主题的查询、更新等       \\
             插件管理     & /api/plugins/*                       & 幻灯片插件的查询、更新等       \\
-            注册码管理    & /api/registration-codes/*            & 注册码的生成、查询等          \\
+            注册码管理    & /api/registration-codes/*            & 注册码的生成、查询等         \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -253,7 +253,7 @@
     用户表存储账户信息，包括用户名、密码哈希值、头像URL等字段，
     用户上传的头像图片将存储至OSS（Object Storage Service，对象存储服务），将返回的URL作为用户头像信息。
     % 同时，每个用户的注册都需要注册码，通过使用registration\_code\_id来记录。
-    如表\ref{tab:users}所示。    
+    如表\ref{tab:users}所示。
 
     \begin{table}[htbp]
         \caption{users 用户表结构}
@@ -261,17 +261,17 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名                   & 数据类型         & 是否允许空 & 说明                    \\
+            字段名                    & 数据类型         & 是否允许空 & 说明        \\
             \midrule
-            id                     & bigint       & 否      & 用户唯一主键                \\
-            username               & varchar(50)  & 否      & 用户名                   \\
-            email                  & varchar(100) & 否      & 邮箱地址                  \\
-            password\_hash         & varchar(255) & 否      & 密码哈希值                 \\
-            avatar\_url            & varchar(500) & 是      & 头像URL                 \\
-            state                  & tinyint      & 否      & 用户状态（1正常）             \\
-            registration\_code\_id & bigint       & 是      & 使用的注册码ID              \\
-            created\_at            & datetime     & 否      & 创建时间                  \\
-            updated\_at            & datetime     & 否      & 最近更新时间                \\
+            id                     & bigint       & 否     & 用户唯一主键    \\
+            username               & varchar(50)  & 否     & 用户名       \\
+            email                  & varchar(100) & 否     & 邮箱地址      \\
+            password\_hash         & varchar(255) & 否     & 密码哈希值     \\
+            avatar\_url            & varchar(500) & 是     & 头像URL     \\
+            state                  & tinyint      & 否     & 用户状态（1正常） \\
+            registration\_code\_id & bigint       & 是     & 使用的注册码ID  \\
+            created\_at            & datetime     & 否     & 创建时间      \\
+            updated\_at            & datetime     & 否     & 最近更新时间    \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -289,14 +289,14 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名       & 数据类型         & 是否允许空 & 说明           \\
+            字段名         & 数据类型         & 是否允许空 & 说明            \\
             \midrule
-            id         & bigint       & 否      & 空间唯一主键       \\
-            name       & varchar(200) & 否      & 空间名称         \\
-            owner\_id  & bigint       & 否      & 所有者用户ID      \\
-            is\_public & tinyint      & 否      & 是否公开（0私有，1公开） \\
-            created\_at & datetime    & 否      & 创建时间         \\
-            updated\_at & datetime    & 否      & 最近更新时间       \\
+            id          & bigint       & 否     & 空间唯一主键        \\
+            name        & varchar(200) & 否     & 空间名称          \\
+            owner\_id   & bigint       & 否     & 所有者用户ID       \\
+            is\_public  & tinyint      & 否     & 是否公开（0私有，1公开） \\
+            created\_at & datetime     & 否     & 创建时间          \\
+            updated\_at & datetime     & 否     & 最近更新时间        \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -312,27 +312,26 @@
     因此，文档树这边只维护parent\_id字段，移动节点的时候只需要修改该记录的父节点引用。
     删除文档节点时则通过递归遍历依次删除子节点。
 
-
     \begin{table}[htbp]
         \caption{slides 幻灯片表结构}
         \label{tab:slides}
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名            & 数据类型         & 是否允许空 & 说明                   \\
+            字段名              & 数据类型         & 是否允许空 & 说明              \\
             \midrule
-            id              & bigint       & 否      & 文档唯一主键               \\
-            title           & varchar(200) & 否      & 文档标题                 \\
-            content         & longtext     & 是      & 幻灯片Markdown源码       \\
-            slide\_space\_id & bigint      & 否      & 所属空间ID               \\
-            parent\_id      & bigint       & 是      & 父文档ID，根节点为NULL       \\
-            allow\_comment  & tinyint      & 否      & 是否允许评论（1允许，0禁止）      \\
-            created\_by     & bigint       & 否      & 创建者用户ID              \\
-            is\_public      & tinyint      & 否      & 是否公开（0私有，1公开）        \\
-            is\_build       & tinyint      & 否      & 是否已编译生成预览            \\
-            preview\_url    & varchar(255) & 是      & 编译后预览地址              \\
-            created\_at     & datetime     & 否      & 创建时间                 \\
-            updated\_at     & datetime     & 否      & 最近修改时间               \\
+            id               & bigint       & 否     & 文档唯一主键          \\
+            title            & varchar(200) & 否     & 文档标题            \\
+            content          & longtext     & 是     & 幻灯片Markdown源码   \\
+            slide\_space\_id & bigint       & 否     & 所属空间ID          \\
+            parent\_id       & bigint       & 是     & 父文档ID，根节点为NULL  \\
+            allow\_comment   & tinyint      & 否     & 是否允许评论（1允许，0禁止） \\
+            created\_by      & bigint       & 否     & 创建者用户ID         \\
+            is\_public       & tinyint      & 否     & 是否公开（0私有，1公开）   \\
+            is\_build        & tinyint      & 否     & 是否已编译生成预览       \\
+            preview\_url     & varchar(255) & 是     & 编译后预览地址         \\
+            created\_at      & datetime     & 否     & 创建时间            \\
+            updated\_at      & datetime     & 否     & 最近修改时间          \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -350,14 +349,14 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名       & 数据类型         & 是否允许空 & 说明         \\
+            字段名         & 数据类型         & 是否允许空 & 说明      \\
             \midrule
-            id         & bigint       & 否      & 版本唯一主键     \\
-            slide\_id  & bigint       & 否      & 所属幻灯片ID    \\
-            content    & longtext     & 是      & 版本内容快照     \\
-            commit\_msg & varchar(500) & 是     & 提交说明       \\
-            created\_by & bigint      & 否      & 创建者用户ID    \\
-            created\_at & datetime    & 否      & 创建时间       \\
+            id          & bigint       & 否     & 版本唯一主键  \\
+            slide\_id   & bigint       & 否     & 所属幻灯片ID \\
+            content     & longtext     & 是     & 版本内容快照  \\
+            commit\_msg & varchar(500) & 是     & 提交说明    \\
+            created\_by & bigint       & 否     & 创建者用户ID \\
+            created\_at & datetime     & 否     & 创建时间    \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -375,13 +374,13 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名       & 数据类型     & 是否允许空 & 说明                                 \\
+            字段名         & 数据类型     & 是否允许空 & 说明                                \\
             \midrule
-            id         & bigint   & 否      & 角色记录主键                             \\
-            slide\_id  & bigint   & 否      & 幻灯片ID                              \\
-            user\_id   & bigint   & 否      & 用户ID                               \\
-            role       & enum     & 否      & 角色（owner/editor/commenter/viewer） \\
-            created\_at & datetime & 否     & 创建时间                               \\
+            id          & bigint   & 否     & 角色记录主键                            \\
+            slide\_id   & bigint   & 否     & 幻灯片ID                             \\
+            user\_id    & bigint   & 否     & 用户ID                              \\
+            role        & enum     & 否     & 角色（owner/editor/commenter/viewer） \\
+            created\_at & datetime & 否     & 创建时间                              \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -393,11 +392,11 @@
     % path存储从根节点到当前节点的完整路径（如1-5-12），
     % 可以借助LIKE前缀匹配一次性获取子树的所有节点，避免递归查询。
 
-    path字段存储从根节点到当前节点的完整路径字符串，如1-5-12。
-    评论一旦发布，它的结构就不会再发生变化。
-    当新增一条评论时，只需要把父评论的path加上当前评论的id，就能得到该评论的path。
-    我们可以使用如SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'的SQL查询语句，一次性获取任意评论节点下的所有子孙评论，不需要递归查询；
-    删除某条评论及其所有回复时同样也只需要一条如DELETE FROM slide\_comments WHERE path LIKE '1-5-\%'的SQL语句，不需要递归删除。
+    path字段存储从根节点到当前节点的完整路径字符串，如1-5-12。 评论一旦发布，它的结构就不会再发生变化。
+    当新增一条评论时，只需要把父评论的path加上当前评论的id，就能得到该评论的path。 我们可以使用如SELECT * FROM
+    slide\_comments WHERE path LIKE '1-5-\%'的SQL查询语句，一次性获取任意评论节点下的所有子孙评论，不需要递归查询；
+    删除某条评论及其所有回复时同样也只需要一条如DELETE FROM slide\_comments WHERE path LIKE
+    '1-5-\%'的SQL语句，不需要递归删除。
     % 另外，评论操作中最频繁的两个场景，正好是物化路径比较擅长的：
     % 一个是展开某条评论下的所有回复，这时候只需要执行如SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'这样一条SQL查询，
     % 就可以一次性把整个子树取出来，不用递归；另一个是删除某条评论以及它下面的所有子孙回复，
@@ -412,15 +411,15 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名       & 数据类型          & 是否允许空 & 说明                 \\
+            字段名         & 数据类型          & 是否允许空 & 说明              \\
             \midrule
-            id         & bigint        & 否      & 评论唯一主键             \\
-            slide\_id  & bigint        & 否      & 所属幻灯片ID            \\
-            user\_id   & bigint        & 否      & 评论发表者ID            \\
-            content    & text          & 否      & 评论正文内容             \\
-            path       & varchar(1000) & 否      & 根节点到本节点的物化路径       \\
-            reply\_id  & bigint        & 是      & 父评论ID，顶层评论为NULL    \\
-            created\_at & datetime     & 否      & 评论发布时间             \\
+            id          & bigint        & 否     & 评论唯一主键          \\
+            slide\_id   & bigint        & 否     & 所属幻灯片ID         \\
+            user\_id    & bigint        & 否     & 评论发表者ID         \\
+            content     & text          & 否     & 评论正文内容          \\
+            path        & varchar(1000) & 否     & 根节点到本节点的物化路径    \\
+            reply\_id   & bigint        & 是     & 父评论ID，顶层评论为NULL \\
+            created\_at & datetime      & 否     & 评论发布时间          \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -441,14 +440,14 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名       & 数据类型         & 是否允许空 & 说明       \\
+            字段名         & 数据类型         & 是否允许空 & 说明     \\
             \midrule
-            id         & bigint       & 否      & 片段唯一主键   \\
-            user\_id   & bigint       & 否      & 所属用户ID   \\
-            name       & varchar(100) & 否      & 片段名称     \\
-            content    & text         & 是      & 片段内容     \\
-            created\_at & datetime    & 否      & 创建时间     \\
-            updated\_at & datetime    & 否      & 最近更新时间   \\
+            id          & bigint       & 否     & 片段唯一主键 \\
+            user\_id    & bigint       & 否     & 所属用户ID \\
+            name        & varchar(100) & 否     & 片段名称   \\
+            content     & text         & 是     & 片段内容   \\
+            created\_at & datetime     & 否     & 创建时间   \\
+            updated\_at & datetime     & 否     & 最近更新时间 \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -466,28 +465,24 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名        & 数据类型        & 是否允许空 & 说明          \\
+            字段名         & 数据类型        & 是否允许空 & 说明             \\
             \midrule
-            id          & bigint      & 否      & 注册码唯一主键     \\
-            code        & varchar(50) & 否      & 注册码字符串      \\
-            is\_used    & tinyint     & 否      & 是否已使用（0未用，1已用） \\
-            used\_by    & bigint      & 是      & 使用者ID       \\
-            used\_at    & datetime    & 是      & 使用时间        \\
+            id          & bigint      & 否     & 注册码唯一主键        \\
+            code        & varchar(50) & 否     & 注册码字符串         \\
+            is\_used    & tinyint     & 否     & 是否已使用（0未用，1已用） \\
+            used\_by    & bigint      & 是     & 使用者ID          \\
+            used\_at    & datetime    & 是     & 使用时间           \\
             % created\_by & bigint      & 是      & 创建者（管理员ID）   \\
-            created\_at & datetime    & 否      & 创建时间        \\
-            expires\_at & datetime    & 是      & 过期时间        \\
+            created\_at & datetime    & 否     & 创建时间           \\ expires\_at & datetime & 是 & 过期时间 \\
             \bottomrule
         \end{tabular}
     \end{table}
 
     \subsubsection{slidev\_themes 主题表}
 
-    Slidev主题表存储平台可用的主题配置，
-    通过npm包名标识每个主题，系统根据npm包名拉取对应npm包加载到系统，
-    如slidev-theme-meetup@1.5.3，
-    它的npm包名为slidev-theme-meetup@1.5.3，
-    主题名称为slidev-theme-meetup，
-    而预览图URL用于显示主题的风格和样式，帮助用户挑选自己喜欢的主题。
+    Slidev主题表存储平台可用的主题配置， 通过npm包名标识每个主题，系统根据npm包名拉取对应npm包加载到系统，
+    如slidev-theme-meetup@1.5.3， 它的npm包名为slidev-theme-meetup@1.5.3，
+    主题名称为slidev-theme-meetup， 而预览图URL用于显示主题的风格和样式，帮助用户挑选自己喜欢的主题。
     % 用户创建幻灯片时可从已有主题中选择应用，
     % 系统根据package\_name拉取对应npm包以加载主题样式，
     % 同时也支持管理员后续扩展更多社区或自定义主题。
@@ -499,24 +494,22 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名          & 数据类型         & 是否允许空 & 说明    \\
+            字段名           & 数据类型         & 是否允许空 & 说明     \\
             \midrule
-            id            & bigint       & 否      & 主题主键  \\
-            package\_name & varchar(200) & 否      & npm包名 \\
-            name          & varchar(255) & 否      & 主题名称  \\
-            preview\_url  & varchar(500) & 是      & 预览图URL \\
-            created\_at   & datetime     & 否      & 创建时间  \\
-            updated\_at   & datetime     & 否      & 最近更新时间 \\
+            id            & bigint       & 否     & 主题主键   \\
+            package\_name & varchar(200) & 否     & npm包名  \\
+            name          & varchar(255) & 否     & 主题名称   \\
+            preview\_url  & varchar(500) & 是     & 预览图URL \\
+            created\_at   & datetime     & 否     & 创建时间   \\
+            updated\_at   & datetime     & 否     & 最近更新时间 \\
             \bottomrule
         \end{tabular}
     \end{table}
 
     \subsubsection{slidev\_plugins 插件表}
 
-    Slidev插件表存储平台可用的Slidev插件信息，
-    npm包名与插件名称的用途和上文主题表中npm包名与主题名称的用途类似，
-    唯一的区别就是没有预览图URL，因为插件作为功能性的拓展，无法通过预览图片
-    详细知道使用效果、如何使用。
+    Slidev插件表存储平台可用的Slidev插件信息， npm包名与插件名称的用途和上文主题表中npm包名与主题名称的用途类似，
+    唯一的区别就是没有预览图URL，因为插件作为功能性的拓展，无法通过预览图片 详细知道使用效果、如何使用。
     % 每个插件通过package\_name唯一标识，用户在排版幻灯片时可选择启用所需插件以增强演示效果，
     % 管理员也可根据需求引入新的社区插件。
     如表\ref{tab:slidev-plugins}所示。
@@ -527,21 +520,16 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名          & 数据类型         & 是否允许空 & 说明    \\
+            字段名           & 数据类型         & 是否允许空 & 说明     \\
             \midrule
-            id            & bigint       & 否      & 插件主键  \\
-            package\_name & varchar(200) & 否      & npm包名 \\
-            name          & varchar(255) & 否      & 插件名称  \\
-            created\_at   & datetime     & 否      & 创建时间  \\
-            updated\_at   & datetime     & 否      & 最近更新时间 \\
+            id            & bigint       & 否     & 插件主键   \\
+            package\_name & varchar(200) & 否     & npm包名  \\
+            name          & varchar(255) & 否     & 插件名称   \\
+            created\_at   & datetime     & 否     & 创建时间   \\
+            updated\_at   & datetime     & 否     & 最近更新时间 \\
             \bottomrule
         \end{tabular}
     \end{table}
-
-
-
-
-
 
     % \subsubsection{两表设计思路对比}
 
@@ -564,10 +552,6 @@
     %         \bottomrule
     %     \end{tabular}
     % \end{table}
-
-
-
-   
 
     \subsection{核心实体关系图}
 
@@ -660,7 +644,99 @@
     % 主要关系包括：用户与空间：一个用户可以拥有多个幻灯片空间（一对多关系）；空间与幻灯片：一个空间可以包含多个幻灯片（一对多关系）；幻灯片与版本：一个幻灯片可以有多个版本（一对多关系）；用户与权限：一个用户可以在多个幻灯片中拥有不同的权限（多对多关系）；幻灯片与评论：一个幻灯片可以有多个评论（一对多关系）。
 
     \section{核心功能实现}\label{sec:core-features}
+    \subsection{权限管理系统}
+    权限管理系统采用RBAC模型，定义了owner、editor、commenter、viewer四种角色，
+    其对应的权限如表\ref{tab:slide-permissions}所示。
+    slide\_user\_roles表记录用户在特定幻灯片中的角色和权限，
+    加载文档时，会校验用户权限，阻止未授权操作。
+    文档可以设置为公开或私有，当文档设置为私有时，必须要viewer及以上权限的角色才能够访问文档。
+    \begin{table}[htbp]
+        \caption{Slide角色权限对照表}
+        \label{tab:slide-permissions}
+        \centering
+        \begin{tabular}{lll}
+            \toprule
+            角色        & 权限列表                \\
+            \midrule
+            owner     & 查阅，评论，编辑，查看历史，管理，删除 \\
+            editor    & 查阅，评论，编辑，查看历史       \\
+            commenter & 查阅，评论，查看历史          \\
+            viewer    & 查阅，查看历史             \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    % 文档公开和私有两种设置，用来控制文档的访问范围。
 
+后端通过NestJS Guard机制实现权限校验，先将SlidePermissionGuard全局注入到NestJS，由如
+@RequirePermission(AuthPermissions.READ)的装饰器触发，未设置该装饰器的接口则会直接放行。
+其中AuthPermissions为enum类型，有READ、COMMENT、EDIT、VIEW\_HISTORY、MANAGE、DELETE、VIEW。
+SlidePermissionGuard继承@nestjs/common的CanActivate类，通过canActivate()方法来判断是否校验通过，
+在这个方法内，会先通过reflector获取到@RequirePermission()装饰器中所需要的权限，
+同时通过context.switchToHttp().getRequest().user获取上下文中的角色信息，
+之后将以上参数传入validatePermission方法中校验即可，
+validatePermission方法的实现如图\ref{fig:validatePermission}所示。
+    % 其守卫的核心权限判断实现如图\ref{fig:validatePermission}所示，
+    % @RequirePermission()装饰器触发，未设置该装饰器的接口则会直接放行，
+    % 从上下文中获取当前请求的用户角色，并与装饰器中所声明需要的权限相比对，实现权限校验。
+    % 其守卫的核心权限判断实现如代码段\ref{code:validatePermission}所示，
+    \begin{figure}
+        \centering
+        \caption{权限验证核心代码}
+        \label{fig:validatePermission}
+        \includegraphics[width=0.9\textwidth]{figures/code/validatePermission-editor-small-fixed.png}
+    \end{figure}
+    % 如图\ref{fig:api-persmission-example}所示。
+    % % 而在需要权限校验的接口中，只需如图\ref{fig:api-persmission-example}所示声明即可。
+    % % 而在需要权限校验的接口中，只需如图\ref{fig:api-persmission-example}所示声明即可。
+    % \begin{figure}[htbp]
+    %     \centering
+    %     \caption{@RequirePermission装饰器使用示例}
+    %     \label{fig:api-persmission-example}
+    %     \includegraphics[width=0.8\textwidth]{figures/code/api-persmission-example-editor-min-width.png}
+    % \end{figure}
+    % \begin{listing}[htbp]
+    %     \caption{权限验证核心逻辑}
+    %     \label{code:validatePermission}
+    %     \begin{jscode}
+    %         private validatePermission(
+    %         actualRole: SlideRole | null,
+    %         requiredPermission: AuthPermissions | undefined,
+    %         ): boolean {
+    %                 // 如果需要权限检查
+    %                 if (requiredPermission && actualRole) {
+    %                         // PERMISSIONS是由上文中Slide角色权限对照表映射的字典
+    %                         const rolePermissions = PERMISSIONS[actualRole];
+    %                         if (rolePermissions.includes(requiredPermission as string)) {
+    %                                 return true;
+    %                             }
+    %                         throw new ForbiddenException('您不符合权限要求');
+    %                     }
+    %                 throw new ForbiddenException('您没有权限执行此操作');
+    %             }
+    %     \end{jscode}
+    % \end{listing}
+
+    % 而在需要权限校验的接口中，只需如图\ref{fig:api-persmission-example}所示声明即可。
+    % %    而在需要权限校验的接口中，只需按代码段\ref{code:api-persmission-example}所示方式，在对应接口上的装饰器中声明所需要的权限即可。
+    % \begin{figure}
+    %     \centering
+    %     \caption{@RequirePermission装饰器使用示例}
+    %     \label{fig:api-persmission-example}
+    %     \includegraphics[width=0.9\textwidth]{figures/code/api-persmission-example-editor-less-width.png}
+    % \end{figure}
+    % \begin{listing}
+    %     \caption{@RequirePermission装饰器使用示例}
+    %     \label{code:api-persmission-example}
+    %     \begin{jscode}
+    %         @RequirePermission(AuthPermissions.READ)
+    %         @Get('slides/detail/:id')
+    %         async findOne(
+    %         id: number,
+    %         ){
+    %                 //具体实现略
+    %             }
+    %     \end{jscode}
+    % \end{listing}
     \subsection{幻灯片文档创作}
 
     \subsubsection{实时协作具体实现}
@@ -794,12 +870,31 @@
     而在实时协作模式，需要按照上文所述的步骤，与后端建立WebSocket连接。
     具体流程如图\ref{fig:collaboration-flowchart}所示。
     % 本平台的文档协同流程可以用分支结构清晰地表示出来，能够依据文档的协作状态选择独立编辑模式还是实时协作模式。具体流程详见图\ref{fig:collaboration-flowchart}。
-
     \begin{figure}[htbp]
         \centering
         \caption{文档编辑流程图}
         \label{fig:collaboration-flowchart}
         \includegraphics[width=0.9\textwidth]{figures/drawio/文档编辑流程图.drawio.png}
+    \end{figure}
+
+    实时协作前，用户需要在编辑器右上角的协作面板中点击“邀请成员”按钮，输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（owner/editor/commenter/viewer）。
+    如图\ref{permission-panel-interface}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/permission-panel-pure-white.png}
+        \caption{智能幻灯片协作平台权限管理面板界面}
+        \label{fig:permission-panel-interface}
+    \end{figure}
+    某个用户编辑文档时，其他用户可以在编辑器中看到其实时的光标位置和选中的内容，不同用户用不同颜色区分。
+    协作面板还会实时显示当前在线的协作者列表，包括头像、用户名和编辑状态，如图\ref{fig:shared-doc-presentation-interface}所示。
+    % 邀请协作者：在编辑器右上角的协作面板中点击“邀请成员”按钮，输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（Owner/Editor/Commenter/Viewer）。
+    % 实时光标追踪：协作者在编辑文档时，其他用户可以在编辑器中看到其实时光标位置和选中内容，不同用户用不同颜色区分。
+    % 在线状态显示：协作面板实时会显示当前在线的协作者列表，包括头像、用户名和编辑状态。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/appt/shared-doc-presentation.png}
+        \caption{智能幻灯片协作平台共享文档演示界面}
+        \label{fig:shared-doc-presentation-interface}
     \end{figure}
     % \begin{figure}[htbp]
     %     \centering
@@ -880,85 +975,23 @@
     % 这种条件分支设计具有以下优势：资源优化：私有文档无需建立WebSocket连接，从而节省服务器资源；性能提升：独立编辑模式减少了网络延迟，能够提供更快的响应速度；灵活适应：能够根据实际协作需求动态调整技术方案；用户体验：保持了编辑界面的一致性，用户无需关注底层技术差异。
 
     % 本平台通过智能化的协作状态判断与模式选择机制，在确保功能完整性的基础上，优化了系统性能与用户体验。这一设计实现了高效且灵活的文档协同编辑解决方案。
+    \subsection{Slidev编辑器}
 
-    \subsection{权限管理系统}
-    权限管理系统采用RBAC模型，定义了owner、editor、commenter、viewer四种角色，
-    其对应的权限如表\ref{tab:slide-permissions}所示。
-    slide\_user\_roles表记录用户在特定幻灯片中的角色和权限，
-    加载文档时，会校验用户权限，阻止未授权操作。
-    文档可以设置为公开或私有，当文档设置为私有时，必须要viewer及以上权限的角色才能够访问文档。
-    \begin{table}[htbp]
-        \caption{Slide角色权限对照表}
-        \label{tab:slide-permissions}
+        CodeMirror 6提供专业的Markdown编辑体验，支持Markdown语法高亮渲染，如标题、列表、链接、代码块等。
+        幻灯片页面用`---`分隔符来创建。
+        右侧预览窗口有Dev和Build两种模式，Dev模式实时显示Slidev实时渲染效果，Build模式展示最终构建好的渲染效果。
+        编辑器还支持多种编程语言的语法高亮，包括JavaScript、TypeScript、Python、Java等，适合技术演示的场景。
+        左侧大纲面板会显示文档结构，点击大纲节点就能快速定位到对应内容，编辑器和预览窗口也会同步滚动到对应的页面。
+        还可以使用以下快捷键组合：
+        Ctrl+S保存当前文档，Ctrl+Shift+S创建新版本，Ctrl+B切换左侧菜单，Ctrl+Alt+B切换右侧预览，Ctrl+I切换AI面板，Ctrl+V插入图片并自动上传到OSS。
+        如图\ref{fig:editor-interface}所示。
+            \begin{figure}[htbp]
         \centering
-        \begin{tabular}{lll}
-            \toprule
-            角色        & 权限列表                \\
-            \midrule
-            owner     & 查阅，评论，编辑，查看历史，管理，删除 \\
-            editor    & 查阅，评论，编辑，查看历史       \\
-            commenter & 查阅，评论，查看历史          \\
-            viewer    & 查阅，查看历史             \\
-            \bottomrule
-        \end{tabular}
-    \end{table}
-    % 文档公开和私有两种设置，用来控制文档的访问范围。
-
-    后端通过NestJS Guard机制实现权限校验，先将SlidePermissionGuard全局注入到NestJS，由如
-    @RequirePermission(AuthPermissions.READ)的装饰器触发，未设置该装饰器的接口则会直接放行，
-    % @RequirePermission()装饰器触发，未设置该装饰器的接口则会直接放行，
-    其守卫的核心权限判断实现如图\ref{fig:validatePermission}所示，
-    % 其守卫的核心权限判断实现如代码段\ref{code:validatePermission}所示，
-    从上下文中获取当前请求的用户角色，并与装饰器中所声明需要的权限相比对，实现权限校验。
-    \begin{figure}
-        \centering
-        \caption{权限验证核心代码}
-        \label{fig:validatePermission}
-        \includegraphics[width=0.9\textwidth]{figures/code/validatePermission-editor-small-fixed.png}
+        \includegraphics[width=0.9\textwidth]{figures/appt/editor.png}
+        \caption{智能幻灯片协作平台编辑器界面}
+        \label{fig:editor-interface}
     \end{figure}
-    % \begin{listing}[htbp]
-    %     \caption{权限验证核心逻辑}
-    %     \label{code:validatePermission}
-    %     \begin{jscode}
-    %         private validatePermission(
-    %         actualRole: SlideRole | null,
-    %         requiredPermission: AuthPermissions | undefined,
-    %         ): boolean {
-    %                 // 如果需要权限检查
-    %                 if (requiredPermission && actualRole) {
-    %                         // PERMISSIONS是由上文中Slide角色权限对照表映射的字典
-    %                         const rolePermissions = PERMISSIONS[actualRole];
-    %                         if (rolePermissions.includes(requiredPermission as string)) {
-    %                                 return true;
-    %                             }
-    %                         throw new ForbiddenException('您不符合权限要求');
-    %                     }
-    %                 throw new ForbiddenException('您没有权限执行此操作');
-    %             }
-    %     \end{jscode}
-    % \end{listing}
-
-    % 而在需要权限校验的接口中，只需如图\ref{fig:api-persmission-example}所示声明即可。
-    % %    而在需要权限校验的接口中，只需按代码段\ref{code:api-persmission-example}所示方式，在对应接口上的装饰器中声明所需要的权限即可。
-    % \begin{figure}
-    %     \centering
-    %     \caption{@RequirePermission装饰器使用示例}
-    %     \label{fig:api-persmission-example}
-    %     \includegraphics[width=0.9\textwidth]{figures/code/api-persmission-example-editor-less-width.png}
-    % \end{figure}
-    % \begin{listing}
-    %     \caption{@RequirePermission装饰器使用示例}
-    %     \label{code:api-persmission-example}
-    %     \begin{jscode}
-    %         @RequirePermission(AuthPermissions.READ)
-    %         @Get('slides/detail/:id')
-    %         async findOne(
-    %         id: number,
-    %         ){
-    %                 //具体实现略
-    %             }
-    %     \end{jscode}
-    % \end{listing}
+    % CodeMirror 6提供专业的Markdown编辑体验：
     \subsection{AI辅助功能}
 
     本平台接入通义千问大模型API，能够方便、高效地生成文本内容和图片素材。
@@ -974,6 +1007,14 @@
     最后以流式输出返回给前端，同时，当用户点击“停止输出”按钮，
     前端会触发一个中止信号，
     后端收到该信号后立即停止流式输出，对话中断。大模型生成大纲的核心代码如图\ref{fig:ai-outline-generate}所示。
+
+    实现效果如图\ref{fig:ai-generate-interface}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/ai-gernerate.png}
+        \caption{智能幻灯片协作平台AI内容生成界面}
+        \label{fig:ai-generate-interface}
+    \end{figure}
     % \begin{enumerate}
     %     \item 用户输入需求：选择主题风格、期望页数、演讲主题、目标受众等关键信息。
     %     \item 可选上传参考文档：平台解析用户上传的PDF、Word或Markdown参考材料，提取关键内容。
@@ -994,7 +1035,6 @@
     %     \label{fig:ai-generate-flowchart}
     % \end{figure}
 
-    
     % 大模型生成大纲的核心代码如代码段\ref{code:ai-outline-generate}所示：
     \begin{figure}[htbp]
         \centering
@@ -1025,7 +1065,7 @@
     % \end{listing}
 
     \subsubsection{文生图}
-    
+
     % \begin{enumerate}
     %     \item 用户输入图像生成提示词（可结合当前幻灯片上下文自动增强）。
     %     \item 平台调用DashScope API（通义千问图像模型，如qwen-image-plus）。
@@ -1035,7 +1075,14 @@
     %     \item 可选：生成多张变体供用户选择，或根据Slidev主题色调进行风格适配。
     % \end{enumerate}
     平台可以根据用户描述生成图像。
-    用户需要在内联编辑器中输入图像提示词，
+    用户需要在内联编辑器中输入图像提示词。
+    如\ref{fig:ai-assistant-interface}
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/ai-assistant.png}
+        \caption{智能幻灯片协作平台AI辅助功能界面}
+        \label{fig:ai-assistant-interface}
+    \end{figure}
     后端调用阿里云的qwen-image-plus模型创建异步图像生成任务，
     我们需要通过任务id轮询获取图像生成的结果，
     由于这个结果是临时保存在阿里云服务器的，
@@ -1043,7 +1090,6 @@
     最终返回对应的图像URL。
     具体代码实现如图\ref{fig:ai-image-generate}所示。
     % 具体流程如图\ref{fig:ai-generate-iamge-flowchart}所示。
-
 
     % \begin{figure}[htbp]
     %     \centering
@@ -1076,9 +1122,22 @@
 
     \subsection{版本控制系统}
 
-    平台会定期保存文档内容到数据库，防止数据丢失，
-    用户也可以自己手动操作，创建版本并添加提交消息，
-    还能一键回滚到任意历史版本，让操作流程更加简单且直观。
+    % 平台会定期保存文档内容到数据库，防止数据丢失，
+    % 用户也可以自己手动操作，创建版本并添加提交消息，
+    % 还能一键回滚到任意历史版本，让操作流程更加简单且直观。
+    系统会定期自动保存文档内容防止数据丢失，用户也可以用Ctrl+S手动保存。
+    使用Ctrl+Shift+S快捷键或点击版本控制面板里的“创建版本”按钮，手动创建版本并添加提交消息。
+    在版本控制面板里可以查看文档的所有历史版本，包括版本号、创建时间、创建者和提交消息。
+    选择两个版本进行差异对比，系统会可视化显示内容的添加、删除和修改部分。
+    选择一个历史版本，点击“回滚到此版本”，文档内容就会恢复到那个状态，回滚操作会生成一个新的版本记录，不会影响原有的历史版本数据。
+
+   实现效果如图\ref{version-control-interface}所示。
+  \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/version-control-wh&bl.png}
+        \caption{智能幻灯片协作平台版本控制界面}
+        \label{fig:version-control-interface}
+    \end{figure}
 
     版本历史记录表（slide\_versions）中记录每个幻灯片的历史版本。
     每次自动保存或用户手动创建版本时，都会把当前幻灯片内容（slides.content）的完整副本写入slide\_versions表，
@@ -1092,8 +1151,44 @@
 
     在前端界面中，通过@types/diff库可视化当前编辑器内容和所选择版本内容的差异，
     差异部分会以删除和新增的样式渲染。
+    \subsection{代码片段管理}
 
+    用户可以很方便地管理和使用自己常用的代码片段，如图\ref{fig:snippets-interface}所示。
+    在编辑器中选中代码内容，右键选择“保存为代码片段”，再输入片段名称和描述信息，代码片段就会保存到用户的个人片段库中。
+    想要插入代码片段时，点击插入菜单里的“代码片段”选项，就能从片段库中选择需要的片段插入到当前光标位置，还可以在编辑器输入代码片段名称的前缀，触发对应代码提示。
+    用户可以在设置页面的代码片段管理界面查看、编辑个人代码片段。
+    % 平台提供代码片段管理系统，支持可复用代码块的存储和插入，如图 \ref{fig:snippets-interface} 所示：
+    % 创建代码片段：在编辑器中选中代码内容，右键选择“保存为代码片段”，输入片段名称和描述信息。代码片段会保存到用户的个人片段库中。
+    % 插入代码片段：在编辑器中点击插入菜单的“代码片段”选项，从片段库中选择需要的代码片段插入到当前光标位置。支持按名称搜索和按语言分类筛选。
+    % 管理片段库：在设置页面的代码片段管理界面中，用户可以查看、编辑、删除和分类管理所有个人代码片段。
 
+    \begin{figure}[!htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/appt/snippets.png}
+        \caption{智能幻灯片协作平台代码片段管理界面}
+        \label{fig:snippets-interface}
+    \end{figure}
+     \subsection{幻灯片空间管理}
+    用户可以利用幻灯片空间来组织和管理幻灯片文档。在工作台界面点击对应按钮，输入空间名称并设置可见性，即可创建空间。
+    空间里的文档为树形结构，通过拖拽就能调整文档的层级关系，平台也提供了全局搜索功能。
+
+    如图\ref{fig:slideSpace-interface}所示。
+        \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/slideSpace.png}
+        \caption{智能幻灯片协作平台幻灯片空间管理界面}
+        \label{fig:slideSpace-interface}
+    \end{figure}
+    
+    \subsection{评论与讨论系统}
+
+    平台里集成评论功能，可以对文档内容讨论和反馈，如图\ref{fig:comment-interface}所示。
+        \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/appt/comment.png}
+        \caption{智能幻灯片协作平台评论系统界面}
+        \label{fig:comment-interface}
+    \end{figure}
 
     % \section{测试与评估}\label{sec:testing-evaluation}
 
