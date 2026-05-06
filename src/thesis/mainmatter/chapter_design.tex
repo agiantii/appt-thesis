@@ -243,47 +243,73 @@
     % 关系型数据：用户、幻灯片、权限等数据具有明确的关系结构，适合使用关系型数据库；
     % 事务支持：MySQL提供完整的事务支持，确保数据的一致性和完整性；
 
-    \subsection{核心表结构}
-    % TODO
-    本平台的核心数据设计如表 \ref{tab:database-tables} 所示：
+    \subsection{数据表设计}
+
+    本平台的核心数据表设计如下所示。
+
+    \subsubsection{users 用户表}
+
+    用户表存储账户信息，包括用户名、密码哈希值、头像URL等主要信息，
+    用户上传的头像图片将存储至OSS（Object Storage Service，对象存储服务），将返回的URL作为用户头像信息。
+    % 同时，每个用户的注册都需要注册码，通过使用registration\_code\_id来记录。
+    如表\ref{tab:users}所示。    
 
     \begin{table}[htbp]
-        \caption{智能幻灯片协作平台核心数据表}
-        \label{tab:database-tables}
+        \caption{users 用户表结构}
+        \label{tab:users}
         \centering
-        \begin{tabular}{lll}
+        \begin{tabular}{llll}
             \toprule
-            表名                  & 中文名称      & 主要功能          \\
+            字段名                   & 数据类型         & 是否允许空 & 说明                    \\
             \midrule
-            users               & 用户表       & 存储用户账户信息和认证数据 \\
-            slide\_spaces       & 幻灯片空间表    & 管理幻灯片集合    \\
-            slides              & 幻灯片表      & 存储具体的幻灯片文档内容  \\
-            slide\_versions     & 版本控制表     & 记录幻灯片的版本历史    \\
-            slide\_user\_roles  & 幻灯片的用户角色表     & 定义用户在幻灯片中的角色  \\
-            slide\_comments     & 评论表       & 存储对幻灯片的评论和回复  \\
-            snippets            & 代码片段表     & 存储用户常用的代码片段   \\
-            registration\_codes & 注册码表      & 管理用户注册码信息     \\
-            slidev\_themes      & Slidev主题表 & 存储Slidev主题配置  \\
-            slidev\_plugins     & Slidev插件表 & 存储Slidev插件配置  \\
-            % likes\_slide        & 幻灯片点赞表    & 记录用户对幻灯片的点赞   \\
-            % likes\_space        & 空间点赞表     & 记录用户对空间的点赞    \\
+            id                     & bigint       & 否      & 用户唯一主键                \\
+            username               & varchar(50)  & 否      & 用户名                   \\
+            email                  & varchar(100) & 否      & 邮箱地址                  \\
+            password\_hash         & varchar(255) & 否      & 密码哈希值                 \\
+            avatar\_url            & varchar(500) & 是      & 头像URL                 \\
+            state                  & tinyint      & 否      & 用户状态（1正常）             \\
+            registration\_code\_id & bigint       & 是      & 使用的注册码ID              \\
+            created\_at            & datetime     & 否      & 创建时间                  \\
+            updated\_at            & datetime     & 否      & 最近更新时间                \\
             \bottomrule
         \end{tabular}
     \end{table}
 
-    \subsection{重点表结构详解}
+    \subsubsection{slide\_spaces 幻灯片空间表}
 
-    本节主要介绍slides（幻灯片表）与slide\_comments（评论表）两张表的字段设计。
+    幻灯片空间表存储幻灯片空间的基本信息，包括空间名称、所有者用户ID等。
+    
+    如表\ref{tab:slide-spaces}所示。
+
+    \begin{table}[htbp]
+        \caption{slide\_spaces 幻灯片空间表结构}
+        \label{tab:slide-spaces}
+        \centering
+        \begin{tabular}{llll}
+            \toprule
+            字段名       & 数据类型         & 是否允许空 & 说明           \\
+            \midrule
+            id         & bigint       & 否      & 空间唯一主键       \\
+            name       & varchar(200) & 否      & 空间名称         \\
+            owner\_id  & bigint       & 否      & 所有者用户ID      \\
+            is\_public & tinyint      & 否      & 是否公开（0私有，1公开） \\
+            created\_at & datetime    & 否      & 创建时间         \\
+            updated\_at & datetime    & 否      & 最近更新时间       \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
 
     \subsubsection{slides 幻灯片表}
 
-    幻灯片表存储每个幻灯片文档的标题、内容与状态信息。
-    slides表通过parent\_id字段自关联，
-    这样，空间内的文档就可以支持任意深度的树形结构。
-    并且由于每个幻灯片空间内的文档只能由该空间所有者创建，
-    表slides的created\_by字段一定和slide\_spaces表的owner\_id字段相同，
-    将created\_by作为冗余字段，可以在部分接口做查询时候减少内联接，增加查询速度。
-    如表\ref{tab:slides} 所示。
+    幻灯片表存储每个文档的标题、内容与状态信息。如表\ref{tab:slides}所示。
+    parent\_id字段自关联到同表id，实现任意深度的树形结构，根节点的parent\_id为NULL。
+    created\_by作为冗余字段（其值等于slide\_spaces表的owner\_id），可在部分查询中减少内联接。
+
+    本平台支持用户拖拽来改调整目录树的结构，此时，目录树结构可能会经常变动。
+    如果引入物化路径，那么我们每次移动一个节点，都需要更新该节点及其所有子孙节点的path字段，这样会大大增加计算复杂度。
+    因此，文档树这边只维护parent\_id字段，移动节点的时候只需要修改该记录的父节点引用。
+    删除文档节点时则通过递归遍历依次删除子节点。
+
 
     \begin{table}[htbp]
         \caption{slides 幻灯片表结构}
@@ -291,100 +317,74 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名              & 数据类型         & 是否允许空                             & 说明              \\
+            字段名            & 数据类型         & 是否允许空 & 说明                   \\
             \midrule
-            id               & bigint       & 否                                 & 文档唯一主键          \\
-            title            & varchar(255) & 否                                 & 文档标题            \\
-            content          & longtext     & 是                                 & 幻灯片 Markdown 正文 \\
-            slide\_space\_id & bigint       & 否                                 & 所属空间ID          \\
-            parent\_id       & bigint       & 是                                 & 父文档ID，根节点为NULL  \\
-            allow\_comment   & tinyint   & 否                                 & 是否允许评论          \\
-            created\_by      & bigint       & 否                                 & 创建者用户ID         \\
-            is\_public       & tinyint   & 否                                 & 是否公开（0私有，1公开）   \\
-            is\_build        & tinyint   & 否                                 & 是否已编译生成预览       \\
-            preview\_url     & varchar(255) & 是                                 & 编译后预览地址         \\
-            created\_at      & datetime     & 否                                 & 创建时间            \\
-            updated\_at      & datetime     & 否                                 & 最近修改时间\\
+            id              & bigint       & 否      & 文档唯一主键               \\
+            title           & varchar(200) & 否      & 文档标题                 \\
+            content         & longtext     & 是      & 幻灯片Markdown正文        \\
+            slide\_space\_id & bigint      & 否      & 所属空间ID               \\
+            parent\_id      & bigint       & 是      & 父文档ID，根节点为NULL       \\
+            allow\_comment  & tinyint      & 否      & 是否允许评论（1允许，0禁止）      \\
+            created\_by     & bigint       & 否      & 创建者用户ID              \\
+            is\_public      & tinyint      & 否      & 是否公开（0私有，1公开）        \\
+            is\_build       & tinyint      & 否      & 是否已编译生成预览            \\
+            preview\_url    & varchar(255) & 是      & 编译后预览地址              \\
+            created\_at     & datetime     & 否      & 创建时间                 \\
+            updated\_at     & datetime     & 否      & 最近修改时间               \\
             \bottomrule
         \end{tabular}
     \end{table}
 
-    % parent\_id是文档的核心字段，自关联到同表的id，实现任意深度的树形结构；
-    % % 根文档的 parent\_id 为 NULL。
-    % % 用户可以通过拖拽来调整文档在目录树的位置，而这种变化
-    % % 平台支持用户通过拖拽方式调整文档在目录树中的位置，即节点的父子关系可动态变更，
-    % % 因此 slides 表仅使用邻接表而不引入物化路径。
-    % allow\_comment 与 is\_public 字段用来控制文档的相关权限，
-    % is\_build 与 preview\_url 字段分别表示文档是否构建以及构建后的url。
+    \subsubsection{slide\_versions 版本控制表}
 
-    \subsubsection{slide\_comments 评论表}
-
-    评论的树形结构通过reply\_id和物化路径（path）实现，
-    如表\ref{tab:slide-comments} 所示。
+    版本控制表记录幻灯片的版本历史，每次保存生成一条新记录，如表\ref{tab:slide-versions}所示。
 
     \begin{table}[htbp]
-        \caption{slide\_comments 评论表结构}
-        \label{tab:slide-comments}
+        \caption{slide\_versions 版本控制表结构}
+        \label{tab:slide-versions}
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名         & 数据类型         & 是否允许空                               & 说明              \\
+            字段名       & 数据类型         & 是否允许空 & 说明         \\
             \midrule
-            id          & bigint       & 否                                     & 评论唯一主键          \\
-            slide\_id   & bigint       & 否                                     & 所属幻灯片ID         \\
-            user\_id    & bigint       & 否                                     & 评论发表者ID         \\
-            content     & text         & 否                                     & 评论正文内容          \\
-            path        & varchar(255) & 是                                     & 根节点到本节点的物化路径    \\
-            reply\_id   & bigint       & 是                                     & 父评论ID，顶层评论为NULL \\
-            created\_at & datetime     & 否                                     & 评论发布时间          \\
+            id         & bigint       & 否      & 版本唯一主键     \\
+            slide\_id  & bigint       & 否      & 所属幻灯片ID    \\
+            content    & longtext     & 是      & 版本内容快照     \\
+            commit\_msg & varchar(500) & 是     & 提交说明       \\
+            created\_by & bigint      & 否      & 创建者用户ID    \\
+            created\_at & datetime    & 否      & 创建时间       \\
             \bottomrule
         \end{tabular}
     \end{table}
 
-    % reply\_id：reply\_id字段指向同表中父评论的id。
-    % 顶层评论的reply\_id为NULL，
-    % 子评论的reply\_id指向其直接相邻的父评论。
-    % % 邻接表写入成本低，插入新评论只需设置父节点引用，无需修改其他记录，适合高频评论写入场景。
-    % 物化路径（path）：path字段存储从根节点到当前节点的完整路径字符串，
-    % 如1-5-12。
-    % 我们可以使用如SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'的SQL查询语句，一次性获取任意评论节点下的所有子孙评论，不需要递归查询；
-    % 删除某条评论及其所有回复时同样也只需要一条如DELETE FROM slide\_comments WHERE path LIKE '1-5-\%'的SQL语句，
-    % 不需要递归删除。
-    % 权限联动控制：
-    % 评论功能受双重权限约束。slides 表中的 allow\_comment 字段由幻灯片所有者控制；
-    % 用户角色须为 commenter 及以上级别（commenter、editor、owner）方可发表评论，viewer 角色仅有只读权限。
+    \subsubsection{slide\_user\_roles 用户角色表}
 
-    \subsubsection{两表设计思路对比}
-
-    slides与slide\_comments都采用树形结构来组织数据，不过它们在节点移动和删除上有显而易见的差别。
-    两者在存储策略上也完全不同，具体对比可见表 \ref{tab:design-contrast}。
-    % slides 与 slide\_comments 均以树形结构组织数据，但两者在节点移动、子树展开和删除三个维度上的使用模式截然不同，由此导致了存储策略的根本差异，具体如表 \ref{tab:design-contrast} 所示。
+    用户角色表定义用户在幻灯片中的角色，实现RBAC权限控制，如表\ref{tab:slide-user-roles}所示。
 
     \begin{table}[htbp]
-        \caption{两表树形存储策略对比}
-        \label{tab:design-contrast}
+        \caption{slide\_user\_roles 用户角色表结构}
+        \label{tab:slide-user-roles}
         \centering
-        \begin{tabular}{lll}
+        \begin{tabular}{llll}
             \toprule
-            操作维度   & slides（文档树）          & slide\_comments（评论树）      \\
+            字段名       & 数据类型     & 是否允许空 & 说明                                 \\
             \midrule
-            节点结构调整 & 需要（支持拖拽排序）           & 不需要（评论发出后不移动）             \\
-            % 子树展开方式 & 逐级展开（按需加载） & 一次性展开整个讨论串 \\
-            子树删除方式 & 递归逐节点删除              & 单条 LIKE 前缀匹配删除   \\
-            树形存储模式 & 仅parent\_id & reply\_id + 物化路径 \\
+            id         & bigint   & 否      & 角色记录主键                             \\
+            slide\_id  & bigint   & 否      & 幻灯片ID                              \\
+            user\_id   & bigint   & 否      & 用户ID                               \\
+            role       & enum     & 否      & 角色（owner/editor/commenter/viewer） \\
+            created\_at & datetime & 否     & 创建时间                               \\
             \bottomrule
         \end{tabular}
     \end{table}
 
-    文档树不使用物化路径的原因：
-    % 为何文档树不使用物化路径？
-    本平台支持用户拖拽来改调整目录树的结构，此时，目录树结构可能会经常变动。
-    如果引入物化路径，那么我们每次移动一个节点，都需要更新该节点及其所有子孙节点的path字段，这样会大大增加计算复杂度。
-    因此，文档树这边只维护parent\_id字段，移动节点的时候只需要修改该记录的父节点引用。
-    删除文档节点时则通过递归遍历依次删除子节点。
+    \subsubsection{slide\_comments 评论表}
 
-    评论树引入物化路径的原因：
-    % 为何评论树引入物化路径？
+    评论表通过reply\_id和path字段实现评论的树形结构。
+    reply\_id指向父评论id，顶层评论的reply\_id为NULL；
+    % path存储从根节点到当前节点的完整路径（如1-5-12），
+    % 可以借助LIKE前缀匹配一次性获取子树的所有节点，避免递归查询。
+
     path字段存储从根节点到当前节点的完整路径字符串，如1-5-12。
     评论一旦发布，它的结构就不会再发生变化。
     当新增一条评论时，只需要把父评论的path加上当前评论的id，就能得到该评论的path。
@@ -396,6 +396,154 @@
     % 同样可以通过类似 DELETE FROM slide\_comments WHERE path LIKE '1-5-\%' 的单条语句搞定，
     % 这样就避免了逐节点递归删除带来的多次数据库往返。物化路径用冗余一个 path 字段作为代价，
     % 把子树查询和删除的复杂度从递归所需的 $O(n)$ 次查询降到了常数次。在评论这种结构固定、子树操作又比较频繁的场景下，这个做法的性价比确实很高。
+    如表\ref{tab:slide-comments}所示。
+
+    \begin{table}[htbp]
+        \caption{slide\_comments 评论表结构}
+        \label{tab:slide-comments}
+        \centering
+        \begin{tabular}{llll}
+            \toprule
+            字段名       & 数据类型          & 是否允许空 & 说明                 \\
+            \midrule
+            id         & bigint        & 否      & 评论唯一主键             \\
+            slide\_id  & bigint        & 否      & 所属幻灯片ID            \\
+            user\_id   & bigint        & 否      & 评论发表者ID            \\
+            content    & text          & 否      & 评论正文内容             \\
+            path       & varchar(1000) & 否      & 根节点到本节点的物化路径       \\
+            reply\_id  & bigint        & 是      & 父评论ID，顶层评论为NULL    \\
+            created\_at & datetime     & 否      & 评论发布时间             \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsubsection{snippets 代码片段表}
+
+    代码片段表用于存储用户创建的代码块，支持跨文档快速复用。每个代码片段关联到特定用户，
+    用户可在编辑幻灯片时检索并插入已保存的片段，避免重复编写相似代码，提升工作效率。
+    如表\ref{tab:snippets}所示。
+
+    \begin{table}[htbp]
+        \caption{snippets 代码片段表结构}
+        \label{tab:snippets}
+        \centering
+        \begin{tabular}{llll}
+            \toprule
+            字段名       & 数据类型         & 是否允许空 & 说明       \\
+            \midrule
+            id         & bigint       & 否      & 片段唯一主键   \\
+            user\_id   & bigint       & 否      & 所属用户ID   \\
+            name       & varchar(100) & 否      & 片段名称     \\
+            content    & text         & 是      & 片段内容     \\
+            created\_at & datetime    & 否      & 创建时间     \\
+            updated\_at & datetime    & 否      & 最近更新时间   \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsubsection{registration\_codes 注册码表}
+
+    注册码表用于管理平台的注册准入机制，系统管理员可生成注册码并分发给目标用户。
+    每个注册码包含有效期和使用状态信息，注册时需校验注册码的有效性和是否已被使用，从而控制用户注册权限。
+    如表\ref{tab:registration-codes}所示。
+
+    \begin{table}[htbp]
+        \caption{registration\_codes 注册码表结构}
+        \label{tab:registration-codes}
+        \centering
+        \begin{tabular}{llll}
+            \toprule
+            字段名        & 数据类型        & 是否允许空 & 说明          \\
+            \midrule
+            id          & bigint      & 否      & 注册码唯一主键     \\
+            code        & varchar(50) & 否      & 注册码字符串      \\
+            is\_used    & tinyint     & 否      & 是否已使用（0未用，1已用） \\
+            used\_by    & bigint      & 是      & 使用者ID       \\
+            used\_at    & datetime    & 是      & 使用时间        \\
+            created\_by & bigint      & 是      & 创建者（管理员ID）   \\
+            created\_at & datetime    & 否      & 创建时间        \\
+            expires\_at & datetime    & 是      & 过期时间        \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsubsection{slidev\_themes 主题表}
+
+    Slidev主题表存储平台可用的主题配置，通过npm包名唯一标识每个主题。
+    用户创建幻灯片时可从已有主题中选择应用，系统根据package\_name拉取对应npm包以加载主题样式，
+    同时也支持管理员后续扩展更多社区或自定义主题。如表\ref{tab:slidev-themes}所示。
+
+    \begin{table}[htbp]
+        \caption{slidev\_themes 主题表结构}
+        \label{tab:slidev-themes}
+        \centering
+        \begin{tabular}{llll}
+            \toprule
+            字段名          & 数据类型         & 是否允许空 & 说明    \\
+            \midrule
+            id            & bigint       & 否      & 主题主键  \\
+            package\_name & varchar(200) & 否      & npm包名 \\
+            name          & varchar(255) & 否      & 主题名称  \\
+            preview\_url  & varchar(500) & 是      & 预览图URL \\
+            created\_at   & datetime     & 否      & 创建时间  \\
+            updated\_at   & datetime     & 否      & 最近更新时间 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \subsubsection{slidev\_plugins 插件表}
+
+    Slidev插件表存储平台可用的插件配置，基于npm生态进行扩展。
+    每个插件通过package\_name唯一标识，用户在排版幻灯片时可选择启用所需插件以增强演示效果，
+    管理员也可根据需求引入新的社区插件。如表\ref{tab:slidev-plugins}所示。
+
+    \begin{table}[htbp]
+        \caption{slidev\_plugins 插件表结构}
+        \label{tab:slidev-plugins}
+        \centering
+        \begin{tabular}{llll}
+            \toprule
+            字段名          & 数据类型         & 是否允许空 & 说明    \\
+            \midrule
+            id            & bigint       & 否      & 插件主键  \\
+            package\_name & varchar(200) & 否      & npm包名 \\
+            name          & varchar(255) & 否      & 插件名称  \\
+            created\_at   & datetime     & 否      & 创建时间  \\
+            updated\_at   & datetime     & 否      & 最近更新时间 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+
+
+
+
+
+    % \subsubsection{两表设计思路对比}
+
+    % slides与slide\_comments都采用树形结构来组织数据，不过它们在节点移动和删除上有显而易见的差别。
+    % 两者在存储策略上也完全不同，具体对比可见表 \ref{tab:design-contrast}。
+    % % slides 与 slide\_comments 均以树形结构组织数据，但两者在节点移动、子树展开和删除三个维度上的使用模式截然不同，由此导致了存储策略的根本差异，具体如表 \ref{tab:design-contrast} 所示。
+
+    % \begin{table}[htbp]
+    %     \caption{两表树形存储策略对比}
+    %     \label{tab:design-contrast}
+    %     \centering
+    %     \begin{tabular}{lll}
+    %         \toprule
+    %         操作维度   & slides（文档树）          & slide\_comments（评论树）      \\
+    %         \midrule
+    %         节点结构调整 & 需要（支持拖拽排序）           & 不需要（评论发出后不移动）             \\
+    %         % 子树展开方式 & 逐级展开（按需加载） & 一次性展开整个讨论串 \\
+    %         子树删除方式 & 递归逐节点删除              & 单条 LIKE 前缀匹配删除   \\
+    %         树形存储模式 & 仅parent\_id & reply\_id + 物化路径 \\
+    %         \bottomrule
+    %     \end{tabular}
+    % \end{table}
+
+
+
+   
 
     \subsection{核心实体关系图}
 
@@ -865,7 +1013,7 @@
     后端调用阿里云的qwen-image-plus模型创建异步图像生成任务，
     我们需要通过任务id轮询获取图像生成的结果，
     由于这个结果是临时保存在阿里云服务器的，
-    我们需要上传生成的图像到阿里云的OSS（Object Storage Service，对象存储服务），
+    我们需要上传生成的图像到阿里云的OSS，
     最终返回对应的图像url。
     具体代码实现如图\ref{fig:ai-image-generate}所示。
     % 具体流程如图\ref{fig:ai-generate-iamge-flowchart}所示。
