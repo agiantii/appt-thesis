@@ -157,6 +157,10 @@
     % 文档绑定：将CodeMirror编辑器与Yjs文档实例进行绑定，实现编辑操作实时同步；
     % WebSocket连接：通过@hocuspocus/provider建立与Hocuspocus服务器之间WebSocket连接；
 
+
+
+
+
     \section{后端架构设计}\label{sec:backend-architecture}
 
     \subsection{NestJS框架}
@@ -740,16 +744,16 @@ validatePermission方法的实现如图\ref{fig:validatePermission}所示。
     \subsection{幻灯片文档创作}
 
     \subsubsection{实时协作具体实现}
-    本平台将幻灯片文档的内容定义为Yjs中的Y.Text类型，并与CodeMirror编辑器绑定，
-    当用户在CodeMirror中编辑内容时，内容的变更会立即转换为Yjs的更新操作，
-    % 同时，来自其他用户的远程更新也能实时反映到编辑器界面。
+    本平台将幻灯片文档的内容定义为Yjs中的Y.Text类型，并通过y-codemirror.next作为桥梁，
+    与CodeMirror编辑器绑定，
+    当用户在CodeMirror中编辑内容时，内容的变更（删除、输入等）会立即转换为Yjs的更新操作，
     所有编辑操作通过WebSocket实时广播，每个客户端仅需传输增量的Yjs update，大大降低带宽消耗。
     后端的Hocuspocus服务器负责接收这些更新，并通过CRDT算法自动合并来自不同用户的并发编辑，
     同时持久化到数据库，
     保证文档在各个用户之间是一致的。
     后端Hocuspocus服务器主要通过图\ref{fig:Hocuspocus}所示中的函数实现后端WebSocket的权限校验、文档加载与持久化，
-    % 后端Hocuspocus服务器主要通过代码段\ref{code:Hocuspocus}中的函数实现后端Webocket的权限校验、文档加载与持久化，
     代码中的注释分别说明了每个钩子内部所实现的功能。
+    由于Y.Text为二进制数据，所以在文档加载和持久化的实现中，都需要与文本数据相互转化。
 
     \begin{figure}[htbp]
         \centering
@@ -758,6 +762,29 @@ validatePermission方法的实现如图\ref{fig:validatePermission}所示。
         % \caption{Hocuspocus提供的生命周期钩子以及实现的功能}
         % \label{fig:Hocuspocus}
         \includegraphics[width=0.9\textwidth]{figures/code/Hocuspocus.png}
+    \end{figure}
+      实时协作前，用户需要在编辑器右上角的协作面板中点击“邀请成员”按钮，
+      输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（owner/editor/commenter/viewer）。    
+    如图\ref{fig:permission-panel-interface}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/permission-panel-pure-white.png}
+        \caption{智能幻灯片协作平台权限管理面板界面}
+        \label{fig:permission-panel-interface}
+    \end{figure}
+
+
+    某个用户编辑文档时，其他用户可以在编辑器中看到其实时的光标位置和选中的内容，不同用户用不同颜色区分。
+    协作面板还会实时显示当前在线的协作者列表，包括头像、用户名和编辑状态，
+    如图\ref{fig:shared-doc-presentation-interface}所示。
+    % 邀请协作者：在编辑器右上角的协作面板中点击“邀请成员”按钮，输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（Owner/Editor/Commenter/Viewer）。
+    % 实时光标追踪：协作者在编辑文档时，其他用户可以在编辑器中看到其实时光标位置和选中内容，不同用户用不同颜色区分。
+    % 在线状态显示：协作面板实时会显示当前在线的协作者列表，包括头像、用户名和编辑状态。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/appt/shared-doc-presentation.png}
+        \caption{智能幻灯片协作平台共享文档演示界面}
+        \label{fig:shared-doc-presentation-interface}
     \end{figure}
     % \begin{listing}[htp]
     %     \caption{Hocuspocus提供的生命周期钩子以及实现的功能}
@@ -877,25 +904,7 @@ validatePermission方法的实现如图\ref{fig:validatePermission}所示。
         \includegraphics[width=0.9\textwidth]{figures/drawio/文档编辑流程图.drawio.png}
     \end{figure}
 
-    实时协作前，用户需要在编辑器右上角的协作面板中点击“邀请成员”按钮，输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（owner/editor/commenter/viewer）。
-    如图\ref{permission-panel-interface}所示。
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.9\textwidth]{figures/appt/permission-panel-pure-white.png}
-        \caption{智能幻灯片协作平台权限管理面板界面}
-        \label{fig:permission-panel-interface}
-    \end{figure}
-    某个用户编辑文档时，其他用户可以在编辑器中看到其实时的光标位置和选中的内容，不同用户用不同颜色区分。
-    协作面板还会实时显示当前在线的协作者列表，包括头像、用户名和编辑状态，如图\ref{fig:shared-doc-presentation-interface}所示。
-    % 邀请协作者：在编辑器右上角的协作面板中点击“邀请成员”按钮，输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（Owner/Editor/Commenter/Viewer）。
-    % 实时光标追踪：协作者在编辑文档时，其他用户可以在编辑器中看到其实时光标位置和选中内容，不同用户用不同颜色区分。
-    % 在线状态显示：协作面板实时会显示当前在线的协作者列表，包括头像、用户名和编辑状态。
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.95\textwidth]{figures/appt/shared-doc-presentation.png}
-        \caption{智能幻灯片协作平台共享文档演示界面}
-        \label{fig:shared-doc-presentation-interface}
-    \end{figure}
+  
     % \begin{figure}[htbp]
     %     \centering
     %     \begin{tikzpicture}[
@@ -975,30 +984,109 @@ validatePermission方法的实现如图\ref{fig:validatePermission}所示。
     % 这种条件分支设计具有以下优势：资源优化：私有文档无需建立WebSocket连接，从而节省服务器资源；性能提升：独立编辑模式减少了网络延迟，能够提供更快的响应速度；灵活适应：能够根据实际协作需求动态调整技术方案；用户体验：保持了编辑界面的一致性，用户无需关注底层技术差异。
 
     % 本平台通过智能化的协作状态判断与模式选择机制，在确保功能完整性的基础上，优化了系统性能与用户体验。这一设计实现了高效且灵活的文档协同编辑解决方案。
-    \subsection{Slidev编辑器}
-
-        CodeMirror 6提供专业的Markdown编辑体验，支持Markdown语法高亮渲染，如标题、列表、链接、代码块等。
-        幻灯片页面用`---`分隔符来创建。
-        右侧预览窗口有Dev和Build两种模式，Dev模式实时显示Slidev实时渲染效果，Build模式展示最终构建好的渲染效果。
-        编辑器还支持多种编程语言的语法高亮，包括JavaScript、TypeScript、Python、Java等，适合技术演示的场景。
-        左侧大纲面板会显示文档结构，点击大纲节点就能快速定位到对应内容，编辑器和预览窗口也会同步滚动到对应的页面。
-        还可以使用以下快捷键组合：
-        Ctrl+S保存当前文档，Ctrl+Shift+S创建新版本，Ctrl+B切换左侧菜单，Ctrl+Alt+B切换右侧预览，Ctrl+I切换AI面板，Ctrl+V插入图片并自动上传到OSS。
-        如图\ref{fig:editor-interface}所示。
-            \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.9\textwidth]{figures/appt/editor.png}
-        \caption{智能幻灯片协作平台编辑器界面}
-        \label{fig:editor-interface}
-    \end{figure}
+    % \subsubsection{Slidev编辑器}
+    %     CodeMirror 6提供专业的Markdown编辑体验，支持Markdown语法高亮渲染，如标题、列表、链接、代码块等。
+    %     幻灯片页面用`---`分隔符来创建。
+    %     右侧预览窗口有Dev和Build两种模式，Dev模式实时显示Slidev实时渲染效果，Build模式展示最终构建好的渲染效果。
+    %     编辑器还支持多种编程语言的语法高亮，包括JavaScript、TypeScript、Python、Java等，适合技术演示的场景。
+    %     左侧大纲面板会显示文档结构，点击大纲节点就能快速定位到对应内容，编辑器和预览窗口也会同步滚动到对应的页面。
+    %     还可以使用以下快捷键组合：
+    %     Ctrl+S保存当前文档，Ctrl+Shift+S创建新版本，Ctrl+B切换左侧菜单，Ctrl+Alt+B切换右侧预览，Ctrl+I切换AI面板，Ctrl+V插入图片并自动上传到OSS。
+    %     如图\ref{fig:editor-interface}所示。
+    %         \begin{figure}[htbp]
+    %     \centering
+    %     \includegraphics[width=0.9\textwidth]{figures/appt/editor.png}
+    %     \caption{智能幻灯片协作平台编辑器界面}
+    %     \label{fig:editor-interface}
+    % \end{figure}
     % CodeMirror 6提供专业的Markdown编辑体验：
+    \subsection{版本控制系统}
+
+    % 平台会定期保存文档内容到数据库，防止数据丢失，
+    % 用户也可以自己手动操作，创建版本并添加提交消息，
+    % 还能一键回滚到任意历史版本，让操作流程更加简单且直观。
+    系统会定期自动保存文档内容防止数据丢失，用户也可以用Ctrl+S手动保存。
+    使用Ctrl+Shift+S快捷键或点击版本控制面板里的“创建版本”按钮，手动创建版本并添加提交消息。
+    在版本控制面板里可以查看文档的所有历史版本，包括版本号、创建时间、创建者和提交消息。
+    选择两个版本进行差异对比，系统会可视化显示内容的添加、删除和修改部分。
+    选择一个历史版本，点击“回滚到此版本”，文档内容就会恢复到那个状态，回滚操作会生成一个新的版本记录，不会影响原有的历史版本数据。
+
+
+    版本历史记录表（slide\_versions）中记录每个幻灯片的历史版本。
+    每次自动保存或用户手动创建版本时，都会把当前幻灯片内容（slides.content）的完整副本写入slide\_versions表，
+    同时记录提交消息（commit\_msg）、创建者（created\_by）和时间戳（created\_at）。
+    slide\_versions通过slide\_id外键关联到slides表，删除幻灯片时，对应的版本记录也会因为外键约束跟着一起删除。
+    幻灯片的Markdown源码通常占用存储空间不大，图片这些资源都存储在OSS服务，所以这样直接存储完整副本的方式也是可以接受的，
+    同时，也正因为存储的时完整副本，进行回滚和查看历史版本时，不需要进行额外的计算。
+    % 这种全量快照方式虽然比增量存储占用更多空间，
+    % 但幻灯片内容通常不超过数百KB，
+    % 其优势在于回滚和对比操作无需重建内容，
+    % 直接读取目标版本即可，实现简单且可靠。
+
+    在前端界面中，通过diff库可视化当前编辑器内容和所选择版本内容的差异，
+    差异部分会以删除和新增的样式渲染。如在某行中，原本的内容为“abc”，被修改为“abd”，
+    则会以删除“abc”以及新增“abd”的形式渲染。
+    如图\ref{fig:version-control-interface}所示。
+      \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/version-control-wh&bl.png}
+        \caption{智能幻灯片协作平台版本控制界面}
+        \label{fig:version-control-interface}
+    \end{figure}
     \subsection{AI辅助功能}
 
-    本平台接入通义千问大模型API，能够方便、高效地生成文本内容和图片素材。
+    本平台接入qwen-plus大模型API，能够方便、高效地生成文本内容和图片素材。
     不仅支持多轮对话、大纲生成，还支持编辑器内联编辑。
     将Slidev官方文档、主题模板以及相关范例加入到AI的知识库中，
     让AI生成的内容符合Slidev的Markdown语法。
 
+    \subsubsection{文生图}
+
+    % \begin{enumerate}
+    %     \item 用户输入图像生成提示词（可结合当前幻灯片上下文自动增强）。
+    %     \item 平台调用DashScope API（通义千问图像模型，如qwen-image-plus）。
+    %     \item 创建异步图像生成任务。
+    %     \item 轮询任务状态，直至生成完成。
+    %     \item 将图像上传至OSS对象存储，返回可直接在Slidev中引用的URL。
+    %     \item 可选：生成多张变体供用户选择，或根据Slidev主题色调进行风格适配。
+    % \end{enumerate}
+
+    后端调用阿里云的qwen-image-plus模型创建异步图像生成任务，
+    我们需要通过任务id轮询获取图像生成的结果，
+    由于这个结果是临时保存在阿里云服务器的，
+    我们需要上传生成的图像到阿里云的OSS，
+    最终返回对应的图像URL。
+    具体代码实现如图\ref{fig:ai-image-generate}所示。
+    % 具体流程如图\ref{fig:ai-generate-iamge-flowchart}所示。
+
+    % \begin{figure}[htbp]
+    %     \centering
+    %     \caption{AI生图流程图}\
+    %     \label{fig:ai-generate-iamge-flowchart}
+    %     \includegraphics[width=0.25\textwidth]{figures/drawio/AI生图流程图.drawio.png}
+    % \end{figure}
+    % 具体实现如代码段\ref{code:ai-image-generate}所示：
+    \begin{figure}[htbp]
+        \centering
+        \caption{大模型文生图核心代码}
+        \label{fig:ai-image-generate}
+        \includegraphics[width=0.9\textwidth]{figures/code/ai-image-generate.png}
+    \end{figure}
+    % \begin{listing}[htbp]
+    %     \caption{大模型文生图核心代码}
+    %     \label{code:ai-image-generate}
+    %     \begin{jscode}
+    %         async generateImage(dto: GenerateImageDto): Promise<string> {
+    %                 const apiKey = this.configService.get<string>('DASHSCOPE_API_KEY');
+    %                 const imageModel = this.configService.get<string>('QWEN_IMAGE_MODEL') || 'qwen-image-plus';
+    %                 if (!apiKey) throw new Error('DASHSCOPE_API_KEY is not configured');
+    %                 // 创建图像生成任务
+    %                 const taskId = await this.createImageTask(apiKey, imageModel, dto.prompt, dto.size);
+    %                 // 轮询获取图像生成结果，并存储到OSS，返回图像URL
+    %                 return this.pollImageTask(taskId, apiKey);
+    %             }
+    %     \end{jscode}
+    % \end{listing}
     \subsubsection{大纲智能生成}
     用户需要设置主题、期望页数、其他要求、标题等，还可以加入自定义的参考文档（md、txt为后缀的纯文本文档），这些需求
     都会转为GenerateOutlineDto。
@@ -1008,13 +1096,13 @@ validatePermission方法的实现如图\ref{fig:validatePermission}所示。
     前端会触发一个中止信号，
     后端收到该信号后立即停止流式输出，对话中断。大模型生成大纲的核心代码如图\ref{fig:ai-outline-generate}所示。
 
-    实现效果如图\ref{fig:ai-generate-interface}所示。
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.9\textwidth]{figures/appt/ai-gernerate.png}
-        \caption{智能幻灯片协作平台AI内容生成界面}
-        \label{fig:ai-generate-interface}
-    \end{figure}
+    % 实现效果如图\ref{fig:ai-generate-interface}所示。
+    % \begin{figure}[htbp]
+    %     \centering
+    %     \includegraphics[width=0.9\textwidth]{figures/appt/ai-gernerate.png}
+    %     \caption{智能幻灯片协作平台AI内容生成界面}
+    %     \label{fig:ai-generate-interface}
+    % \end{figure}
     % \begin{enumerate}
     %     \item 用户输入需求：选择主题风格、期望页数、演讲主题、目标受众等关键信息。
     %     \item 可选上传参考文档：平台解析用户上传的PDF、Word或Markdown参考材料，提取关键内容。
@@ -1064,125 +1152,81 @@ validatePermission方法的实现如图\ref{fig:validatePermission}所示。
     %     \end{jscode}
     % \end{listing}
 
-    \subsubsection{文生图}
 
-    % \begin{enumerate}
-    %     \item 用户输入图像生成提示词（可结合当前幻灯片上下文自动增强）。
-    %     \item 平台调用DashScope API（通义千问图像模型，如qwen-image-plus）。
-    %     \item 创建异步图像生成任务。
-    %     \item 轮询任务状态，直至生成完成。
-    %     \item 将图像上传至OSS对象存储，返回可直接在Slidev中引用的URL。
-    %     \item 可选：生成多张变体供用户选择，或根据Slidev主题色调进行风格适配。
-    % \end{enumerate}
-    平台可以根据用户描述生成图像。
-    用户需要在内联编辑器中输入图像提示词。
-    如\ref{fig:ai-assistant-interface}
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.9\textwidth]{figures/appt/ai-assistant.png}
-        \caption{智能幻灯片协作平台AI辅助功能界面}
-        \label{fig:ai-assistant-interface}
-    \end{figure}
-    后端调用阿里云的qwen-image-plus模型创建异步图像生成任务，
-    我们需要通过任务id轮询获取图像生成的结果，
-    由于这个结果是临时保存在阿里云服务器的，
-    我们需要上传生成的图像到阿里云的OSS，
-    最终返回对应的图像URL。
-    具体代码实现如图\ref{fig:ai-image-generate}所示。
-    % 具体流程如图\ref{fig:ai-generate-iamge-flowchart}所示。
-
-    % \begin{figure}[htbp]
-    %     \centering
-    %     \caption{AI生图流程图}\
-    %     \label{fig:ai-generate-iamge-flowchart}
-    %     \includegraphics[width=0.25\textwidth]{figures/drawio/AI生图流程图.drawio.png}
-    % \end{figure}
-    % 具体实现如代码段\ref{code:ai-image-generate}所示：
-    \begin{figure}[htbp]
-        \centering
-        \caption{大模型文生图核心代码}
-        \label{fig:ai-image-generate}
-        \includegraphics[width=0.9\textwidth]{figures/code/ai-image-generate.png}
-    \end{figure}
-    % \begin{listing}[htbp]
-    %     \caption{大模型文生图核心代码}
-    %     \label{code:ai-image-generate}
-    %     \begin{jscode}
-    %         async generateImage(dto: GenerateImageDto): Promise<string> {
-    %                 const apiKey = this.configService.get<string>('DASHSCOPE_API_KEY');
-    %                 const imageModel = this.configService.get<string>('QWEN_IMAGE_MODEL') || 'qwen-image-plus';
-    %                 if (!apiKey) throw new Error('DASHSCOPE_API_KEY is not configured');
-    %                 // 创建图像生成任务
-    %                 const taskId = await this.createImageTask(apiKey, imageModel, dto.prompt, dto.size);
-    %                 // 轮询获取图像生成结果，并存储到OSS，返回图像URL
-    %                 return this.pollImageTask(taskId, apiKey);
-    %             }
-    %     \end{jscode}
-    % \end{listing}
-
-    \subsection{版本控制系统}
-
-    % 平台会定期保存文档内容到数据库，防止数据丢失，
-    % 用户也可以自己手动操作，创建版本并添加提交消息，
-    % 还能一键回滚到任意历史版本，让操作流程更加简单且直观。
-    系统会定期自动保存文档内容防止数据丢失，用户也可以用Ctrl+S手动保存。
-    使用Ctrl+Shift+S快捷键或点击版本控制面板里的“创建版本”按钮，手动创建版本并添加提交消息。
-    在版本控制面板里可以查看文档的所有历史版本，包括版本号、创建时间、创建者和提交消息。
-    选择两个版本进行差异对比，系统会可视化显示内容的添加、删除和修改部分。
-    选择一个历史版本，点击“回滚到此版本”，文档内容就会恢复到那个状态，回滚操作会生成一个新的版本记录，不会影响原有的历史版本数据。
-
-   实现效果如图\ref{version-control-interface}所示。
-  \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.9\textwidth]{figures/appt/version-control-wh&bl.png}
-        \caption{智能幻灯片协作平台版本控制界面}
-        \label{fig:version-control-interface}
-    \end{figure}
-
-    版本历史记录表（slide\_versions）中记录每个幻灯片的历史版本。
-    每次自动保存或用户手动创建版本时，都会把当前幻灯片内容（slides.content）的完整副本写入slide\_versions表，
-    同时记录提交消息（commit\_msg）、创建者（created\_by）和时间戳（created\_at）。
-    slide\_versions通过slide\_id外键关联到slides表，删除幻灯片时，对应的版本记录也会跟着一起删除。
-    % 幻灯片的Markdown源码通常不超过数百KB，直接存储完整副本的方案也在
-    % 这种全量快照方式虽然比增量存储占用更多空间，
-    % 但幻灯片内容通常不超过数百KB，
-    % 其优势在于回滚和对比操作无需重建内容，
-    % 直接读取目标版本即可，实现简单且可靠。
-
-    在前端界面中，通过@types/diff库可视化当前编辑器内容和所选择版本内容的差异，
-    差异部分会以删除和新增的样式渲染。
+    
     \subsection{代码片段管理}
 
-    用户可以很方便地管理和使用自己常用的代码片段，如图\ref{fig:snippets-interface}所示。
-    在编辑器中选中代码内容，右键选择“保存为代码片段”，再输入片段名称和描述信息，代码片段就会保存到用户的个人片段库中。
-    想要插入代码片段时，点击插入菜单里的“代码片段”选项，就能从片段库中选择需要的片段插入到当前光标位置，还可以在编辑器输入代码片段名称的前缀，触发对应代码提示。
-    用户可以在设置页面的代码片段管理界面查看、编辑个人代码片段。
+    用户可以很方便地管理和使用自己常用的代码片段，
+    编辑器中编辑代码内容，再输入片段名称，保存为代码片段，
+    代码片段就会保存到用户的个人片段库中，如图\ref{fig:snippets-interface}所示。
+    \begin{figure}[!htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/appt/snnipets-management.png}
+        \caption{智能幻灯片协作平台代码片段管理界面}
+        \label{fig:snippets-interface}
+    \end{figure}
+
+    想要插入代码片段时，点击插入菜单里的“代码片段”选项，就能从片段库中选择需要的片段插入到当前光标位置，
+    还可以在编辑器输入代码片段名称的前缀，触发对应代码提示。
+    为实现代码提示功能，编辑器挂载时会调用snippetApi.findAll()获取所有用户自定义的代码片段列表，
+    并注入到CodeMirror的autocompletion配置，之后当用户输入时，就会过滤出snippets数组中name匹配的代码片段。
+    如图\ref{fig:snnipets-intelligence}所示。
+  
+     \begin{figure}[!htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/appt/snnipets-intelligence.png}
+        \caption{代码提示效果}
+        \label{fig:snnipets-intelligence}
+    \end{figure}
+
+    
     % 平台提供代码片段管理系统，支持可复用代码块的存储和插入，如图 \ref{fig:snippets-interface} 所示：
     % 创建代码片段：在编辑器中选中代码内容，右键选择“保存为代码片段”，输入片段名称和描述信息。代码片段会保存到用户的个人片段库中。
     % 插入代码片段：在编辑器中点击插入菜单的“代码片段”选项，从片段库中选择需要的代码片段插入到当前光标位置。支持按名称搜索和按语言分类筛选。
     % 管理片段库：在设置页面的代码片段管理界面中，用户可以查看、编辑、删除和分类管理所有个人代码片段。
 
-    \begin{figure}[!htbp]
-        \centering
-        \includegraphics[width=0.95\textwidth]{figures/appt/snippets.png}
-        \caption{智能幻灯片协作平台代码片段管理界面}
-        \label{fig:snippets-interface}
-    \end{figure}
+
      \subsection{幻灯片空间管理}
-    用户可以利用幻灯片空间来组织和管理幻灯片文档。在工作台界面点击对应按钮，输入空间名称并设置可见性，即可创建空间。
+    用户可以利用幻灯片空间来管理幻灯片文档。
+    % 在工作台界面点击对应按钮，输入空间名称并设置可见性，即可创建空间。
     空间里的文档为树形结构，通过拖拽就能调整文档的层级关系，平台也提供了全局搜索功能。
 
-    如图\ref{fig:slideSpace-interface}所示。
+    文档的树形结构主要由幻灯片文档的parent\_id字段实现，
+    后端返回的数据为扁平化的数据，需要由前端构建为树形结构，
+    代码实现如图\ref{fig:slideSpace-interface}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/code/slides-build-tree.png}
+        \caption{扁平结构转为树形结构的实现代码}
+        \label{fig:slides-build-tree}
+    \end{figure}
+
+    当调整某个文档的层级位置时，
+    只需要更改它的parent\_id即可，例如原先id为1且parent\_id为2的文档需要移动到
+    parent\_id为3的文档下，只需要将它的parent\_id改为3即可。
+
+    实现效果如图\ref{fig:slideSpace-interface}所示。
         \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.9\textwidth]{figures/appt/slideSpace.png}
+        \includegraphics[width=0.9\textwidth]{figures/appt/slideSpace-slide.png}
         \caption{智能幻灯片协作平台幻灯片空间管理界面}
         \label{fig:slideSpace-interface}
     \end{figure}
     
     \subsection{评论与讨论系统}
 
-    平台里集成评论功能，可以对文档内容讨论和反馈，如图\ref{fig:comment-interface}所示。
+    平台里集成评论功能，可以对幻灯片文档内容讨论和反馈，如图\ref{fig:comment-interface}所示。
+    评论的树形结构是由评论表的parent\_id和path字段共同实现的，
+
+    新增评论评论时候，前端主要向后端传入slideId、userId、replyId、content等参数，
+    其中,对于顶层评论而言，replyId为空，而新增评论的path字段由回复的目标评论的path和自身id组成，
+    而评论的id是自增字段，所以需要先存入新增评论的数据，再构建新增评论的path字段，这两个操作不可中断，
+    作者使用事务来保证评论创建和字段更新这两个操作是一气呵成的。
+
+    删除评论时，
+    由于在新增评论的时候，已经维护了每个评论的path字段，所以可以使用如DELETE FROM slide\_comments WHERE path LIKE
+    '1-5-\%'的SQL语句即可实现一键删除该评论以及所有子评论，避免相对复杂的递归删除。
+    
         \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.95\textwidth]{figures/appt/comment.png}
