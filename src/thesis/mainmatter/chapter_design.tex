@@ -291,20 +291,20 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名              & 数据类型         & 约束                                & 说明              \\
+            字段名              & 数据类型         & 是否允许空                             & 说明              \\
             \midrule
-            id               & bigint       & PK，自增                             & 文档唯一主键          \\
-            title            & varchar(255) & NOT NULL                          & 文档标题            \\
-            content          & longtext     & NULLABLE                          & 幻灯片 Markdown 正文 \\
-            slide\_space\_id & bigint       & FK $\rightarrow$ slide\_spaces.id & 所属空间ID          \\
-            parent\_id       & bigint       & FK $\rightarrow$ slides.id        & 父文档ID，根节点为NULL  \\
-            allow\_comment   & tinyint(1)   & DEFAULT 1                         & 是否允许评论          \\
-            created\_by      & bigint       & FK $\rightarrow$ users.id         & 创建者用户ID         \\
-            is\_public       & tinyint(1)   & DEFAULT 0                         & 是否公开（0私有，1公开）   \\
-            is\_build        & tinyint(1)   & DEFAULT 0                         & 是否已编译生成预览       \\
-            preview\_url     & varchar(255) & NULLABLE                          & 编译后预览地址         \\
-            created\_at      & datetime     & NOT NULL                          & 创建时间            \\
-            updated\_at      & datetime     & NOT NULL                          & 最近修改时间          \\
+            id               & bigint       & 否                                 & 文档唯一主键          \\
+            title            & varchar(255) & 否                                 & 文档标题            \\
+            content          & longtext     & 是                                 & 幻灯片 Markdown 正文 \\
+            slide\_space\_id & bigint       & 否                                 & 所属空间ID          \\
+            parent\_id       & bigint       & 是                                 & 父文档ID，根节点为NULL  \\
+            allow\_comment   & tinyint   & 否                                 & 是否允许评论          \\
+            created\_by      & bigint       & 否                                 & 创建者用户ID         \\
+            is\_public       & tinyint   & 否                                 & 是否公开（0私有，1公开）   \\
+            is\_build        & tinyint   & 否                                 & 是否已编译生成预览       \\
+            preview\_url     & varchar(255) & 是                                 & 编译后预览地址         \\
+            created\_at      & datetime     & 否                                 & 创建时间            \\
+            updated\_at      & datetime     & 否                                 & 最近修改时间\\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -328,15 +328,15 @@
         \centering
         \begin{tabular}{llll}
             \toprule
-            字段名         & 数据类型         & 约束                                  & 说明              \\
+            字段名         & 数据类型         & 是否允许空                               & 说明              \\
             \midrule
-            id          & bigint       & PK，自增                               & 评论唯一主键          \\
-            slide\_id   & bigint       & FK $\rightarrow$ slides.id          & 所属幻灯片ID         \\
-            user\_id    & bigint       & FK $\rightarrow$ users.id           & 评论发表者ID         \\
-            content     & text         & NOT NULL                            & 评论正文内容          \\
-            path        & varchar(255) & NULLABLE                            & 根节点到本节点的物化路径    \\
-            reply\_id   & bigint       & FK $\rightarrow$ slide\_comments.id & 父评论ID，顶层评论为NULL \\
-            created\_at & datetime     & NOT NULL                            & 评论发布时间          \\
+            id          & bigint       & 否                                     & 评论唯一主键          \\
+            slide\_id   & bigint       & 否                                     & 所属幻灯片ID         \\
+            user\_id    & bigint       & 否                                     & 评论发表者ID         \\
+            content     & text         & 否                                     & 评论正文内容          \\
+            path        & varchar(255) & 是                                     & 根节点到本节点的物化路径    \\
+            reply\_id   & bigint       & 是                                     & 父评论ID，顶层评论为NULL \\
+            created\_at & datetime     & 否                                     & 评论发布时间          \\
             \bottomrule
         \end{tabular}
     \end{table}
