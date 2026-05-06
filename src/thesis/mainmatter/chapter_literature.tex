@@ -16,9 +16,10 @@
 	\subsection{CRDT算法与操作转换技术}
 
 	实时协作编辑主要技术有冲突复制数据类型（CRDT）算法和操作转换（OT）\cite{SJCM79F193E0431876530855F41675323DC6}。
-	CRDT算法利用它预设的数据结构，保证多个用户协作时操作具有交换性、结合性和幂等性，达到无冲突的最终一致性\cite{preguicca2018conflict}。
+	CRDT算法利用它预设的数据结构，保证多个用户协作时操作具有结合性和幂等性，达到无冲突的最终一致性\cite{preguicca2018conflict}。
 	% CRDT算法通过设计特定的数据结构，保证多用户协作时操作的交换性、结合性和幂等性，从而实现无冲突的最终一致性。
-	OT技术则通过转换并发操作\cite{sun1998operational}来解决冲突，并且需要中心服务器进行协调\cite{takeichi2024coordination}。
+	OT技术则通过转换并发操作来解决冲突，并且需要中心服务器进行协调\cite{takeichi2024coordination}。
+	% OT技术则通过转换并发操作\cite{sun1998operational}来解决冲突，并且需要中心服务器进行协调\cite{takeichi2024coordination}。
 	在现在的Web实时协作领域中，人们常常使用CRDT算法，主要因为它不需要中央节点进行统一调度，且容错能力更强。
 
 	Yjs是一个使用CRDT算法的高性能实时协作库，内置了文档状态同步和冲突解决机制\cite{nicolaescu2015yjs}。
