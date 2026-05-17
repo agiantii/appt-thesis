@@ -43,9 +43,9 @@
     本平台采用了前后端分离的架构。整体架构如图\ref{fig:appt-architecture}所示，包含前端展示层、后端业务层和数据存储层。
     \begin{figure}[htbp]
         \centering
+        \includegraphics[width=0.9\textwidth]{figures/drawio/智能幻灯片协作平台整体架构图.drawio.png}
         \caption{系统技术总体架构}
         \label{fig:appt-architecture}
-        \includegraphics[width=0.9\textwidth]{figures/drawio/智能幻灯片协作平台整体架构图.drawio.png}
     \end{figure}
 
     % \begin{figure}[htbp]
@@ -184,9 +184,9 @@
 
     后端提供RESTful API接口，如表\ref{tab:api-modules}所示：
     \begin{table}[htbp]
+        \centering
         \caption{RESTful API 核心接口模块}
         \label{tab:api-modules}
-        \centering
         \begin{tabular}{lll}
             \toprule
             模块名称     & API 路径前缀                             & 功能描述               \\
@@ -263,9 +263,9 @@
     如表\ref{tab:users}所示。
 
     \begin{table}[htbp]
+        \centering
         \caption{users 用户表结构}
         \label{tab:users}
-        \centering
         \begin{tabular}{llll}
             \toprule
             字段名                    & 数据类型         & 是否允许空 & 说明        \\
@@ -291,9 +291,9 @@
     如表\ref{tab:slide-spaces}所示。
 
     \begin{table}[htbp]
+        \centering
         \caption{slide\_spaces 幻灯片空间表结构}
         \label{tab:slide-spaces}
-        \centering
         \begin{tabular}{llll}
             \toprule
             字段名         & 数据类型         & 是否允许空 & 说明            \\
@@ -320,9 +320,9 @@
     删除文档节点时则通过递归遍历依次删除子节点。
 
     \begin{table}[htbp]
+        \centering
         \caption{slides 幻灯片表结构}
         \label{tab:slides}
-        \centering
         \begin{tabular}{llll}
             \toprule
             字段名              & 数据类型         & 是否允许空 & 说明              \\
@@ -354,9 +354,9 @@
     如表\ref{tab:slide-versions}所示。
 
     \begin{table}[htbp]
+        \centering
         \caption{slide\_versions 版本控制表结构}
         \label{tab:slide-versions}
-        \centering
         \begin{tabular}{llll}
             \toprule
             字段名         & 数据类型         & 是否允许空 & 说明      \\
@@ -380,9 +380,9 @@
     如表\ref{tab:slide-user-roles}所示。
 
     \begin{table}[htbp]
+        \centering
         \caption{slide\_user\_roles 用户角色表结构}
         \label{tab:slide-user-roles}
-        \centering
         \begin{tabular}{llll}
             \toprule
             字段名         & 数据类型     & 是否允许空 & 说明                                \\
@@ -417,9 +417,9 @@
     如表\ref{tab:slide-comments}所示。
 
     \begin{table}[htbp]
+        \centering
         \caption{slide\_comments 评论表结构}
         \label{tab:slide-comments}
-        \centering
         \begin{tabular}{llll}
             \toprule
             字段名         & 数据类型          & 是否允许空 & 说明              \\
@@ -447,9 +447,9 @@
     如表\ref{tab:snippets}所示。
 
     \begin{table}[htbp]
+        \centering
         \caption{snippets 代码片段表结构}
         \label{tab:snippets}
-        \centering
         \begin{tabular}{llll}
             \toprule
             字段名         & 数据类型         & 是否允许空 & 说明     \\
@@ -473,9 +473,9 @@
     如表\ref{tab:registration-codes}所示。
 
     \begin{table}[htbp]
+        \centering
         \caption{registration\_codes 注册码表结构}
         \label{tab:registration-codes}
-        \centering
         \begin{tabular}{llll}
             \toprule
             字段名         & 数据类型        & 是否允许空 & 说明             \\
@@ -502,9 +502,9 @@
     如表\ref{tab:slidev-themes}所示。
 
     \begin{table}[htbp]
+        \centering
         \caption{slidev\_themes 主题表结构}
         \label{tab:slidev-themes}
-        \centering
         \begin{tabular}{llll}
             \toprule
             字段名           & 数据类型         & 是否允许空 & 说明     \\
@@ -528,9 +528,9 @@
     如表\ref{tab:slidev-plugins}所示。
 
     \begin{table}[htbp]
+        \centering
         \caption{slidev\_plugins 插件表结构}
         \label{tab:slidev-plugins}
-        \centering
         \begin{tabular}{llll}
             \toprule
             字段名           & 数据类型         & 是否允许空 & 说明     \\
@@ -571,89 +571,10 @@
     本平台的核心实体关系如图\ref{fig:er-diagram}所示：
     \begin{figure}
         \centering
+        \includegraphics[width=0.9\textwidth]{figures/drawio/核心实体关系图-v2.drawio.png}
         \caption{核心实体关系图}
         \label{fig:er-diagram}
-        \includegraphics[width=0.9\textwidth]{figures/drawio/核心实体关系图-v2.drawio.png}
     \end{figure}
-    % \begin{figure}[!htbp]
-    %     \centering
-    %     \begin{tikzpicture}[
-    %             entity/.style={
-    %                     rectangle, draw, rounded corners, fill=blue!10,
-    %                     align=center, minimum width=3.8cm, minimum height=1.8cm,
-    %                     text width=3.4cm, inner sep=0.4cm, font=\small
-    %                 },
-    %             relationship/.style={
-    %                     diamond, draw, fill=green!10, align=center,
-    %                     minimum width=2.5cm, minimum height=1.4cm, inner sep=0.25cm, font=\small
-    %                 },
-    %             arrow/.style={-, thick},
-    %             label/.style={font=\small},
-    %             scale=0.4, transform shape
-    %         ]
-
-    %         % ==================== 实体节点（松散布局 + 上移调整） ====================
-    %         % 上层
-    %         \node[entity] (user)   at (0, 15) {用户表\\users};
-    %         \node[entity, right=10cm of user] (space) {幻灯片空间表\\slide\_spaces};
-
-    %         % 中层（代码片段表上移）
-    %         \node[entity] (snippet) at (-6.5, 8.5) {代码片段表\\snippets};
-    %         \node[entity] (slide)   at (5, 7)     {幻灯片表\\slides};
-    %         \node[entity, right=8.5cm of slide] (comment) {评论表\\slide\_comments};
-
-    %         % 下层（注册码表大幅上移）
-    %         \node[entity] (version) at (10, -1)    {版本控制表\\slide\_versions};
-    %         \node[entity] (role)    at (-4, -1)    {用户角色表\\slide\_user\_roles};
-    %         \node[entity] (regcode) at (-16.8, 8.8){注册码表\\registration\_codes};
-
-    %         % ==================== 关系节点（菱形） ====================
-    %         \node[relationship] (r_user_space)    at ($(user)!0.5!(space) + (0,-1.2)$) {拥有};
-    %         \node[relationship] (r_space_slide)   at ($(space)!0.5!(slide) + (0,-1.2)$) {包含};
-    %         \node[relationship] (r_slide_version) at ($(slide)!0.5!(version) + (0,-1.1)$) {版本化};
-    %         \node[relationship] (r_user_slide)    at ($(user)!0.5!(slide) + (-2.5,-2)$) {协作};
-    %         \node[relationship] (r_slide_comment) at ($(slide)!0.5!(comment) + (1.3,0)$) {评论};
-    %         \node[relationship] (r_user_role)     at ($(user)!0.5!(role) + (-1.4,-1.7)$) {授权};
-    %         \node[relationship] (r_user_regcode)  at ($(user)!0.5!(regcode) + (-2.2,-2.8)$) {使用};
-    %         \node[relationship] (r_user_snippet)  at ($(user)!0.5!(snippet) + (0,-1.2)$) {创建};
-
-    %         % ==================== 连线（全部改为直线，无箭头） ====================
-    %         % 用户 1:N 拥有 空间
-    %         \draw[arrow] (user) -- node[pos=0.35, above, label] {1} (r_user_space);
-    %         \draw[arrow] (r_user_space) -- node[pos=0.65, above, label] {N} (space);
-
-    %         % 空间 1:N 包含 幻灯片
-    %         \draw[arrow] (space) -- node[pos=0.35, right, label] {1} (r_space_slide);
-    %         \draw[arrow] (r_space_slide) -- node[pos=0.65, right, label] {N} (slide);
-
-    %         % 幻灯片 1:N 版本化
-    %         \draw[arrow] (slide) -- node[pos=0.35, right, label] {1} (r_slide_version);
-    %         \draw[arrow] (r_slide_version) -- node[pos=0.65, right, label] {N} (version);
-
-    %         % 用户 1:N 协作 幻灯片
-    %         \draw[arrow] (user) -- node[pos=0.35, left, label] {1} (r_user_slide);
-    %         \draw[arrow] (r_user_slide) -- node[pos=0.65, above, label] {N} (slide);
-
-    %         % 幻灯片 1:N 评论
-    %         \draw[arrow] (slide) -- node[pos=0.4, above, label] {1} (r_slide_comment);
-    %         \draw[arrow] (r_slide_comment) -- node[pos=0.6, above, label] {N} (comment);
-
-    %         % 用户 1:N 授权 角色
-    %         \draw[arrow] (user) -- node[pos=0.35, left, label] {1} (r_user_role);
-    %         \draw[arrow] (r_user_role) -- node[pos=0.65, right, label] {N} (role);
-
-    %         % 用户 1:N 创建 代码片段
-    %         \draw[arrow] (user) -- node[pos=0.4, left=0.4cm, label] {1} (r_user_snippet);
-    %         \draw[arrow] (r_user_snippet) -- node[pos=0.6, right, label] {N} (snippet);
-
-    %         % 用户 1:N 使用 注册码（直线连接）
-    %         \draw[arrow] (user) -- node[pos=0.38, left=0.5cm, label] {1} (r_user_regcode);
-    %         \draw[arrow] (r_user_regcode) -- node[pos=0.65, left, label] {N} (regcode);
-
-    %     \end{tikzpicture}
-    %     \caption{智能幻灯片协作平台核心实体关系图}
-    %     \label{fig:er-diagram}
-    % \end{figure}
     % 主要关系包括：用户与空间：一个用户可以拥有多个幻灯片空间（一对多关系）；空间与幻灯片：一个空间可以包含多个幻灯片（一对多关系）；幻灯片与版本：一个幻灯片可以有多个版本（一对多关系）；用户与权限：一个用户可以在多个幻灯片中拥有不同的权限（多对多关系）；幻灯片与评论：一个幻灯片可以有多个评论（一对多关系）。
 
     \section{核心功能实现}\label{sec:core-features}
@@ -664,9 +585,9 @@
     加载文档时，会校验用户权限，阻止未授权操作。
     文档可以设置为公开或私有，当文档设置为私有时，必须要viewer及以上权限的角色才能够访问文档。
     \begin{table}[htbp]
+        \centering
         \caption{幻灯片角色权限对照表}
         \label{tab:slide-permissions}
-        \centering
         \begin{tabular}{lll}
             \toprule
             角色        & 权限列表                \\
@@ -694,9 +615,9 @@
     % 其守卫的核心权限判断实现如代码段\ref{code:validatePermission}所示，
     \begin{figure}
         \centering
+        \includegraphics[width=0.9\textwidth]{figures/code/validatePermission-editor-small-fixed.png}
         \caption{权限验证核心代码}
         \label{fig:validatePermission}
-        \includegraphics[width=0.9\textwidth]{figures/code/validatePermission-editor-small-fixed.png}
     \end{figure}
     % 如图\ref{fig:api-persmission-example}所示。
     % % 而在需要权限校验的接口中，只需如图\ref{fig:api-persmission-example}所示声明即可。
@@ -766,11 +687,11 @@
 
     \begin{figure}[htbp]
         \centering
-        \caption{Hocuspocus服务端核心代码}
-        \label{fig:Hocuspocus}
         % \caption{Hocuspocus提供的生命周期钩子以及实现的功能}
         % \label{fig:Hocuspocus}
         \includegraphics[width=0.9\textwidth]{figures/code/Hocuspocus.png}
+        \caption{Hocuspocus服务端核心代码}
+        \label{fig:Hocuspocus}
     \end{figure}
     实时协作前，用户需要在编辑器右上角的协作面板中点击“邀请成员”按钮，
     输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（owner/editor/commenter/viewer）。
@@ -910,9 +831,9 @@
     % 本平台的文档协同流程可以用分支结构清晰地表示出来，能够依据文档的协作状态选择独立编辑模式还是实时协作模式。具体流程详见图\ref{fig:collaboration-flowchart}。
     \begin{figure}[htbp]
         \centering
+        \includegraphics[width=0.9\textwidth]{figures/drawio/文档编辑流程图.drawio.png}
         \caption{文档编辑流程图}
         \label{fig:collaboration-flowchart}
-        \includegraphics[width=0.9\textwidth]{figures/drawio/文档编辑流程图.drawio.png}
     \end{figure}
 
     % \begin{figure}[htbp]
@@ -1077,9 +998,9 @@
     % 具体实现如代码段\ref{code:ai-image-generate}所示：
     \begin{figure}[htbp]
         \centering
+        \includegraphics[width=0.9\textwidth]{figures/code/ai-image-generate.png}
         \caption{调用大模型生成图像核心代码}
         \label{fig:ai-image-generate}
-        \includegraphics[width=0.9\textwidth]{figures/code/ai-image-generate.png}
     \end{figure}
     % \begin{listing}[htbp]
     %     \caption{大模型文生图核心代码}
@@ -1107,9 +1028,9 @@
 
     \begin{figure}[htbp]
         \centering
+        \includegraphics[width=0.9\textwidth]{figures/code/ai-outline-generate-editor.png}
         \caption{调用大模型生成大纲核心代码}
         \label{fig:ai-outline-generate}
-        \includegraphics[width=0.9\textwidth]{figures/code/ai-outline-generate-editor.png}
     \end{figure}
     % 实现效果如图\ref{fig:ai-generate-interface}所示。
     % \begin{figure}[htbp]
