@@ -400,6 +400,7 @@
 
     评论表通过reply\_id和path字段实现评论的树形结构。
     reply\_id指向父评论id，顶层评论的reply\_id为NULL。
+    如表\ref{tab:slide-comments}所示。
     % path存储从根节点到当前节点的完整路径（如1-5-12），
     % 可以借助LIKE前缀匹配一次性获取子树的所有节点，避免递归查询。
 
@@ -414,7 +415,7 @@
     % 同样可以通过类似 DELETE FROM slide\_comments WHERE path LIKE '1-5-\%' 的单条语句搞定，
     % 这样就避免了逐节点递归删除带来的多次数据库往返。物化路径用冗余一个 path 字段作为代价，
     % 把子树查询和删除的复杂度从递归所需的 $O(n)$ 次查询降到了常数次。在评论这种结构固定、子树操作又比较频繁的场景下，这个做法的性价比确实很高。
-    如表\ref{tab:slide-comments}所示。
+
 
     \begin{table}[htbp]
         \centering
@@ -678,12 +679,14 @@
     与CodeMirror编辑器绑定，
     当用户在CodeMirror中编辑内容时，内容的变更（删除、输入等）会立即转换为Yjs的更新操作，
     所有编辑操作通过WebSocket实时广播，每个客户端仅需传输增量的Yjs update，大大降低带宽消耗。
-    后端的Hocuspocus服务器负责接收这些更新，并通过CRDT算法自动合并来自不同用户的并发编辑，
+    后端通过Hocuspocus接收这些更新，并通过CRDT算法自动合并来自不同用户的并发编辑，
     同时持久化到数据库，
     保证文档在各个用户之间是一致的。
-    后端Hocuspocus服务器主要通过图\ref{fig:Hocuspocus}所示的函数实现后端WebSocket的权限校验、文档加载与持久化，
-    代码中的注释分别说明了每个钩子内部所实现的功能。
     由于Y.Text为二进制数据，所以在文档加载和持久化的实现中，都需要与文本数据相互转化。
+    后端主要通过Hocuspocus提供的生命周期钩子实现WebSocket的权限校验、文档加载与持久化，
+    代码中的注释分别说明了每个钩子内部所实现的功能，如图\ref{fig:Hocuspocus}所示。
+    % 后端Hocuspocus服务器主要通过图\ref{fig:Hocuspocus}所示的函数实现后端WebSocket的权限校验、文档加载与持久化，
+    % 代码中的注释分别说明了每个钩子内部所实现的功能。
 
     \begin{figure}[htbp]
         \centering
