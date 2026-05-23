@@ -61,15 +61,15 @@
         \caption{集成测试用例：多人实时协作编辑}
         \label{tab:test-collab}
         \centering
-        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
             \toprule
-            用例名称   & 输入项描述          & 测试数据             & 预期结果          & 是否通过 \\
+            测试功能 & 测试描述 & 预期结果 & 测试结果 \\
             \midrule
-            内容实时同步 & 用户A、B同时编辑同一幻灯片 & A输入文字，B观察编辑区     & B的编辑区实时显示A的修改 & 通过   \\
+            内容实时同步 & 用户A输入文字，用户B观察编辑区 & B的编辑区实时显示A的修改 & 通过 \\
             \addlinespace
-            冲突处理   & 两人同时修改同一段落     & A和B在相同位置分别输入不同内容 & 编辑器的内容一致      & 通过   \\
+            冲突处理   & 两人同时修改同一段落，A和B在相同位置分别输入不同内容 & 编辑器的内容一致      & 通过 \\
            
-            光标位置同步        & 用户A移动光标，用户B观察        & A在不同段落间移动光标，B查看编辑区  & B界面实时显示A的光标位置与移动      & 通过   \\
+            光标位置同步        & 用户A在不同段落间移动光标，用户B观察编辑区  & B界面实时显示A的光标位置     & 通过 \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -81,17 +81,17 @@
         \caption{集成测试用例：版本管理与回滚}
         \label{tab:test-version}
         \centering
-        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
             \toprule
-            用例名称    & 输入项描述        & 测试数据            & 预期结果              & 是否通过 \\
+            测试功能    & 测试描述        & 预期结果              & 测试结果 \\
             \midrule
-            保存新版本   & 编辑内容后提交版本    & 修改内容，输入提交信息“v1” & 生成新版本号，历史列表中出现该版本 & 通过   \\
+            保存新版本   & 编辑内容后提交版本，修改内容，输入提交信息“v1” & 生成新版本号，历史列表中出现该版本 & 通过 \\
             \addlinespace
-            查看历史记录  & 打开版本列表       & 点击版本历史          & 显示所有提交信息、时间       & 通过   \\
+            查看历史记录  & 打开版本列表，查看版本历史          & 显示所有提交信息、时间       & 通过 \\
             \addlinespace
-            对比版本差异  & 选择两个版本进行差异比较 & 选择v1和v2         & 正确可视化内容的差异        & 通过   \\
+            对比版本差异  & 选择两个版本进行差异比较       & 正确可视化内容的差异        & 通过 \\
             \addlinespace
-            回滚到指定版本 & 执行回滚到旧版本     & 对v1执行回滚         & 当前内容恢复为v1状态       & 通过   \\
+            回滚到指定版本 & 执行回滚到旧版本，对版本v1执行回滚         & 当前内容恢复为v1状态       & 通过 \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -103,13 +103,13 @@
         \caption{集成测试用例：评论功能}
         \label{tab:test-comment}
         \centering
-        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
             \toprule
-            用例名称 & 输入项描述       & 测试数据               & 预期结果          & 是否通过 \\
+            测试功能 & 测试描述       & 预期结果          & 测试结果 \\
             \midrule
-            添加评论 & 用户在幻灯片下发表评论 & 输入文本“寄存器部分能不能具体一点” & 评论区能显示新增的评论内容 & 通过   \\
+            添加评论 & 用户在幻灯片下发表评论，输入文本“寄存器部分能不能具体一点” & 评论区能显示新增的评论内容 & 通过 \\
             \addlinespace
-            回复评论 & 对已有评论进行回复   & 点击某评论回复，输入“可以的”    & 回复嵌套显示，引用关系正确 & 通过   \\
+            回复评论 & 对已有评论进行回复，点击某评论回复，输入“可以的”    & 回复嵌套显示，引用关系正确 & 通过 \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -121,17 +121,17 @@
         \caption{集成测试用例：权限控制}
         \label{tab:test-permission}
         \centering
-        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
             \toprule
-            用例名称        & 输入项描述                & 测试数据            & 预期结果              & 是否通过 \\
+            测试功能        & 测试描述                & 预期结果              & 测试结果 \\
             \midrule
-            owner权限     & owner角色执行管理、删除等操作    & owner删除幻灯片      & 操作成功              & 通过   \\
+            owner权限     & owner删除幻灯片      & 操作成功              & 通过 \\
             \addlinespace
-            editor权限    & editor角色编辑内容但无管理权限   & editor尝试删除幻灯片   & 操作被拒绝，并提示用户无权操作   & 通过   \\
+            editor权限    & editor尝试删除幻灯片   & 操作被拒绝，并提示用户无权操作   & 通过 \\
             \addlinespace
-            commenter权限 & commenter可查看和评论，不可编辑 & commenter尝试编辑内容 & 编辑区只读，无法编辑        & 通过   \\
+            commenter权限 & commenter尝试编辑内容 & 编辑区只读，无法编辑        & 通过 \\
             \addlinespace
-            viewer权限    & viewer仅可查看和历史，不可评论   & viewer尝试输入评论    & 评论请求被拦截，并提示用户无法评论 & 通过   \\
+            viewer权限    & viewer尝试输入评论    & 评论请求被拦截，并提示用户无法评论 & 通过 \\
             \bottomrule
         \end{tabular}
     \end{table}
