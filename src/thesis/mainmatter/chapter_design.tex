@@ -602,7 +602,7 @@
     \end{table}
     % 文档公开和私有两种设置，用来控制文档的访问范围。
 
-    后端通过NestJS Guard机制实现权限校验，先将SlidePermissionGuard全局注入到NestJS，例如@RequirePermission(AuthPermissions.READ)的装饰器触发，未设置该装饰器的接口则会直接放行。
+    后端通过NestJS Guard机制实现权限校验，先将SlidePermissionGuard全局注入到NestJS，然后由如@RequirePermission(AuthPermissions.READ)的装饰器触发权限校验，未设置该装饰器的接口则会直接放行。
     其中AuthPermissions为enum类型，
     有READ、COMMENT、EDIT、VIEW\_HISTORY、MANAGE、DELETE、VIEW。
     SlidePermissionGuard继承@nestjs/common的CanActivate类，通过canActivate()方法来判断是否校验通过，
@@ -685,7 +685,7 @@
     由于Y.Text为二进制数据，所以在文档加载和持久化的实现中，都需要与文本数据相互转化。
     上述机制主要通过Hocuspocus提供的生命周期钩子实现，
     这些钩子负责WebSocket的权限校验、文档加载与持久化。
-    而各钩子内部的功能已通过代码注释说明，如图 \ref{fig:Hocuspocus} 所示。
+    而各钩子内部的功能已通过代码注释说明，如图\ref{fig:Hocuspocus}所示。
     % 主要通过Hocuspocus提供的生命周期钩子实现WebSocket的权限校验、文档加载与持久化，
     % 代码中的注释分别说明了每个钩子内部所实现的功能，如图\ref{fig:Hocuspocus}所示。
     % 后端Hocuspocus服务器主要通过图\ref{fig:Hocuspocus}所示的函数实现后端WebSocket的权限校验、文档加载与持久化，
@@ -988,8 +988,7 @@
     % \end{enumerate}
 
     后端调用阿里云的qwen-image-plus模型创建异步图像生成任务，
-    并且需要通过任务id轮询获取图像生成的结果
-    由于这个结果是临时保存在阿里云服务器的，
+    并且需要通过任务id轮询获取图像生成的结果。由于这个结果是临时保存在阿里云服务器的，
     所以需要上传生成的图像到阿里云的OSS，
     最终返回对应的图像URL。
     具体代码实现如图\ref{fig:ai-image-generate}所示。
