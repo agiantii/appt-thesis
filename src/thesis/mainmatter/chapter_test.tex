@@ -1,8 +1,33 @@
-\begin{cuzchapter}{系统测试}{chap:test}
+\begin{cuzchapter}{系统测试环境}{chap:test}
     %  \section{测试与评估}\label{sec:testing-evaluation}
 
     为保证系统质量，对核心功能进行了功能测试，重点验证实时协作、权限管理和版本控制等模块功能是否能正常使用，
     同时关注各个模式的使用体验。测试结果显示所有核心功能均正常运行，符合前文的系统需求。
+
+    \section{系统测试环境}
+    为了全面测试本平台的功能以及确保测试结果可重现，本次测试在统一的环境下进行。
+    系统测试环境配置如表\ref{tab:testenv}所示。
+
+\begin{table}[htbp]
+    \centering
+    \caption{系统测试环境配置表}
+    \label{tab:testenv}
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{配置项} & \textbf{环境或版本} \\
+        \midrule
+        处理器   & 12th Gen Intel(R) Core(TM) i7-12700H (2.30 GHz) \\
+        内存     & 16 GB \\ 
+        操作系统 & Windows 11 \\
+        MySQL    & 8.0.30 \\
+        NestJS & 11.0.1 \\
+        浏览器   &  Edge浏览器、谷歌浏览器以及火狐浏览器 \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+    \section{系统功能性测试}
 
     % \section{幻灯片创建与编辑}
     % 幻灯片创建与编辑模块测试包括新建幻灯片、修改标题、编辑内容、保存、删除、编辑器语法高亮及快捷键响应等操作，如\ref{tab:test-slide-crud}表所示。
@@ -54,11 +79,11 @@
     %     \end{tabular}
     % \end{table}
 
-    \section{多人实时协作编辑功能测试}
-    多人实时协作编辑模块利用多开浏览器测试多用户同时编辑时的内容同步等能力，如表\ref{tab:test-collab}所示。
+    \subsection{实时协作功能测试}
+    实时协作模块利用多开浏览器测试多用户同时编辑时的内容同步、协作状态显示等能力，如表\ref{tab:test-collab}所示。
 
 \begin{table}[htbp]
-    \caption{多人实时协作编辑功能测试}
+    \caption{实时协作功能测试}
     \label{tab:test-collab}
     \centering
     \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
@@ -71,12 +96,18 @@
         \addlinespace
         光标位置同步 & 用户A在不同段落间移动光标，用户B观察编辑区 & B界面实时显示A的光标位置 & 通过 \\
         \addlinespace
-        撤销操作   & 用户A输入一段文字后按Ctrl+Z撤销，用户B观察编辑区 & B的编辑区同步回滚到撤销后的状态 & 通过 \\
+        撤销操作同步   & 用户A输入一段文字后按Ctrl+Z撤销，用户B观察编辑区 & B的编辑区同步回滚到撤销后的状态 & 通过 \\
+        \addlinespace
+        用户加入状态显示 & 用户C在A和B已协作时打开同一文档 & A和B的实时协作成员列表中立即出现C & 通过 \\
+         \addlinespace
+        用户离开状态更新 & 用户A关闭编辑页面，用户B保持在线 & B的实时协作成员列表中不再显示A  & 通过 \\
+          \addlinespace
+        用户重连 & 用户A离开后重连，用户B保持在线 & A重连后自动恢复最新文档内容 & 通过 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-    \section{版本管理功能测试}
+    \subsection{版本管理功能测试}
     版本管理模块测试保存版本、查看历史、对比差异和回滚等操作，如表\ref{tab:test-version}所示。
 
     \begin{table}[htbp]
@@ -98,7 +129,7 @@
         \end{tabular}
     \end{table}
 
-    \section{评论功能测试}
+    \subsection{评论功能测试}
     评论功能模块测试在幻灯片下添加评论和回复评论，如表\ref{tab:test-comment}所示。
 
     \begin{table}[htbp]
@@ -116,7 +147,7 @@
         \end{tabular}
     \end{table}
 
-    \section{权限控制功能测试}
+    \subsection{权限控制功能测试}
     权限控制模块测试owner、editor、commenter、viewer四种角色进行操作时是否能正常地校验权限，如表\ref{tab:test-permission}所示。
 
     \begin{table}[htbp]
@@ -163,7 +194,7 @@
     % 测试结果表明，所有核心功能均正常运行，符合设计要求：
     % 幻灯片创建与编辑模块：可正常完成幻灯片的新建、标题修改、内容编辑、保存与删除操作，CodeMirror编辑器语法高亮正常，快捷键操作响应及时；
     % Markdown实时预览模块：编辑器输入内容可实时同步至右侧预览区，Markdown格式（标题、列表、代码块等）渲染正确，无格式错乱；
-    % 多人实时协作编辑模块：通过多浏览器标签页模拟多用户协作场景，实现编辑内容实时同步，可正常处理编辑冲突，保证内容不丢失、延迟控制在合理范围；
+    % 实时协作模块：通过多浏览器标签页模拟多用户协作场景，实现编辑内容实时同步，可正常处理编辑冲突，保证内容不丢失、延迟控制在合理范围；
     % 版本管理与回滚模块：可正常保存版本、查看历史版本记录、对比不同版本差异，一键回滚功能可正常执行，版本数据无丢失；
     % 评论与基础权限控制模块：可对幻灯片内容添加评论、回复评论，角色权限（查看、编辑、评论）分配合理，功能执行正常；
     % AI辅助功能模块：可正常使用AI辅助功能进行内容生成和优化，生成内容符合Slidev语法规范，响应延迟较低。
