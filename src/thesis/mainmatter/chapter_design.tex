@@ -37,15 +37,17 @@
     \end{table}
     % 文档公开和私有两种设置，用来控制文档的访问范围。
 
+    用户登录成功后，前端会将token保存在浏览器，之后的每次请求都会带上这个token。
     后端通过NestJS Guard机制实现权限校验，先将SlidePermissionGuard全局注入到NestJS，然后由如@RequirePermission(AuthPermissions.READ)的装饰器触发权限校验，未设置该装饰器的接口则会直接放行。
     其中AuthPermissions为enum类型，
     有READ、COMMENT、EDIT、VIEW\_HISTORY、MANAGE、DELETE、VIEW。
     SlidePermissionGuard继承@nestjs/common的CanActivate类，通过canActivate()方法来判断是否校验通过，
     在这个方法内，会先通过reflector获取到@RequirePermission()装饰器中所需要的权限，
-    同时通过context.switchToHttp().getRequest().user获取上下文中的角色信息，
+    之后通过解析前端传送的token，利用context.switchToHttp().getRequest().user获取上下文中的角色信息，
     之后将以上参数传入validatePermission()方法中校验即可，
     并与装饰器中所声明需要的权限相比对，实现权限校验。
     validatePermission()方法的实现如图\ref{fig:validatePermission}所示。
+    其中，PERMISSIONS类型为Map，键为角色，值为该角色拥有的权限列表。
     % 其守卫的核心权限判断实现如图\ref{fig:validatePermission}所示，
     % @RequirePermission()装饰器触发，未设置该装饰器的接口则会直接放行，
     % 从上下文中获取当前请求的用户角色，并与装饰器中所声明需要的权限相比对，实现权限校验。
@@ -109,10 +111,79 @@
     %     \end{jscode}
     % \end{listing}
     \section{幻灯片创作}
+    \subsection{基于Slidev的幻灯片渲染}
+    本平台基于Slidev将用户的幻灯片文档编译为Web页面，
+    前端将后端返回的URL作为<iframe>标签的src值，实现预览幻灯片的效果。
+    平台的左侧为编辑器以及工具栏，而右侧即为预览区域，
+    如图\ref{fig:editor.png}所示。
+      \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/editor.png}
+        \caption{幻灯片创作区域概览界面}
+        \label{fig:editor.png}
+    \end{figure}
+    %   \begin{figure}[htbp]
+    %     \centering
+    %     \includegraphics[width=0.9\textwidth]{figures/appt/editor-overview-with-slides-tree.png}
+    %     \caption{编辑器概览界面}
+    %     \label{fig:editor-overview-with-slides-tree.png}
+    % \end{figure}
+       \subsection{实时协作}
+    本平台将幻灯片文档的内容定义为Yjs中的Y.Text类型，并通过y-codemirror.next作为桥梁，
+    与CodeMirror编辑器绑定，
+    当用户在CodeMirror中编辑内容时，内容的变更（删除、插入等）会立即转换为Yjs的更新操作，
+    所有编辑操作通过WebSocket实时广播，每个客户端仅需传输增量的Yjs update，大大降低带宽消耗。
+    后端通过Hocuspocus接收这些更新，并通过CRDT算法自动合并来自不同用户的并发编辑，
+    % 同时持久化到数据库，
+    保证文档在各个用户之间是一致的，
+    由于Y.Text为二进制数据，所以在文档加载和持久化的实现中，都需要与文本数据相互转化。
+    上述机制主要通过Hocuspocus提供的生命周期钩子实现，
+    % 这些钩子负责WebSocket的权限校验、文档加载与持久化。
+    而各钩子内部的功能已通过代码注释说明，如图\ref{fig:Hocuspocus}所示。
+    % 主要通过Hocuspocus提供的生命周期钩子实现WebSocket的权限校验、文档加载与持久化，
+    % 代码中的注释分别说明了每个钩子内部所实现的功能，如图\ref{fig:Hocuspocus}所示。
+    % 后端Hocuspocus服务器主要通过图\ref{fig:Hocuspocus}所示的函数实现后端WebSocket的权限校验、文档加载与持久化，
+    % 代码中的注释分别说明了每个钩子内部所实现的功能。
+
+    \begin{figure}[htbp]
+        \centering
+        % \caption{Hocuspocus提供的生命周期钩子以及实现的功能}
+        % \label{fig:Hocuspocus}
+        \includegraphics[width=0.9\textwidth]{figures/code/Hocuspocus.png}
+        \caption{Hocuspocus服务端核心代码}
+        \label{fig:Hocuspocus}
+    \end{figure}
+    实时协作前，用户需要邀请协作者，并授予相应权限，
+    如图\ref{fig:permission-panel-interface}所示。
+    % 实时协作前，用户需要在编辑器右上角的协作面板中点击“邀请成员”按钮，
+    % 输入协作者的用户名（可以通过搜索框搜索用户名）
+    % 并选择角色权限（owner/editor/commenter/viewer）。
+    % 如图\ref{fig:permission-panel-interface}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/permission-panel-pure-white.png}
+        \caption{协作者权限管理面板界面}
+        \label{fig:permission-panel-interface}
+    \end{figure}
+
+    某个用户编辑文档时，其他用户可以在编辑器中看到其实时的光标位置和选中的内容，不同用户用不同颜色区分。
+    协作面板还会实时显示当前在线的协作者列表，包括头像、用户名，
+    如图\ref{fig:shared-doc-presentation-interface}所示。
+    % 邀请协作者：在编辑器右上角的协作面板中点击“邀请成员”按钮，输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（Owner/Editor/Commenter/Viewer）。
+    % 实时光标追踪：协作者在编辑文档时，其他用户可以在编辑器中看到其实时光标位置和选中内容，不同用户用不同颜色区分。
+    % 在线状态显示：协作面板实时会显示当前在线的协作者列表，包括头像、用户名和编辑状态。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/appt/shared-doc-presentation.png}
+        \caption{共享幻灯片文档演示界面}
+        \label{fig:shared-doc-presentation-interface}
+    \end{figure}
+
 \subsection{幻灯片文档编辑流程}
 
-    本平台的幻灯片文档编辑流程可以用分支结构清晰地表示出来，
-    能够依据文档的协作状态选择独立编辑模式还是实时协作模式。
+    本平台能够依据文档的协作状态选择独立编辑模式还是实时协作模式。
+    % 本平台的幻灯片文档编辑流程可以用分支结构清晰地表示出来，
+    % 能够依据文档的协作状态选择独立编辑模式还是实时协作模式。
     由于建立WebSocket连接以及后端文档合并编辑冲突会有一定的性能开销，
     这样的设计可以尽可能兼顾性能和用户的使用体验。
     独立模式下，不需要建立WebSocket连接，会定期自动保存内容，也可以手动保存或是建立版本，
@@ -126,75 +197,7 @@
         \label{fig:collaboration-flowchart}
     \end{figure}
 
-    % \begin{figure}[htbp]
-    %     \centering
-    %     \begin{tikzpicture}[
-    %             node distance=1.0cm and 1.8cm,
-    %             startstop/.style={circle, rounded corners, draw, fill=red!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
-    %             process/.style={rectangle, draw, fill=blue!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
-    %             decision/.style={diamond, draw, fill=green!10, align=center, minimum width=2.2cm, minimum height=1.0cm, font=\scriptsize, text width=1.8cm},
-    %             io/.style={rectangle, draw, fill=yellow!10, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\scriptsize},
-    %             connector/.style={circle, draw, fill=orange!10, align=center, minimum width=0.7cm, minimum height=0.7cm, font=\scriptsize},
-    %             arrow/.style={->, >=stealth, thick},
-    %             label/.style={font=\scriptsize},
-    %             scale=0.75
-    %         ]
-
-    %         % 定义节点
-    %         \node[startstop] (start) {用户打开文档};
-    %         \node[io, below=of start] (load) {加载文档内容\\与权限信息};
-    %         \node[decision, below=of load, yshift=-0.3cm] (check) {文档有\\协作者？};
-
-    %         % 左侧分支：无协作者（独立模式）
-    %         \node[process, left=of check, xshift=-1.2cm] (localEdit) {直接本地编辑\\使用CodeMirror};
-    %         \node[process, below=of localEdit, yshift=-1.2cm] (localSave) {定期保存到\\后端数据库};
-    %         \node[connector, below=of localSave, yshift=-1.2cm] (localEnd) {结束};
-
-    %         % 右侧分支：有协作者（协同模式）
-    %         \node[process, right=of check, xshift=1.2cm] (initWs) {初始化WebSocket\\连接Hocuspocus};
-    %         \node[process, below=of initWs, yshift=-0.5cm] (initYjs) {创建Yjs文档实例\\绑定CodeMirror};
-    %         \node[process, below=of initYjs, yshift=-0.5cm] (sync) {同步文档状态\\使用CRDT算法};
-    %         \node[process, below=of sync, yshift=-0.5cm] (edit) {协同编辑\\实时冲突解决};
-    %         \node[process, below=of edit, yshift=-0.5cm] (persist) {保存到\\后端数据库};
-    %         \node[connector, below=of persist, yshift=-0.5cm] (collabEnd) {结束};
-
-    %         % 连接线
-    %         \draw[arrow] (start) -- (load);
-    %         \draw[arrow] (load) -- (check);
-
-    %         % 左侧分支连接
-    %         \draw[arrow] (check) -- node[above, label] {否} (localEdit);
-    %         \draw[arrow] (localEdit) -- (localSave);
-    %         \draw[arrow] (localSave) -- (localEnd);
-
-    %         % 右侧分支连接
-    %         \draw[arrow] (check) -- node[above, label] {是} (initWs);
-    %         \draw[arrow] (initWs) -- (initYjs);
-    %         \draw[arrow] (initYjs) -- (sync);
-    %         \draw[arrow] (sync) -- (edit);
-    %         \draw[arrow] (edit) -- (persist);
-    %         \draw[arrow] (persist) -- (collabEnd);
-
-    %         % 添加虚线框区分模式
-    %         % 独立编辑模式虚线框
-    %         \coordinate (localBoxNW) at ($(localEdit.north west)+(-0.3,0.3)$);
-    %         \coordinate (localBoxSE) at ($(localSave.south east |- localEnd.south)+(0.3,-0.3)$);
-    %         \draw[dashed, gray, thick] (localBoxNW) rectangle (localBoxSE);
-    %         \coordinate (localLabelPos) at ($(localBoxNW)!0.5!(localBoxSE |- localBoxNW)$);
-    %         \node[gray, above=0.2cm] at (localLabelPos) {独立编辑模式};
-
-    %         % 实时协作模式虚线框
-    %         \coordinate (collabBoxNW) at ($(initWs.north west)+(-0.3,0.3)$);
-    %         \coordinate (collabBoxSE) at ($(persist.south east |- collabEnd.south)+(0.3,-0.3)$);
-    %         \draw[dashed, gray, thick] (collabBoxNW) rectangle (collabBoxSE);
-    %         \coordinate (collabLabelPos) at ($(collabBoxNW)!0.5!(collabBoxSE |- collabBoxNW)$);
-    %         \node[gray, above=0.2cm] at (collabLabelPos) {实时协作模式};
-
-    %     \end{tikzpicture}
-    %     \caption{智能幻灯片协作平台文档协同流程图}
-    %     \label{fig:collaboration-flowchart}
-    % \end{figure}
-
+  
     % 流程的关键决策依据是文档是否存在协作者，具体实现逻辑如下所述：
 
     % 第一步，文档加载阶段：用户打开文档时，系统加载文档内容和权限信息，同时查询该文档的协作者列表。
@@ -221,53 +224,7 @@
     %     \label{fig:editor-interface}
     % \end{figure}
     % CodeMirror 6提供专业的Markdown编辑体验：
-    \subsection{实时协作具体实现}
-    本平台将幻灯片文档的内容定义为Yjs中的Y.Text类型，并通过y-codemirror.next作为桥梁，
-    与CodeMirror编辑器绑定，
-    当用户在CodeMirror中编辑内容时，内容的变更（删除、插入等）会立即转换为Yjs的更新操作，
-    所有编辑操作通过WebSocket实时广播，每个客户端仅需传输增量的Yjs update，大大降低带宽消耗。
-    后端通过Hocuspocus接收这些更新，并通过CRDT算法自动合并来自不同用户的并发编辑，
-    同时持久化到数据库，
-    保证文档在各个用户之间是一致的，
-    由于Y.Text为二进制数据，所以在文档加载和持久化的实现中，都需要与文本数据相互转化。
-    上述机制主要通过Hocuspocus提供的生命周期钩子实现，
-    这些钩子负责WebSocket的权限校验、文档加载与持久化。
-    而各钩子内部的功能已通过代码注释说明，如图\ref{fig:Hocuspocus}所示。
-    % 主要通过Hocuspocus提供的生命周期钩子实现WebSocket的权限校验、文档加载与持久化，
-    % 代码中的注释分别说明了每个钩子内部所实现的功能，如图\ref{fig:Hocuspocus}所示。
-    % 后端Hocuspocus服务器主要通过图\ref{fig:Hocuspocus}所示的函数实现后端WebSocket的权限校验、文档加载与持久化，
-    % 代码中的注释分别说明了每个钩子内部所实现的功能。
-
-    \begin{figure}[htbp]
-        \centering
-        % \caption{Hocuspocus提供的生命周期钩子以及实现的功能}
-        % \label{fig:Hocuspocus}
-        \includegraphics[width=0.9\textwidth]{figures/code/Hocuspocus.png}
-        \caption{Hocuspocus服务端核心代码}
-        \label{fig:Hocuspocus}
-    \end{figure}
-    实时协作前，用户需要在编辑器右上角的协作面板中点击“邀请成员”按钮，
-    输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（owner/editor/commenter/viewer）。
-    如图\ref{fig:permission-panel-interface}所示。
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.9\textwidth]{figures/appt/permission-panel-pure-white.png}
-        \caption{权限管理面板界面}
-        \label{fig:permission-panel-interface}
-    \end{figure}
-
-    某个用户编辑文档时，其他用户可以在编辑器中看到其实时的光标位置和选中的内容，不同用户用不同颜色区分。
-    协作面板还会实时显示当前在线的协作者列表，包括头像、用户名和编辑状态，
-    如图\ref{fig:shared-doc-presentation-interface}所示。
-    % 邀请协作者：在编辑器右上角的协作面板中点击“邀请成员”按钮，输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（Owner/Editor/Commenter/Viewer）。
-    % 实时光标追踪：协作者在编辑文档时，其他用户可以在编辑器中看到其实时光标位置和选中内容，不同用户用不同颜色区分。
-    % 在线状态显示：协作面板实时会显示当前在线的协作者列表，包括头像、用户名和编辑状态。
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.95\textwidth]{figures/appt/shared-doc-presentation.png}
-        \caption{共享幻灯片文档演示界面}
-        \label{fig:shared-doc-presentation-interface}
-    \end{figure}
+ 
     % \begin{listing}[htp]
     %     \caption{Hocuspocus提供的生命周期钩子以及实现的功能}
     %     \label{code:Hocuspocus}
@@ -396,8 +353,10 @@
     % 直接读取目标版本即可，实现简单且可靠。
 
     在前端界面中，通过diff库可视化当前编辑器内容和所选择版本内容的差异，
-    差异部分会以删除和新增的样式渲染。如在某行中，原本的内容为“abc”，被修改为“abd”，
-    则会以删除“abc”以及新增“abd”的形式渲染。
+    差异部分会以删除和新增的样式渲染。
+    删除的内容显示“-”，新增的内容前显示“+”。
+    如在某行中，原本的内容为“初始化内容”被修改为“修改后的内容”，
+    则会以删除“初始化内容”以及新增“修改后的内容”的形式渲染,
     如图\ref{fig:version-control-interface}所示。
     \begin{figure}[htbp]
         \centering
@@ -573,9 +532,9 @@
     parent\_id为3的文档下，只需要将它的parent\_id改为3即可。
     当需要在某个文档目录下新建文档时，
     只需要在数据库中存入该文档的记录，并将parent\_id设置为目标目录的id即可。
-
     而当需要删除文档时，则需要通过递归删除所有子文档，且父级文档必须要在子文档删除后，才会被删除。
-    实现效果如图\ref{fig:slideSpace-interface}所示。
+    
+    幻灯片空间实现效果如图\ref{fig:slideSpace-interface}所示。
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/slideSpace-slide.png}
