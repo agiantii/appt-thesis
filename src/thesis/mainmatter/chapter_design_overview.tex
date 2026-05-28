@@ -224,6 +224,8 @@
         \end{tabular}
     \end{table}
 
+    \newpage
+
     % 后端提供RESTful API接口 ，主要有以下模块：
     % 认证接口（/api/auth/*）：用户登录、注册、令牌刷新等认证相关操作；
     % 用户管理（/api/users/*）：用户信息查询、更新、密码重置等操作；
@@ -242,19 +244,20 @@
 
     \section{数据库设计}\label{sec:database-design}
 
-    \subsection{数据库选型}
+    % \subsection{数据库选型}
 
-    用户、幻灯片和权限等表之间的关联关系较为清晰，存在明确的“多对多”、“一对多”等实体关系，
-    适合用MySQL这样的关系型数据库管理，
-    不仅管理方便，
-    而且运行速度快、安全可靠性强\cite{lan2004mysql,hu2015mysql}。
+    % 用户、幻灯片和权限等表之间的关联关系较为清晰，存在明确的“多对多”、“一对多”等实体关系，
+    % 适合用MySQL这样的关系型数据库管理，
+    % 不仅管理方便，
+    % 而且运行速度快、安全可靠性强\cite{lan2004mysql,hu2015mysql}。
     % 主要有以下方面的考量：
     % 关系型数据：用户、幻灯片、权限等数据具有明确的关系结构，适合使用关系型数据库；
     % 事务支持：MySQL提供完整的事务支持，确保数据的一致性和完整性；
     \subsection{核心实体关系}
 
-    本平台的核心实体关系如图\ref{fig:er-diagram}所示。
-    \begin{figure}
+    本平台主要包括用户、幻灯片、幻灯片空间、评论、历史版本等实体，
+    其核心实体关系如图\ref{fig:er-diagram}所示。
+    \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/drawio/核心实体关系图-v2.drawio.png}
         \caption{核心实体关系图}
@@ -268,13 +271,14 @@
     % 幻灯片与评论：一个幻灯片可以有多个评论（一对多关系）。
     \subsection{数据表设计}
 
+    \begin{enumerate}
 
-    %\subsubsection{users 用户表}
+    \item users 用户表
 
     用户表存储账户信息，包括用户名、密码哈希值、头像URL等字段，
     用户上传的头像图片将存储至OSS（Object Storage Service，对象存储服务），将返回的URL作为用户头像信息。
     % 同时，每个用户的注册都需要注册码，通过使用registration\_code\_id来记录。
-    如表\ref{tab:users}所示。
+    用户表结构如表\ref{tab:users}所示。
 
     \begin{table}[htbp]
         \centering
@@ -297,14 +301,14 @@
         \end{tabular}
     \end{table}
 
-    %$1{slide\_spaces 幻灯片空间表}
+    \item slide\_spaces 幻灯片空间表
 
     幻灯片空间表存储幻灯片空间的基本信息，包括空间名称、所有者用户ID等字段，
-    is\_public仅用于表明幻灯片空间的基本信息是否公开，当它为1时，
-    并不代表整个幻灯片空间的所有幻灯片公开，
-    如表\ref{tab:slide-spaces}所示。
+    % is\_public仅用于表明幻灯片空间的基本信息是否公开，当它为1时，
+    % 并不代表整个幻灯片空间的所有幻灯片公开，
+    幻灯片空间表结构如表\ref{tab:slide-spaces}所示。
 
-    \begin{table}
+    \begin{table}[htbp]
         \centering
         \caption{slide\_spaces 幻灯片空间表结构}
         \label{tab:slide-spaces}
@@ -322,17 +326,19 @@
         \end{tabular}
     \end{table}
 
-    %$1{slides 幻灯片表}
+    \item slides 幻灯片表
 
-    幻灯片表存储每个文档的标题、内容与状态信息。如表\ref{tab:slides}所示。
-    parent\_id字段自关联到同表id，实现任意深度的树形结构，根节点的parent\_id为NULL。
+    幻灯片表存储每个幻灯片文档相关信息，包括幻灯片Markdown源码、所属空间ID、编译后预览地址等字段。
+    preview\_url是Slidev构建好的幻灯片预览界面链接。
+    is\_public字段用于说明幻灯片是否公开，未公开时，只有viewer及以上权限的协作者才能访问该链接。
     created\_by作为冗余字段（其值等于slide\_spaces表的owner\_id），可在部分查询中减少内联接。
 
+    parent\_id字段自关联到同表id，实现任意深度的树形结构，根节点的parent\_id为NULL。
     本平台支持用户拖拽来调整目录树的结构，此时，目录树结构可能会经常变动。
     如果引入物化路径，那么用户每次移动一个节点，都需要更新该节点及其所有子孙节点的path字段，这样会大大增加计算复杂度。
     因此，文档树这边只维护parent\_id字段，移动节点的时候只需要修改该记录的父节点引用。
     删除文档节点时则通过递归遍历依次删除子节点。
-
+    幻灯片表结构如表\ref{tab:slides}所示。  
     \begin{table}[htbp]
         \centering
         \caption{slides 幻灯片表结构}
@@ -357,7 +363,7 @@
         \end{tabular}
     \end{table}
 
-    %$1{slide\_versions 版本控制表}
+    \item slide\_versions 版本控制表
 
     版本控制表记录幻灯片的版本历史，
     包括版本内容快照、提交说明、创建者用户ID等字段。
@@ -365,7 +371,7 @@
     每个版本的幻灯片源码都会完整存为一条记录，
     创建者用户ID不仅可以是幻灯片文档的所有者ID，
     也可以是具有编辑权限的协作者的ID，
-    如表\ref{tab:slide-versions}所示。
+    版本控制表结构如表\ref{tab:slide-versions}所示。
 
     \begin{table}[htbp]
         \centering
@@ -385,13 +391,13 @@
         \end{tabular}
     \end{table}
 
-    %$1{slide\_user\_roles 用户角色表}
+    \item slide\_user\_roles 用户角色表
 
     用户角色表定义用户在幻灯片中的角色，
     主要包括幻灯片ID、用户ID、角色等字段，
     % 角色字段为enum，可以为owner、editor、commenter、viewer之一，
     % 用于控制幻灯片协作者的权限。
-    如表\ref{tab:slide-user-roles}所示。
+    用户角色表结构如表\ref{tab:slide-user-roles}所示。
 
     \begin{table}[htbp]
         \centering
@@ -410,19 +416,16 @@
         \end{tabular}
     \end{table}
 
-    %$1{slide\_comments 评论表}
+    \item slide\_comments 评论表
 
     评论表通过reply\_id和path字段实现评论的树形结构。
     reply\_id指向父评论id，顶层评论的reply\_id为NULL。
-    如表\ref{tab:slide-comments}所示。
-    % path存储从根节点到当前节点的完整路径（如1-5-12），
-    % 可以借助LIKE前缀匹配一次性获取子树的所有节点，避免递归查询。
-
     path字段存储从根节点到当前节点的完整路径字符串，如1-5-12。评论一旦发布，它的结构就不会再发生变化。
     当新增一条评论时，只需要把父评论的path加上当前评论的id，就能得到该评论的path。开发者可以使用如SELECT * FROM
     slide\_comments WHERE path LIKE '1-5-\%'的SQL查询语句，一次性获取任意评论节点下的所有子孙评论，不需要递归查询；
     删除某条评论及其所有回复时同样也只需要一条如DELETE FROM slide\_comments WHERE path LIKE
     '1-5-\%'的SQL语句，不需要递归删除。
+    评论表结构如表\ref{tab:slide-comments}所示。
     % 另外，评论操作中最频繁的两个场景，正好是物化路径比较擅长的：
     % 一个是展开某条评论下的所有回复，这时候只需要执行如SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'这样一条SQL查询，
     % 就可以一次性把整个子树取出来，不用递归；另一个是删除某条评论以及它下面的所有子孙回复，
@@ -450,16 +453,15 @@
         \end{tabular}
     \end{table}
 
-    %$1{snippets 代码片段表}
+    \item snippets 代码片段表
 
-    代码片段表用于存储用户创建的自定义代码片段，包括片段名称、片段内容等字段，
+    代码片段表用于存储用户创建的自定义代码片段，包括所属用户ID、片段名称、片段内容、创建时间等字段，
     片段名称不仅帮助用户区分不同的代码片段，还可以作为编辑器代码提示的检索关键词，
     用户在编辑幻灯片时，编辑器会根据片段名称前缀检索显示需要插入的代码片段。
-    user\_id字段用于表明代码片段的所属用户。
+    代码片段表结构如表\ref{tab:snippets}所示。
     % 避免重复编写相似代码，提升工作效率。
     % 代码片段表用于存储用户创建的代码块，支持跨文档快速复用。每个代码片段关联到特定用户，
     % 用户可在编辑幻灯片时检索并插入已保存的片段，避免重复编写相似代码，提升工作效率。
-    如表\ref{tab:snippets}所示。
 
     \begin{table}[htbp]
         \centering
@@ -479,14 +481,13 @@
         \end{tabular}
     \end{table}
 
-    %$1{registration\_codes 注册码表}
+    \item registration\_codes 注册码表
 
     注册码表用于管理平台的注册码，
-    每个注册码包含有效期、使用状态等信息，
-    用户注册时需校验注册码的有效性以及是否已被使用。
-    且每个注册码只能被使用一次，
-    如表\ref{tab:registration-codes}所示。
-
+    包括注册码字符串 、使用者ID、是否已使用、创建时间、过期时间等字段。
+    因为每个注册码只能使用一次，用户注册时需通过是否已经使用校验注册码的有效性，
+    同时需要通过过期时间来检验注册码是否过期，
+    注册码表结构如表\ref{tab:registration-codes}所示。
     \begin{table}[htbp]
         \centering
         \caption{registration\_codes 注册码表结构}
@@ -506,16 +507,13 @@
         \end{tabular}
     \end{table}
 
-    %$1{slidev\_themes 主题表}
+    \item slidev\_themes 主题表
 
-    Slidev主题表存储平台可用的主题配置，通过npm包名标识每个主题，系统根据npm包名拉取对应npm包加载到系统，
+    Slidev主题表存储平台可用的主题配置，主要包括npm包名、主题名称、主题名称等字段。
+    本平台通过npm包名标识每个主题，系统根据npm包名拉取对应npm包加载到系统，
     如slidev-theme-meetup@1.5.3，它的npm包名为slidev-theme-meetup@1.5.3，
     主题名称为slidev-theme-meetup，而预览图URL用于显示主题的风格和样式，帮助用户挑选自己喜欢的主题。
-    % 用户创建幻灯片时可从已有主题中选择应用，
-    % 系统根据package\_name拉取对应npm包以加载主题样式，
-    % 同时也支持管理员后续扩展更多社区或自定义主题。
-    如表\ref{tab:slidev-themes}所示。
-
+    主题表结构如表\ref{tab:slidev-themes}所示。
     \begin{table}[htbp]
         \centering
         \caption{slidev\_themes 主题表结构}
@@ -534,14 +532,14 @@
         \end{tabular}
     \end{table}
 
-    %$1{slidev\_plugins 插件表}
+    \item slidev\_plugins 插件表
 
-    Slidev插件表存储平台可用的Slidev插件信息，npm包名与插件名称的用途和上文主题表中npm包名与主题名称的用途类似，
+    Slidev插件表存储平台可用的Slidev插件信息，
+    npm包名与插件名称的用途和上文主题表中npm包名与主题名称的用途类似，
     唯一的区别就是没有预览图URL，因为插件作为功能性的拓展，无法通过预览图片详细知道使用效果、如何使用。
     % 每个插件通过package\_name唯一标识，用户在排版幻灯片时可选择启用所需插件以增强演示效果，
     % 管理员也可根据需求引入新的社区插件。
-    如表\ref{tab:slidev-plugins}所示。
-
+    插件表结构如表\ref{tab:slidev-plugins}所示。
     \begin{table}[htbp]
         \centering
         \caption{slidev\_plugins 插件表结构}
@@ -581,5 +579,6 @@
     %     \end{tabular}
     % \end{table}
 
+\end{enumerate}
 
 \end{cuzchapter}
