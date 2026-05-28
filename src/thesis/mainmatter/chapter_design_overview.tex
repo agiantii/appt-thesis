@@ -224,6 +224,8 @@
         \end{tabular}
     \end{table}
 
+    \newpage
+
     % 后端提供RESTful API接口 ，主要有以下模块：
     % 认证接口（/api/auth/*）：用户登录、注册、令牌刷新等认证相关操作；
     % 用户管理（/api/users/*）：用户信息查询、更新、密码重置等操作；
@@ -242,19 +244,20 @@
 
     \section{数据库设计}\label{sec:database-design}
 
-    \subsection{数据库选型}
+    % \subsection{数据库选型}
 
-    用户、幻灯片和权限等表之间的关联关系较为清晰，存在明确的“多对多”、“一对多”等实体关系，
-    适合用MySQL这样的关系型数据库管理，
-    不仅管理方便，
-    而且运行速度快、安全可靠性强\cite{lan2004mysql,hu2015mysql}。
+    % 用户、幻灯片和权限等表之间的关联关系较为清晰，存在明确的“多对多”、“一对多”等实体关系，
+    % 适合用MySQL这样的关系型数据库管理，
+    % 不仅管理方便，
+    % 而且运行速度快、安全可靠性强\cite{lan2004mysql,hu2015mysql}。
     % 主要有以下方面的考量：
     % 关系型数据：用户、幻灯片、权限等数据具有明确的关系结构，适合使用关系型数据库；
     % 事务支持：MySQL提供完整的事务支持，确保数据的一致性和完整性；
     \subsection{核心实体关系}
 
-    本平台的核心实体关系如图\ref{fig:er-diagram}所示。
-    \begin{figure}
+    本平台主要包括用户、幻灯片、幻灯片空间、评论、历史版本等实体，
+    其核心实体关系如图\ref{fig:er-diagram}所示。
+    \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/drawio/核心实体关系图-v2.drawio.png}
         \caption{核心实体关系图}
@@ -269,7 +272,7 @@
     \subsection{数据表设计}
 
 
-    %\subsubsection{users 用户表}
+    \subsubsection{users 用户表}
 
     用户表存储账户信息，包括用户名、密码哈希值、头像URL等字段，
     用户上传的头像图片将存储至OSS（Object Storage Service，对象存储服务），将返回的URL作为用户头像信息。
@@ -297,7 +300,7 @@
         \end{tabular}
     \end{table}
 
-    %$1{slide\_spaces 幻灯片空间表}
+    \subsubsection{slide\_spaces 幻灯片空间表}
 
     幻灯片空间表存储幻灯片空间的基本信息，包括空间名称、所有者用户ID等字段，
     is\_public仅用于表明幻灯片空间的基本信息是否公开，当它为1时，
@@ -322,7 +325,7 @@
         \end{tabular}
     \end{table}
 
-    %$1{slides 幻灯片表}
+    \subsubsection{slides 幻灯片表}
 
     幻灯片表存储每个文档的标题、内容与状态信息。如表\ref{tab:slides}所示。
     parent\_id字段自关联到同表id，实现任意深度的树形结构，根节点的parent\_id为NULL。
@@ -357,7 +360,7 @@
         \end{tabular}
     \end{table}
 
-    %$1{slide\_versions 版本控制表}
+    \subsubsection{slide\_versions 版本控制表}
 
     版本控制表记录幻灯片的版本历史，
     包括版本内容快照、提交说明、创建者用户ID等字段。
@@ -385,7 +388,7 @@
         \end{tabular}
     \end{table}
 
-    %$1{slide\_user\_roles 用户角色表}
+    \subsubsection{slide\_user\_roles 用户角色表}
 
     用户角色表定义用户在幻灯片中的角色，
     主要包括幻灯片ID、用户ID、角色等字段，
@@ -410,7 +413,7 @@
         \end{tabular}
     \end{table}
 
-    %$1{slide\_comments 评论表}
+    \subsubsection{slide\_comments 评论表}
 
     评论表通过reply\_id和path字段实现评论的树形结构。
     reply\_id指向父评论id，顶层评论的reply\_id为NULL。
@@ -450,7 +453,7 @@
         \end{tabular}
     \end{table}
 
-    %$1{snippets 代码片段表}
+    \subsubsection{snippets 代码片段表}
 
     代码片段表用于存储用户创建的自定义代码片段，包括片段名称、片段内容等字段，
     片段名称不仅帮助用户区分不同的代码片段，还可以作为编辑器代码提示的检索关键词，
@@ -479,7 +482,7 @@
         \end{tabular}
     \end{table}
 
-    %$1{registration\_codes 注册码表}
+    \subsubsection{registration\_codes 注册码表}
 
     注册码表用于管理平台的注册码，
     每个注册码包含有效期、使用状态等信息，
@@ -506,7 +509,7 @@
         \end{tabular}
     \end{table}
 
-    %$1{slidev\_themes 主题表}
+    \subsubsection{slidev\_themes 主题表}
 
     Slidev主题表存储平台可用的主题配置，通过npm包名标识每个主题，系统根据npm包名拉取对应npm包加载到系统，
     如slidev-theme-meetup@1.5.3，它的npm包名为slidev-theme-meetup@1.5.3，
@@ -534,7 +537,7 @@
         \end{tabular}
     \end{table}
 
-    %$1{slidev\_plugins 插件表}
+    \subsubsection{slidev\_plugins 插件表}
 
     Slidev插件表存储平台可用的Slidev插件信息，npm包名与插件名称的用途和上文主题表中npm包名与主题名称的用途类似，
     唯一的区别就是没有预览图URL，因为插件作为功能性的拓展，无法通过预览图片详细知道使用效果、如何使用。
