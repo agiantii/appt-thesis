@@ -510,7 +510,7 @@
     \item slidev\_themes 主题表
 
     Slidev主题表存储平台可用的主题配置，主要包括npm包名、主题名称、主题名称等字段。
-    本平台通过npm包名标识每个主题，系统根据npm包名拉取对应npm包加载到系统，
+    本平台通过npm包名标识每个主题，系统初始化时根据npm包名拉取对应npm包加载到系统，
     % 如slidev-theme-meetup@1.5.3，它的npm包名为slidev-theme-meetup@1.5.3，
     % 主题名称为slidev-theme-meetup，而预览图URL用于显示主题的风格和样式，帮助用户挑选自己喜欢的主题。
     主题表结构如表\ref{tab:slidev-themes}所示。
