@@ -219,7 +219,7 @@
             AI 辅助    & /api/ai/*                            & AI 内容生成、图像生成、智能建议等 \\
             主题管理     & /api/theme/*                         & 幻灯片主题的查询、更新等       \\
             插件管理     & /api/plugins/*                       & 幻灯片插件的查询、更新等       \\
-            注册码管理    & /api/registration-codes/*            & 注册码的生成、查询等         \\
+            % 注册码管理    & /api/registration-codes/*            & 注册码的生成、查询等         \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -259,7 +259,7 @@
     其核心实体关系如图\ref{fig:er-diagram}所示。
     \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.9\textwidth]{figures/drawio/核心实体关系图-v2.drawio.png}
+        \includegraphics[width=0.9\textwidth]{figures/drawio/核心实体关系图-v3-without-register-code.drawio}
         \caption{核心实体关系图}
         \label{fig:er-diagram}
     \end{figure}
@@ -293,8 +293,8 @@
             email                  & varchar(100) & 否     & 邮箱地址      \\
             password\_hash         & varchar(255) & 否     & 密码哈希值     \\
             avatar\_url            & varchar(500) & 是     & 头像URL     \\
-            state                  & tinyint      & 否     & 用户状态（1正常） \\
-            registration\_code\_id & bigint       & 是     & 使用的注册码ID  \\
+            % state                  & tinyint      & 否     & 用户状态（1正常） \\
+            % registration\_code\_id & bigint       & 是     & 使用的注册码ID  \\
             created\_at            & datetime     & 否     & 创建时间      \\
             updated\_at            & datetime     & 否     & 最近更新时间    \\
             \bottomrule
@@ -304,8 +304,8 @@
     \item slide\_spaces 幻灯片空间表
 
     幻灯片空间表存储幻灯片空间的基本信息，包括空间名称、所有者用户ID等字段，
-    % is\_public仅用于表明幻灯片空间的基本信息是否公开，当它为1时，
-    % 并不代表整个幻灯片空间的所有幻灯片公开，
+    is\_public仅用于表明幻灯片空间的基本信息是否公开，当它为1时，
+    并不代表整个幻灯片空间的所有幻灯片公开，
     幻灯片空间表结构如表\ref{tab:slide-spaces}所示。
 
     \begin{table}[htbp]
@@ -481,38 +481,38 @@
         \end{tabular}
     \end{table}
 
-    \item registration\_codes 注册码表
+    % \item registration\_codes 注册码表
 
-    注册码表用于管理平台的注册码，
-    包括注册码字符串 、使用者ID、是否已使用、创建时间、过期时间等字段。
-    因为每个注册码只能使用一次，用户注册时需通过是否已经使用校验注册码的有效性，
-    同时需要通过过期时间来检验注册码是否过期，
-    注册码表结构如表\ref{tab:registration-codes}所示。
-    \begin{table}[htbp]
-        \centering
-        \caption{registration\_codes 注册码表结构}
-        \label{tab:registration-codes}
-        \begin{tabular}{llll}
-            \toprule
-            字段名         & 数据类型        & 是否允许空 & 说明             \\
-            \midrule
-            id          & bigint      & 否     & 注册码唯一主键        \\
-            code        & varchar(50) & 否     & 注册码字符串         \\
-            is\_used    & tinyint     & 否     & 是否已使用（0未用，1已用） \\
-            used\_by    & bigint      & 是     & 使用者ID          \\
-            used\_at    & datetime    & 是     & 使用时间           \\
-            % created\_by & bigint      & 是      & 创建者（管理员ID）   \\
-            created\_at & datetime    & 否     & 创建时间           \\ expires\_at & datetime & 是 & 过期时间 \\
-            \bottomrule
-        \end{tabular}
-    \end{table}
+    % 注册码表用于管理平台的注册码，
+    % 包括注册码字符串 、使用者ID、是否已使用、创建时间、过期时间等字段。
+    % 因为每个注册码只能使用一次，用户注册时需通过是否已经使用校验注册码的有效性，
+    % 同时需要通过过期时间来检验注册码是否过期，
+    % 注册码表结构如表\ref{tab:registration-codes}所示。
+    % \begin{table}[htbp]
+    %     \centering
+    %     \caption{registration\_codes 注册码表结构}
+    %     \label{tab:registration-codes}
+    %     \begin{tabular}{llll}
+    %         \toprule
+    %         字段名         & 数据类型        & 是否允许空 & 说明             \\
+    %         \midrule
+    %         id          & bigint      & 否     & 注册码唯一主键        \\
+    %         code        & varchar(50) & 否     & 注册码字符串         \\
+    %         is\_used    & tinyint     & 否     & 是否已使用（0未用，1已用） \\
+    %         used\_by    & bigint      & 是     & 使用者ID          \\
+    %         used\_at    & datetime    & 是     & 使用时间           \\
+    %         % created\_by & bigint      & 是      & 创建者（管理员ID）   \\
+    %         created\_at & datetime    & 否     & 创建时间           \\ expires\_at & datetime & 是 & 过期时间 \\
+    %         \bottomrule
+    %     \end{tabular}
+    % \end{table}
 
     \item slidev\_themes 主题表
 
     Slidev主题表存储平台可用的主题配置，主要包括npm包名、主题名称、主题名称等字段。
     本平台通过npm包名标识每个主题，系统根据npm包名拉取对应npm包加载到系统，
-    如slidev-theme-meetup@1.5.3，它的npm包名为slidev-theme-meetup@1.5.3，
-    主题名称为slidev-theme-meetup，而预览图URL用于显示主题的风格和样式，帮助用户挑选自己喜欢的主题。
+    % 如slidev-theme-meetup@1.5.3，它的npm包名为slidev-theme-meetup@1.5.3，
+    % 主题名称为slidev-theme-meetup，而预览图URL用于显示主题的风格和样式，帮助用户挑选自己喜欢的主题。
     主题表结构如表\ref{tab:slidev-themes}所示。
     \begin{table}[htbp]
         \centering
@@ -535,8 +535,9 @@
     \item slidev\_plugins 插件表
 
     Slidev插件表存储平台可用的Slidev插件信息，
-    npm包名与插件名称的用途和上文主题表中npm包名与主题名称的用途类似，
-    唯一的区别就是没有预览图URL，因为插件作为功能性的拓展，无法通过预览图片详细知道使用效果、如何使用。
+    主要包括npm包名、插件名称等字段。
+    % npm包名与插件名称的用途和上文主题表中npm包名与主题名称的用途类似，
+    % 唯一的区别就是没有预览图URL，因为插件作为功能性的拓展，无法通过预览图片详细知道使用效果、如何使用。
     % 每个插件通过package\_name唯一标识，用户在排版幻灯片时可选择启用所需插件以增强演示效果，
     % 管理员也可根据需求引入新的社区插件。
     插件表结构如表\ref{tab:slidev-plugins}所示。

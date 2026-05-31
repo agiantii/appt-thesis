@@ -19,7 +19,7 @@
     其对应的权限如表\ref{tab:slide-permissions}所示。
     slide\_user\_roles表记录用户在特定幻灯片中的角色和权限，
     加载文档时，会校验用户权限，阻止未授权操作。
-    文档可以设置为公开或私有，当文档设置为私有时，必须要viewer及以上权限的角色才能够访问文档。
+    幻灯片文档可以设置为公开或私有，当文档设置为私有时，必须要viewer及以上权限的角色才能够访问文档。
     \begin{table}[htbp]
         \centering
         \caption{幻灯片角色权限对照表}
@@ -111,17 +111,31 @@
     %     \end{jscode}
     % \end{listing}
     \section{幻灯片创作}
-    \subsection{基于Slidev的幻灯片渲染}
+    \subsection{幻灯片预览}
     本平台基于Slidev将用户的幻灯片文档编译为Web页面，
     前端将后端返回的URL作为<iframe>标签的src值，实现预览幻灯片的效果。
-    平台的左侧为编辑器以及工具栏，而右侧即为预览区域，
+    创作区域的左侧为编辑器以及工具栏，而右侧即为预览区域，
     如图\ref{fig:editor.png}所示。
       \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.9\textwidth]{figures/appt/editor.png}
+        \includegraphics[width=0.9\textwidth]{figures/appt/editor-overview-with-slides-tree.png}
         \caption{幻灯片创作区域概览界面}
         \label{fig:editor.png}
     \end{figure}
+
+    幻灯片预览有Dev模式与Build模式，Dev模式下，Slidev需要实时根据幻灯片文档内容实时渲染幻灯片，
+    需要占用端口，为节省系统资源以及保证协作模式下各个用户看到的幻灯片是一致的，
+    对同一个幻灯片，会优先返回已经启动的进程所对应的页面URL，
+    同时定时清理1小时内不再更新的幻灯片所对应的进程。
+    而Build模式下则不会，只返回最后构建的静态页面URL，
+    幻灯片预览处理的流程如图\ref{fig:slide-preview-flowchart}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/drawio/幻灯片渲染流程图.drawio.png}
+        \caption{幻灯片预览处理流程图}
+        \label{fig:slide-preview-flowchart}
+    \end{figure}
+
     %   \begin{figure}[htbp]
     %     \centering
     %     \includegraphics[width=0.9\textwidth]{figures/appt/editor-overview-with-slides-tree.png}
@@ -132,12 +146,10 @@
     本平台将幻灯片文档的内容定义为Yjs中的Y.Text类型，并通过y-codemirror.next作为桥梁，
     与CodeMirror编辑器绑定，
     当用户在CodeMirror中编辑内容时，内容的变更（删除、插入等）会立即转换为Yjs的更新操作，
-    所有编辑操作通过WebSocket实时广播，每个客户端仅需传输增量的Yjs update，大大降低带宽消耗。
+    所有编辑操作通过WebSocket实时广播，每个客户端仅需传输增量的Yjs update，
+    % 大大降低带宽消耗。
     后端通过Hocuspocus接收这些更新，并通过CRDT算法自动合并来自不同用户的并发编辑，
-    % 同时持久化到数据库，
-    保证文档在各个用户之间是一致的，
-    由于Y.Text为二进制数据，所以在文档加载和持久化的实现中，都需要与文本数据相互转化。
-    上述机制主要通过Hocuspocus提供的生命周期钩子实现，
+    持久化、权限认证等功能主要通过Hocuspocus提供的生命周期钩子实现，
     % 这些钩子负责WebSocket的权限校验、文档加载与持久化。
     而各钩子内部的功能已通过代码注释说明，如图\ref{fig:Hocuspocus}所示。
     % 主要通过Hocuspocus提供的生命周期钩子实现WebSocket的权限校验、文档加载与持久化，
@@ -147,12 +159,47 @@
 
     \begin{figure}[htbp]
         \centering
-        % \caption{Hocuspocus提供的生命周期钩子以及实现的功能}
-        % \label{fig:Hocuspocus}
-        \includegraphics[width=0.9\textwidth]{figures/code/Hocuspocus.png}
+        \includegraphics[width=0.9\textwidth]{figures/code/Hocuspocus-all-lg-width.png}
         \caption{Hocuspocus服务端核心代码}
         \label{fig:Hocuspocus}
     \end{figure}
+    % \begin{figure}[htbp]
+    %     \centering
+    %     \includegraphics[width=0.9\textwidth]{figures/code/Hocuspocus.png}
+    %     \caption{Hocuspocus服务端核心代码}
+    %     \label{fig:Hocuspocus}
+    % \end{figure}
+        % \begin{listing}[htp]
+    %     \caption{Hocuspocus提供的生命周期钩子以及实现的功能}
+    %     \label{code:Hocuspocus}
+    %     \begin{jscode}
+    %         this.server = new Server({
+    %                 // 文档初始化钩子：初始化时，从数据库中加载文档
+    %                 async onLoadDocument(data: onLoadDocumentPayload) {},
+    %                 // 文档存储钩子：文档编辑操作合并后，持久化到数据库
+    %                 async onStoreDocument(data: onStoreDocumentPayload) {},
+    %                 // 认证钩子：连接前，验证JWT Token，并校验是否有对应权限
+    %                 async onAuthenticate(data: onAuthenticatePayload) {},
+    %                 // 连接钩子：记录日志
+    %                 async onConnect(data: onConnectPayload) {},
+    %                 // 断开连接钩子：记录日志
+    %                 async onDisconnect(data: onDisconnectPayload) {},
+    %             })
+
+    %     \end{jscode}
+    % \end{listing}
+
+
+    由于Y.Text为二进制数据，所以在文档加载和持久化的实现中，都需要与文本数据相互转化。
+    以Y.Text转为文本数据为例，文档存储钩子的代码实现如图\ref{fig:Hocuspocus-onStoreDocument}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/code/Hocuspocus-onStoreDocument-lg-width.png}
+        \caption{文档存储钩子的代码实现}
+        \label{fig:Hocuspocus-onStoreDocument}
+    \end{figure}
+
+
     实时协作前，用户需要邀请协作者，并授予相应权限，
     如图\ref{fig:permission-panel-interface}所示。
     % 实时协作前，用户需要在编辑器右上角的协作面板中点击“邀请成员”按钮，
@@ -196,7 +243,7 @@
         \caption{文档编辑流程图}
         \label{fig:collaboration-flowchart}
     \end{figure}
-
+    \newpage
   
     % 流程的关键决策依据是文档是否存在协作者，具体实现逻辑如下所述：
 
@@ -329,7 +376,8 @@
 
     % CRDT算法的数学理论保障了系统的正确性与可靠性，从而为本平台提供了稳定且高效的实时协作体验 。
 
-    
+
+
     \section{版本控制系统}
 
     % 平台会定期保存文档内容到数据库，防止数据丢失，
@@ -337,16 +385,24 @@
     % 还能一键回滚到任意历史版本，让操作流程更加简单且直观。
     系统会定期自动保存文档内容防止数据丢失，用户也可以用Ctrl+S手动保存。
     使用Ctrl+Shift+S快捷键或点击版本控制面板里的“创建版本”按钮，手动创建版本并添加提交消息。
-    在版本控制面板里可以查看文档的所有历史版本，包括版本号、创建时间、创建者和提交消息。
-    选择两个版本进行差异对比，系统会可视化显示内容的添加、删除和修改部分。
-    选择一个历史版本，点击“回滚到此版本”，文档内容就会恢复到那个状态，回滚操作会生成一个新的版本记录，不会影响原有的历史版本数据。
+    在版本控制面板里可以查看幻灯片文档的所有历史版本，包括创建时间、创建者和提交消息。
+    版本历史如\ref{fig:version-control-history}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/version-control-history.png}
+        \caption{版本历史界面}
+        \label{fig:version-control-history}
+    \end{figure}
+    
 
-    版本历史记录表（slide\_versions）中记录每个幻灯片的历史版本。
-    每次自动保存或用户手动创建版本时，都会把当前幻灯片内容（slides.content）的完整副本写入slide\_versions表，
-    同时记录提交消息（commit\_msg）、创建者（created\_by）和时间戳（created\_at）。
-    slide\_versions通过slide\_id外键关联到slides表，删除幻灯片时，对应的版本记录也会因为外键约束跟着一起删除。
-    幻灯片的Markdown源码通常占用存储空间不大，图片这些资源都存储在OSS服务，所以这样直接存储完整副本的方式也是可以接受的，
-    同时，也正因为存储的是完整副本，进行回滚和查看历史版本时，不需要进行额外的计算。
+    % 选择两个版本进行差异对比，系统会可视化显示内容的添加、删除和修改部分。
+    % 选择一个历史版本，点击“回滚到此版本”，文档内容就会恢复到那个状态，回滚操作会生成一个新的版本记录，不会影响原有的历史版本数据。
+    % 版本历史记录表（slide\_versions）中记录每个幻灯片的历史版本。
+    % 每次自动保存或用户手动创建版本时，都会把当前幻灯片内容（slides.content）的完整副本写入slide\_versions表，
+    % 同时记录提交消息（commit\_msg）、创建者（created\_by）和时间戳（created\_at）。
+    % slide\_versions通过slide\_id外键关联到slides表，删除幻灯片时，对应的版本记录也会因为外键约束跟着一起删除。
+    % 幻灯片的Markdown源码通常占用存储空间不大，图片这些资源都存储在OSS服务，所以这样直接存储完整副本的方式也是可以接受的，
+    % 同时，也正因为存储的是完整副本，进行回滚和查看历史版本时，不需要进行额外的计算。
     % 这种全量快照方式虽然比增量存储占用更多空间，
     % 但幻灯片内容通常不超过数百KB，
     % 其优势在于回滚和对比操作无需重建内容，
@@ -357,11 +413,11 @@
     删除的内容显示“-”，新增的内容前显示“+”。
     如在某行中，原本的内容为“初始化内容”被修改为“修改后的内容”，
     则会以删除“初始化内容”以及新增“修改后的内容”的形式渲染,
-    如图\ref{fig:version-control-interface}所示。
+    版本对比界面如图\ref{fig:version-control-interface}所示。
     \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.9\textwidth]{figures/appt/version-control-wh&bl.png}
-        \caption{版本控制界面}
+        \includegraphics[width=0.9\textwidth]{figures/appt/version-control-diff-wh&bl.png}
+        \caption{版本对比界面}
         \label{fig:version-control-interface}
     \end{figure}
     \section{智能辅助内容生成}
@@ -386,22 +442,25 @@
     并且需要通过任务id轮询获取图像生成的结果。由于这个结果是临时保存在阿里云服务器的，
     所以需要上传生成的图像到阿里云的OSS，
     最终返回对应的图像URL。
-    具体代码实现如图\ref{fig:ai-image-generate}所示。
-    % 具体流程如图\ref{fig:ai-generate-iamge-flowchart}所示。
+    % 具体代码实现如图\ref{fig:ai-image-generate}所示。
 
-    % \begin{figure}[htbp]
-    %     \centering
-    %     \caption{AI生图流程图}\
-    %     \label{fig:ai-generate-iamge-flowchart}
-    %     \includegraphics[width=0.25\textwidth]{figures/drawio/AI生图流程图.drawio.png}
-    % \end{figure}
-    % 具体实现如代码段\ref{code:ai-image-generate}所示：
+    
+
+    具体流程如图\ref{fig:ai-generate-iamge-flowchart}所示。
+
     \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.9\textwidth]{figures/code/ai-image-generate.png}
-        \caption{调用大模型生成图像核心代码}
-        \label{fig:ai-image-generate}
+        \includegraphics[width=0.5\textwidth]{figures/drawio/AI生图流程图.drawio.png}
+        \caption{AI生图流程图}
+        \label{fig:ai-generate-iamge-flowchart}
     \end{figure}
+    % 具体实现如代码段\ref{code:ai-image-generate}所示：
+    % \begin{figure}[htbp]
+    %     \centering
+    %     \includegraphics[width=0.9\textwidth]{figures/code/ai-image-generate.png}
+    %     \caption{调用大模型生成图像核心代码}
+    %     \label{fig:ai-image-generate}
+    % \end{figure}
     % \begin{listing}[htbp]
     %     \caption{大模型文生图核心代码}
     %     \label{code:ai-image-generate}
@@ -424,21 +483,31 @@
     若加入参考文档，后端会根据参考文档构建额外的提示词，作为大语言模型的输入参数。
     最后以流式输出返回给前端，同时，当用户点击“停止输出”按钮，
     前端会触发一个中止信号，
-    后端收到该信号后立即停止流式输出，对话中断。大模型生成大纲的核心代码如图\ref{fig:ai-outline-generate}所示。
+    后端收到该信号后立即停止流式输出，对话中断。
+    % 大模型生成大纲的核心代码如图\ref{fig:ai-outline-generate}所示。
+    % \begin{figure}[htbp]
+    %     \centering
+    %     \includegraphics[width=0.9\textwidth]{figures/code/ai-outline-generate-editor.png}
+    %     \caption{调用大模型生成大纲核心代码}
+    %     \label{fig:ai-outline-generate}
+    % \end{figure}
+    具体流程如图\ref{fig:ai-generate-flowchart}所示：
 
     \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.9\textwidth]{figures/code/ai-outline-generate-editor.png}
-        \caption{调用大模型生成大纲核心代码}
-        \label{fig:ai-outline-generate}
+        \includegraphics[width=0.5\textwidth]{figures/drawio/AI大纲流程图.drawio.png}
+        \caption{大纲智能生成流程图}
+        \label{fig:ai-generate-flowchart}
     \end{figure}
-    % 实现效果如图\ref{fig:ai-generate-interface}所示。
-    % \begin{figure}[htbp]
-    %     \centering
-    %     \includegraphics[width=0.9\textwidth]{figures/appt/ai-gernerate.png}
-    %     \caption{智能幻灯片协作平台AI内容生成界面}
-    %     \label{fig:ai-generate-interface}
-    % \end{figure}
+
+
+    实现效果如图\ref{fig:ai-generate-interface}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/ai-gernerate-v2.png}
+        \caption{智能幻灯片协作平台AI内容生成界面}
+        \label{fig:ai-generate-interface}
+    \end{figure}
     % \begin{enumerate}
     %     \item 用户输入需求：选择主题风格、期望页数、演讲主题、目标受众等关键信息。
     %     \item 可选上传参考文档：平台解析用户上传的PDF、Word或Markdown参考材料，提取关键内容。
@@ -450,14 +519,6 @@
     %     \item 调用大模型流式生成：采用流式输出（Streaming），实时返回大纲结构·。
     %     \item 后处理：平台对生成的大纲进行结构校验、幻灯片页数控制，并可一键转换为Slidev Markdown格式。
     % \end{enumerate}
-    % 具体流程如图\ref{fig:ai-generate-flowchart}所示：
-
-    % \begin{figure}[htbp]
-    %     \centering
-    %     \includegraphics[width=0.5\textwidth]{figures/drawio/AI大纲流程图.drawio.png}
-    %     \caption{大纲智能生成流程图}
-    %     \label{fig:ai-generate-flowchart}
-    % \end{figure}
 
     % 大模型生成大纲的核心代码如代码段\ref{code:ai-outline-generate}所示：
     % \begin{listing}[htpb]
@@ -481,6 +542,8 @@
     %         }
     %     \end{jscode}
     % \end{listing}
+
+    \newpage
 
     \section{代码片段管理}
 
@@ -512,12 +575,13 @@
     % 插入代码片段：在编辑器中点击插入菜单的“代码片段”选项，从片段库中选择需要的代码片段插入到当前光标位置。支持按名称搜索和按语言分类筛选。
     % 管理片段库：在设置页面的代码片段管理界面中，用户可以查看、编辑、删除和分类管理所有个人代码片段。
 
+    \newpage
+    
     \section{幻灯片空间管理}
-    用户可以利用幻灯片空间来管理幻灯片文档。
-    % 在工作台界面点击对应按钮，输入空间名称并设置可见性，即可创建空间。
-    空间里的文档为树形结构，通过拖拽就能调整文档的层级关系，平台也提供了全局搜索功能。
+    % 用户可以利用幻灯片空间来管理幻灯片文档。
+    % 空间里的文档为树形结构，通过拖拽就能调整文档的层级关系，平台也提供了全局搜索功能。
 
-    文档的树形结构主要由幻灯片文档的parent\_id字段实现，
+    幻灯片文档的树形结构主要由其parent\_id字段实现，
     后端返回的数据为扁平化的数据，需要由前端构建为树形结构，
     代码实现如图\ref{fig:slides-build-tree}所示。
     \begin{figure}[htbp]
@@ -527,13 +591,6 @@
         \label{fig:slides-build-tree}
     \end{figure}
 
-    当调整某个文档的层级位置时，
-    只需要更改它的parent\_id即可，例如原先id为1且parent\_id为2的文档需要移动到
-    parent\_id为3的文档下，只需要将它的parent\_id改为3即可。
-    当需要在某个文档目录下新建文档时，
-    只需要在数据库中存入该文档的记录，并将parent\_id设置为目标目录的id即可。
-    而当需要删除文档时，则需要通过递归删除所有子文档，且父级文档必须要在子文档删除后，才会被删除。
-    
     幻灯片空间实现效果如图\ref{fig:slideSpace-interface}所示。
     \begin{figure}[htbp]
         \centering
@@ -542,18 +599,31 @@
         \label{fig:slideSpace-interface}
     \end{figure}
 
+    当调整某个文档的层级位置时，
+    只需要更改它的parent\_id即可，例如原先id为1且parent\_id为2的文档需要移动到
+    parent\_id为3的文档下，只需要将它的parent\_id改为3即可。
+    但是需要注意不能将parent\_id设置为自己以及不能移动到到另外一个幻灯片空间中等问题。
+    幻灯片文档移动流程如图\ref{fig:slides-move-flowchart}所示。
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/drawio/幻灯片文档移动流程图.drawio.png}
+        \caption{幻灯片文档移动流程图}
+        \label{fig:slides-move-flowchart}
+    \end{figure}
+
+
+
+    当需要在某个文档目录下新建文档时，
+    只需要在数据库中存入该文档的记录，并将parent\_id设置为目标目录的id即可。
+    而当需要删除文档时，则需要通过递归删除所有子文档，且父级文档必须要在子文档删除后，才会被删除。
+    
+
+
     \section{评论与讨论系统}
 
     平台里集成评论功能，可以对幻灯片文档内容进行讨论和反馈，如图\ref{fig:comment-interface}所示。
     评论的树形结构是由评论表的parent\_id和path字段共同实现的。
-
-    新增评论时，前端主要向后端传入slideId、userId、replyId、content等参数，对于顶层评论而言，replyId为空，而新增评论的path字段由回复的目标评论的path和自身id组成，
-    而评论的id是自增字段，所以需要先存入新增评论的数据，再构建新增评论的path字段，这两个操作不可中断，
-    作者使用事务来保证评论创建和字段更新这两个操作是一气呵成的。
-
-    删除评论时，
-    由于在新增评论的时候，已经维护了每个评论的path字段，所以可以使用如DELETE FROM slide\_comments WHERE path LIKE
-    '1-5-\%'的SQL语句即可实现一键删除该评论以及所有子评论，避免相对复杂的递归删除。
 
     \begin{figure}[htbp]
         \centering
@@ -561,6 +631,27 @@
         \caption{评论系统界面}
         \label{fig:comment-interface}
     \end{figure}
+    
+    对于新增评论，在用户有权限评论时，新增评论需要检查是否同一幻灯片中是否有所回复的评论等情况，
+    新增评论流程如图\ref{fig:add-comment-flowchart}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.6\textwidth]{figures/drawio/新增评论流程图.drawio.png}
+        \caption{新增评论流程图}
+        \label{fig:add-comment-flowchart}
+    \end{figure}
+
+    新增评论时，前端主要向后端传入slideId、userId、replyId、content等参数，
+    对于顶层评论而言，replyId为空，
+    新增评论的path字段由回复的目标评论的path和自身id组成，
+    而评论的id是自增字段，所以需要先存入新增评论的数据，再构建新增评论的path字段，这两个操作不可中断，
+    作者使用事务来保证评论创建和字段更新这两个操作是一气呵成的。
+    
+
+    对于删除评论，
+    由于在新增评论的时候，已经维护了每个评论的path字段，所以可以使用如DELETE FROM slide\_comments WHERE path LIKE
+    '1-5-\%'的SQL语句即可实现一键删除该评论以及所有子评论，避免相对复杂的递归删除。
+
 
     % \section{测试与评估}\label{sec:testing-evaluation}
 
