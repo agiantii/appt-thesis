@@ -14,16 +14,24 @@
 
 
     \section{系统功能结构设计}
+    智能幻灯片协作平台，主要是为了为用户能够方便、高效地创作幻灯片而设计的，
     经过系统需求分析后，
-    可以确定本平台主要实现以下功能：平台登录、幻灯片管理、幻灯片评论、协作者权限管理、幻灯片创作、代码片段管理等功能模块。
+    可以确定本平台主要实现平台登录、幻灯片管理、幻灯片评论、协作者权限管理、幻灯片创作、代码片段管理等功能模块。
     系统功能结构图如图\ref{fig:system-function-structure}所示。
-    \begin{figure}
+    % 而这些功能模块中，幻灯片创作模块是最为核心的，尽可能满足用户在创作幻灯片时的各种需求，
+    % 在协作编辑幻灯片文档前，用户通过协作者权限管理模块来管理协作者的权限，
+    % 同时可以代码片段管理模块管理自定义的代码片段。
+    % 最后通过在幻灯片管理模块以幻灯片空间的方式更方便地管理幻灯片，
+    % 同时通过幻灯片评论来提供一定的反馈和交流，帮助用户进一步提升幻灯片的质量。
+    
+
+    \begin{figure}[htpb]
         \centering
-        \includegraphics[width=0.9\textwidth]{figures/drawio/系统功能结构图.drawio.png}
+        \includegraphics[width=0.9\textwidth]{figures/drawio/系统功能结构图-v2.drawio.png}
         \caption{系统功能结构图}
         \label{fig:system-function-structure}
     \end{figure}
-    
+
     % \section{设计目标}\label{sec:design-goals}
 
     % % \subsection{设计目标}
@@ -236,7 +244,6 @@
     %     \end{tabular}
     % \end{table}
 
-    % \newpage
 
     % 后端提供RESTful API接口 ，主要有以下模块：
     % 认证接口（/api/auth/*）：用户登录、注册、令牌刷新等认证相关操作；
@@ -265,14 +272,15 @@
     % 主要有以下方面的考量：
     % 关系型数据：用户、幻灯片、权限等数据具有明确的关系结构，适合使用关系型数据库；
     % 事务支持：MySQL提供完整的事务支持，确保数据的一致性和完整性；
-    \subsection{核心实体关系}
+    \subsection{数据库E-R图设计}
 
-    本平台主要包括用户、幻灯片、幻灯片空间、评论、历史版本等实体，
-    其核心实体关系如图\ref{fig:er-diagram}所示。
+    本平台主要包括用户、幻灯片、幻灯片空间、评论、历史版本、代码片段等实体，
+    % 同时为了更清晰地展示实体关系，将部分实体属性进行隐藏。
+    数据库E-R图如图\ref{fig:er-diagram}所示。
     \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.9\textwidth]{figures/drawio/核心实体关系图-v3-without-register-code.drawio}
-        \caption{核心实体关系图}
+        \includegraphics[width=0.9\textwidth]{figures/drawio/核心实体关系图-v4-without-register-code.drawio.png}
+        \caption{数据库E-R图}
         \label{fig:er-diagram}
     \end{figure}
     % 主要关系包括：
@@ -337,7 +345,44 @@
             \bottomrule
         \end{tabular}
     \end{table}
+   \item slide\_comments 评论表
+   
+    评论表评论向相关信息，包括评论正文内容、所属幻灯片ID、评论者发表者ID、父评论ID等字段，
+    评论表通过reply\_id和path字段实现评论的树形结构。
+    reply\_id指向父评论id，顶层评论的reply\_id为NULL。
 
+    path字段是评论表的物化路径字段，存储从根节点到当前节点的完整路径字符串，如1-5-12。评论一旦发布，它的结构就不会再发生变化。
+    当新增一条评论时，只需要把父评论的path加上当前评论的id，就能得到该评论的path。作者可以使用如SELECT * FROM
+    slide\_comments WHERE path LIKE '1-5-\%'的SQL查询语句，一次性获取任意评论节点下的所有子孙评论，不需要递归查询；
+    删除某条评论及其所有回复时同样也只需要一条如DELETE FROM slide\_comments WHERE path LIKE
+    '1-5-\%'的SQL语句，不需要递归删除。
+    评论表结构如表\ref{tab:slide-comments}所示。
+    % 另外，评论操作中最频繁的两个场景，正好是物化路径比较擅长的：
+    % 一个是展开某条评论下的所有回复，这时候只需要执行如SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'这样一条SQL查询，
+    % 就可以一次性把整个子树取出来，不用递归；另一个是删除某条评论以及它下面的所有子孙回复，
+    % 同样可以通过类似 DELETE FROM slide\_comments WHERE path LIKE '1-5-\%' 的单条语句搞定，
+    % 这样就避免了逐节点递归删除带来的多次数据库往返。物化路径用冗余一个 path 字段作为代价，
+    % 把子树查询和删除的复杂度从递归所需的 $O(n)$ 次查询降到了常数次。在评论这种结构固定、子树操作又比较频繁的场景下，这个做法的性价比确实很高。
+
+
+    \begin{table}[htbp]
+        \centering
+        \caption{slide\_comments 评论表结构}
+        \label{tab:slide-comments}
+        \begin{tabular}{llll}
+            \toprule
+            字段名         & 数据类型          & 是否允许空 & 说明              \\
+            \midrule
+            id          & bigint        & 否     & 评论唯一主键          \\
+            slide\_id   & bigint        & 否     & 所属幻灯片ID         \\
+            user\_id    & bigint        & 否     & 评论发表者ID         \\
+            content     & text          & 否     & 评论正文内容          \\
+            path        & varchar(1000) & 否     & 根节点到本节点的物化路径    \\
+            reply\_id   & bigint        & 是     & 父评论ID，顶层评论为NULL \\
+            created\_at & datetime      & 否     & 评论发布时间          \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
     \item slides 幻灯片表
 
     幻灯片表存储每个幻灯片文档相关信息，包括幻灯片Markdown源码、所属空间ID、编译后预览地址等字段。
@@ -378,6 +423,7 @@
     \item slide\_versions 版本控制表
 
     版本控制表记录幻灯片的版本历史，
+    % 包括版本内容快照、提交说明、创建者用户ID等字段。
     包括版本内容快照、提交说明、创建者用户ID等字段。
     提交说明字段记录的是每次版本提交的摘要信息，
     每个版本的幻灯片源码都会完整存为一条记录，
@@ -407,8 +453,8 @@
 
     用户角色表定义用户在幻灯片中的角色，
     主要包括幻灯片ID、用户ID、角色等字段，
-    % 角色字段为enum，可以为owner、editor、commenter、viewer之一，
-    % 用于控制幻灯片协作者的权限。
+    角色字段为enum，可以为owner、editor、commenter、viewer之一，
+    用于控制幻灯片协作者的权限。
     用户角色表结构如表\ref{tab:slide-user-roles}所示。
 
     \begin{table}[htbp]
@@ -428,42 +474,7 @@
         \end{tabular}
     \end{table}
 
-    \item slide\_comments 评论表
-
-    评论表通过reply\_id和path字段实现评论的树形结构。
-    reply\_id指向父评论id，顶层评论的reply\_id为NULL。
-    path字段存储从根节点到当前节点的完整路径字符串，如1-5-12。评论一旦发布，它的结构就不会再发生变化。
-    当新增一条评论时，只需要把父评论的path加上当前评论的id，就能得到该评论的path。开发者可以使用如SELECT * FROM
-    slide\_comments WHERE path LIKE '1-5-\%'的SQL查询语句，一次性获取任意评论节点下的所有子孙评论，不需要递归查询；
-    删除某条评论及其所有回复时同样也只需要一条如DELETE FROM slide\_comments WHERE path LIKE
-    '1-5-\%'的SQL语句，不需要递归删除。
-    评论表结构如表\ref{tab:slide-comments}所示。
-    % 另外，评论操作中最频繁的两个场景，正好是物化路径比较擅长的：
-    % 一个是展开某条评论下的所有回复，这时候只需要执行如SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'这样一条SQL查询，
-    % 就可以一次性把整个子树取出来，不用递归；另一个是删除某条评论以及它下面的所有子孙回复，
-    % 同样可以通过类似 DELETE FROM slide\_comments WHERE path LIKE '1-5-\%' 的单条语句搞定，
-    % 这样就避免了逐节点递归删除带来的多次数据库往返。物化路径用冗余一个 path 字段作为代价，
-    % 把子树查询和删除的复杂度从递归所需的 $O(n)$ 次查询降到了常数次。在评论这种结构固定、子树操作又比较频繁的场景下，这个做法的性价比确实很高。
-
-
-    \begin{table}[htbp]
-        \centering
-        \caption{slide\_comments 评论表结构}
-        \label{tab:slide-comments}
-        \begin{tabular}{llll}
-            \toprule
-            字段名         & 数据类型          & 是否允许空 & 说明              \\
-            \midrule
-            id          & bigint        & 否     & 评论唯一主键          \\
-            slide\_id   & bigint        & 否     & 所属幻灯片ID         \\
-            user\_id    & bigint        & 否     & 评论发表者ID         \\
-            content     & text          & 否     & 评论正文内容          \\
-            path        & varchar(1000) & 否     & 根节点到本节点的物化路径    \\
-            reply\_id   & bigint        & 是     & 父评论ID，顶层评论为NULL \\
-            created\_at & datetime      & 否     & 评论发布时间          \\
-            \bottomrule
-        \end{tabular}
-    \end{table}
+ 
 
     \item snippets 代码片段表
 
