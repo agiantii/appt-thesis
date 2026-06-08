@@ -166,16 +166,16 @@
     幻灯片预览有Dev模式与Build模式，Dev模式下，Slidev需要实时根据幻灯片文档内容实时渲染幻灯片，
     需要占用端口，为节省系统资源以及保证协作模式下各个用户看到的幻灯片是一致的，
     对同一个幻灯片，会优先返回已经启动的进程所对应的页面URL，
-    % 其格式为SERVER\_IP:PORT，
+    其格式为http://\{IP\}:\{PORT\}，
     同时定时清理1小时内不再更新的幻灯片所对应的进程。
     而Build模式下则不会，若未构建则提示用户进行构建，否则直接返回最后构建的静态页面URL。
-    % 其格式为SERVER\_IP/api/v1/presentation/{slideId}。
+    其格式为http://\{IP\}/api/v1/presentation/\{slideId\}。
     在用户有查阅权限的情况下，
-    幻灯片预览处理的流程如图\ref{fig:slide-preview-flowchart}所示。
+    幻灯片预览流程如图\ref{fig:slide-preview-flowchart}所示。
     \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.9\textwidth]{figures/drawio/幻灯片渲染流程图-v2.drawio.png}
-        \caption{幻灯片预览处理流程图}
+        \includegraphics[width=0.85\textwidth]{figures/drawio/幻灯片渲染流程图-v2.drawio.png}
+        \caption{幻灯片预览流程图}
         \label{fig:slide-preview-flowchart}
     \end{figure}
 
