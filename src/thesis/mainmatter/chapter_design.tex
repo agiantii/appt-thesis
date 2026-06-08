@@ -466,7 +466,6 @@
     所以需要上传生成的图像到阿里云的OSS，
         最终返回对应的图像URL。
     具体流程如图\ref{fig:ai-generate-iamge-flowchart}所示。
-
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.55\textwidth]{figures/drawio/AI生图流程图.drawio.png}
@@ -510,13 +509,13 @@
     % 管理片段库：在设置页面的代码片段管理界面中，用户可以查看、编辑、删除和分类管理所有个人代码片段。
         \section{幻灯片评论}
 
-    %     用户可以在发现界面搜索公开的幻灯片，并支持分页加载，如图\ref{fig:explore-interface}所示。
-    % \begin{figure}[htbp]
-    %     \centering
-    %     \includegraphics[width=0.9\textwidth]{figures/appt/explore.png}
-    %     \caption{发现界面}
-    %     \label{fig:explore-interface}
-    % \end{figure}
+        用户可以在发现界面搜索公开的幻灯片，并支持分页加载，如图\ref{fig:explore-interface}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/explore.png}
+        \caption{发现界面}
+        \label{fig:explore-interface}
+    \end{figure}
 
     平台里集成评论功能，可以对幻灯片文档内容进行讨论和反馈，如图\ref{fig:comment-interface}所示。
     评论的树形结构是由评论表的parent\_id和path字段共同实现的。
@@ -528,9 +527,7 @@
         \label{fig:comment-interface}
     \end{figure}
     
-    对于新增评论，在用户有权限评论时，
-    新增评论需要检查所评论的幻灯片是否存在、同一幻灯片中是否有所回复的评论等情况，
-    新增评论流程如图\ref{fig:add-comment-flowchart}所示。
+  
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.6\textwidth]{figures/drawio/新增评论流程图.drawio.png}
@@ -544,7 +541,9 @@
     而评论的id是自增字段，所以需要先存入新增评论的数据，再构建新增评论的path字段，这两个操作不可中断，
     typeorm提供的this.dataSource.transaction()可以实现数据库的事务，
     作者以此确保评论创建和字段更新这两个操作是一气呵成的。
-    
+    同时，在用户有权限评论时，
+    新增评论需要检查所评论的幻灯片是否存在、同一幻灯片中是否有所回复的评论等情况，
+    新增评论流程如图\ref{fig:add-comment-flowchart}所示。
 
     对于删除评论，
     由于在新增评论的时候，已经维护了每个评论的path字段，所以可以使用如DELETE FROM slide\_comments WHERE path LIKE
