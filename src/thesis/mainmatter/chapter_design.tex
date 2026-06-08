@@ -11,11 +11,37 @@
     % 3. 关键技术：详细说明系统实现中使用的关键技术
     % 4. 实现细节：介绍系统的具体实现方法和过程
     % 5. 测试与评估：说明系统的测试方法和评估结果
+    \section{平台登录}
+    未登录的用户不会显示平台的工作台界面，必须要登录后才能显示，
+    在登录弹窗中，用户需要输入用户名/邮箱、密码、验证码。
 
+    系统首先会校验验证码的正确性，验证码随机为4位字母或数字的组合或是简单的加减数学题。
+    后端先利用随机函数选择验证码的类型，
+    再使用svgCaptcha库来生成验证码的SVG图片以及对应的验证码文本，并设置验证码有效时间为1分钟。
+    前端在弹窗组件挂载时调用GET类型的/captcha/generate接口获取验证码的类型以对应的SVG图片，
+    验证时通过POST类型的/captcha/verify接口校验验证码。
+    
 
-    % \section{核心功能实现}\label{sec:core-features}
-    \section{权限管理系统}
-    权限管理系统采用RBAC模型，定义了owner、editor、commenter、viewer四种角色，
+    在验证码校验通过后，系统会对用户名/邮箱、密码依次进行格式、正确性的校验，
+    正确则登录成功，错误则提示用户错误信息。
+    后端在HTTP请求到达users.controller前，
+    会通过class-validator库提供的@IsString()、@MinLength()、@MaxLength()、@Matches()等装饰器
+    对请求体中的用户名/邮箱、密码进行格式校验，
+    由于在用户注册时就会保证用户名和邮箱的唯一性，所以用户可以通过用户名/邮箱来登录。
+    且注册时的密码会经过bcrypt.hash(password, saltRounds)加密后存入数据库，
+    所以登录时需要将用户输入的密码进行bcrypt加密后与数据库中的密码进行比对。
+    
+    登录成功后，后端会返回一个token，前端将其保存在localStorage中，
+    % 后续的每次请求都会带上这个token，后端通过解析token来校验用户的身份和权限。
+    具体的用户登录流程如图\ref{fig:login-flowchart}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.5\textwidth]{figures/drawio/用户登录流程图.drawio.png}
+        \caption{用户登录流程图}
+        \label{fig:login-flowchart}
+    \end{figure}
+    \section{协作者权限管理}
+    本平台对于协作者定义了owner、editor、commenter、viewer四种角色，
     其对应的权限如表\ref{tab:slide-permissions}所示。
     slide\_user\_roles表记录用户在特定幻灯片中的角色和权限，
     加载文档时，会校验用户权限，阻止未授权操作。
@@ -37,17 +63,18 @@
     \end{table}
     % 文档公开和私有两种设置，用来控制文档的访问范围。
 
-    用户登录成功后，前端会将token保存在浏览器，之后的每次请求都会带上这个token。
+    用户登录成功后，前端会将token保存在localStorage中，之后的每次请求都会带上这个token。
     后端通过NestJS Guard机制实现权限校验，先将SlidePermissionGuard全局注入到NestJS，然后由如@RequirePermission(AuthPermissions.READ)的装饰器触发权限校验，未设置该装饰器的接口则会直接放行。
     其中AuthPermissions为enum类型，
     有READ、COMMENT、EDIT、VIEW\_HISTORY、MANAGE、DELETE、VIEW。
     SlidePermissionGuard继承@nestjs/common的CanActivate类，通过canActivate()方法来判断是否校验通过，
     在这个方法内，会先通过reflector获取到@RequirePermission()装饰器中所需要的权限，
-    之后通过解析前端传送的token，利用context.switchToHttp().getRequest().user获取上下文中的角色信息，
-    之后将以上参数传入validatePermission()方法中校验即可，
+    而后通过解析前端传送的token，利用context.switchToHttp().getRequest().user获取上下文中的角色信息，
+    若幻灯片允许评论且该接口需要是评论权限，则直接放行，对于幻灯片需要查阅权限的接口同样如此。
+    否则将以上参数传入validatePermission()方法中校验，
     并与装饰器中所声明需要的权限相比对，实现权限校验。
-    validatePermission()方法的实现如图\ref{fig:validatePermission}所示。
-    其中，PERMISSIONS类型为Map，键为角色，值为该角色拥有的权限列表。
+    validatePermission()方法的实现代码如图\ref{fig:validatePermission}所示。
+    % 其中，PERMISSIONS类型为Map，键为角色，值为该角色拥有的权限列表。
     % 其守卫的核心权限判断实现如图\ref{fig:validatePermission}所示，
     % @RequirePermission()装饰器触发，未设置该装饰器的接口则会直接放行，
     % 从上下文中获取当前请求的用户角色，并与装饰器中所声明需要的权限相比对，实现权限校验。
@@ -55,61 +82,74 @@
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/code/validatePermission-editor-small-fixed.png}
-        \caption{权限验证核心代码}
+        \caption{validatePermission()方法的实现代码}
         \label{fig:validatePermission}
     \end{figure}
-    % 如图\ref{fig:api-persmission-example}所示。
-    % % 而在需要权限校验的接口中，只需如图\ref{fig:api-persmission-example}所示声明即可。
-    % % 而在需要权限校验的接口中，只需如图\ref{fig:api-persmission-example}所示声明即可。
-    % \begin{figure}[htbp]
-    %     \centering
-    %     \caption{@RequirePermission装饰器使用示例}
-    %     \label{fig:api-persmission-example}
-    %     \includegraphics[width=0.8\textwidth]{figures/code/api-persmission-example-editor-min-width.png}
-    % \end{figure}
-    % \begin{listing}[htbp]
-    %     \caption{权限验证核心逻辑}
-    %     \label{code:validatePermission}
-    %     \begin{jscode}
-    %         private validatePermission(
-    %         actualRole: SlideRole | null,
-    %         requiredPermission: AuthPermissions | undefined,
-    %         ): boolean {
-    %                 // 如果需要权限检查
-    %                 if (requiredPermission && actualRole) {
-    %                         // PERMISSIONS是由上文中Slide角色权限对照表映射的字典
-    %                         const rolePermissions = PERMISSIONS[actualRole];
-    %                         if (rolePermissions.includes(requiredPermission as string)) {
-    %                                 return true;
-    %                             }
-    %                         throw new ForbiddenException('您不符合权限要求');
-    %                     }
-    %                 throw new ForbiddenException('您没有权限执行此操作');
-    %             }
-    %     \end{jscode}
-    % \end{listing}
 
-    % 而在需要权限校验的接口中，只需如图\ref{fig:api-persmission-example}所示声明即可。
-    % %    而在需要权限校验的接口中，只需按代码段\ref{code:api-persmission-example}所示方式，在对应接口上的装饰器中声明所需要的权限即可。
-    % \begin{figure}
-    %     \centering
-    %     \caption{@RequirePermission装饰器使用示例}
-    %     \label{fig:api-persmission-example}
-    %     \includegraphics[width=0.9\textwidth]{figures/code/api-persmission-example-editor-less-width.png}
-    % \end{figure}
-    % \begin{listing}
-    %     \caption{@RequirePermission装饰器使用示例}
-    %     \label{code:api-persmission-example}
-    %     \begin{jscode}
-    %         @RequirePermission(AuthPermissions.READ)
-    %         @Get('slides/detail/:id')
-    %         async findOne(
-    %         id: number,
-    %         ){
-    %                 //具体实现略
-    %             }
-    %     \end{jscode}
-    % \end{listing}
+   \section{幻灯片管理}
+    % 用户可以利用幻灯片空间来管理幻灯片文档。
+    % 空间里的文档为树形结构，通过拖拽就能调整文档的层级关系，平台也提供了全局搜索功能。
+    用户登录成功后，会进入工作台界面，
+    在该界面中会显示用户最近编辑的幻灯片、共享的幻灯片以及用户个人的幻灯片空间，
+    用户可以在最近编辑的幻灯片的界面区域通过鼠标滚轮来滑动出更多的最近编辑的幻灯片，
+    前端会通过分页的方式来加载最近编辑的幻灯片，每页加载6条数据，每次加载数据时，
+    调用GET类型的/slides/recent?page=\{page\} \& pageSize=\{pageSize\}接口来获取更多最近编辑的幻灯片数据，
+    共享的幻灯片也采用类似的处理方式。
+    且用户可以通过搜索框搜索幻灯片，搜索结果会根据幻灯片标题进行模糊匹配。
+    工作台界面如图\ref{fig:start-interface}所示。
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/start.png}
+        \caption{工作台界面}
+        \label{fig:start-interface}
+    \end{figure}
+    幻灯片空间中可以以列表结构或树形结构显示幻灯片，
+    列表结构显示幻灯片的预览图片和幻灯片名称，可以根据搜索关键词搜索空间内的幻灯片。而树形结构只显示幻灯片名称。
+    以树形结构显示的幻灯片空间界面如图\ref{fig:slideSpace-interface}所示。
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/slideSpace-slide.png}
+        \caption{树形结构显示的幻灯片空间界面}
+        \label{fig:slideSpace-interface}
+    \end{figure}
+
+    幻灯片文档的树形结构主要由其parent\_id字段实现，
+    后端返回的数据为扁平化的数据，需要由前端构建为树形结构，
+    代码实现如图\ref{fig:slides-build-tree}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/code/slides-build-tree.png}
+        \caption{幻灯片文档树构建核心代码}
+        \label{fig:slides-build-tree}
+    \end{figure}
+
+
+
+    当调整某个文档的层级位置时，
+    只需要更改它的parent\_id即可，例如原先id为1且parent\_id为2的文档需要移动到
+    parent\_id为3的文档下，只需要将它的parent\_id改为3即可。
+    但是需要注意不能将parent\_id设置为自己以及不能移动到到另外一个幻灯片空间中等问题。
+    幻灯片文档移动流程如图\ref{fig:slides-move-flowchart}所示。
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.65\textwidth]{figures/drawio/幻灯片文档移动流程图.drawio.png}
+        \caption{幻灯片文档移动流程图}
+        \label{fig:slides-move-flowchart}
+    \end{figure}
+
+
+
+    顶层文档的parent\_id为NULL，
+    当需要在某个文档目录下新建文档时，
+    只需要parent\_id设置为目标文档的id，并将在数据库中存入该文档的记录即可。
+    而当需要删除文档时，后端需要先用BFS遍历目标删除文档以及其子文档获取idsToDelete，
+    然后调用slideRepository.delete(idsToDelete)一并删除。
+
+
+
     \section{幻灯片创作}
     \subsection{幻灯片预览}
     本平台基于Slidev将用户的幻灯片文档编译为Web页面，
@@ -126,12 +166,15 @@
     幻灯片预览有Dev模式与Build模式，Dev模式下，Slidev需要实时根据幻灯片文档内容实时渲染幻灯片，
     需要占用端口，为节省系统资源以及保证协作模式下各个用户看到的幻灯片是一致的，
     对同一个幻灯片，会优先返回已经启动的进程所对应的页面URL，
+    % 其格式为SERVER\_IP:PORT，
     同时定时清理1小时内不再更新的幻灯片所对应的进程。
-    而Build模式下则不会，只返回最后构建的静态页面URL，
+    而Build模式下则不会，若未构建则提示用户进行构建，否则直接返回最后构建的静态页面URL。
+    % 其格式为SERVER\_IP/api/v1/presentation/{slideId}。
+    在用户有查阅权限的情况下，
     幻灯片预览处理的流程如图\ref{fig:slide-preview-flowchart}所示。
     \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.9\textwidth]{figures/drawio/幻灯片渲染流程图.drawio.png}
+        \includegraphics[width=0.9\textwidth]{figures/drawio/幻灯片渲染流程图-v2.drawio.png}
         \caption{幻灯片预览处理流程图}
         \label{fig:slide-preview-flowchart}
     \end{figure}
@@ -142,7 +185,105 @@
     %     \caption{编辑器概览界面}
     %     \label{fig:editor-overview-with-slides-tree.png}
     % \end{figure}
-       \subsection{实时协作}
+        \subsection{幻灯片文档基础编辑}
+    用户可以在编辑器中编辑幻灯片文档的内容，
+    编辑器使用轻量级的编辑器CodeMirror，
+    前端通过加入HTML、CSS、Markdown相关的插件，
+    实现代码高亮、基础的代码提示等常见编辑器的功能。
+    % 而且CodeMirror与React兼容，只需要将编辑器视图挂载到React组件内，
+    % 就可以把编辑器的内部状态同步到React。
+
+    % Slidev的语法和一般的Markdown有所不同，
+    前端根据Slidev语法解析幻灯片的文档内容，划分页面大纲，每个大纲只显示部分关键内容，
+    点击大纲，会将预览窗口中的<iframe>的src设置为对应页面对应的URL，
+    同时通过editorViewRef.current.dispatch()将编辑器跳转到对应位置。
+  
+    除了常用的编辑器快捷键外，本平台还支持使用Ctrl+B来呼出/关闭左侧编辑器工具栏、
+    Ctrl+Alt+B来呼出/关闭右侧预览窗口、Ctrl+I来呼出/关闭内联编辑器，
+    幻灯片创作界面主要分为EditorSidebar、EditorHeader、EditorCenter、EditorPreview等组件，
+    而EditorSidebar、EditorPreview等组件都是条件式渲染的，
+    前端通过监听keydown事件来切换对应组件的条件变量的布尔值实现组件的呼出/关闭。
+  
+    
+    % 大纲同步：
+    % Slidev的语法和一般的Markdown有所不同，
+    % 所以对大纲划分时需要特殊处理。
+    % Slidev的第一页前需要对主题、插件等进行全局配置
+    % 每一页前可能对应页面的布局、过渡动画、背景图片等进行配置，
+    % 所以进行大纲划分时，需要先以“---”分页，之后先对第一页特殊判断是否有全局配置，
+    % 最后将每一页的配置信息和
+
+    平台支持用户使用快捷键Ctrl+V来上传图片/视频。
+    % 以带有媒体URL的标签的形式插入编辑器，
+    以上传视频为例，
+    前端添加paste监听事件，
+    通过event.clipboardData.items获取剪切板内容，
+    而后通过item.type来判断粘贴内容的类型，
+    后端会以此对视频的格式、大小先后校验，视频的格式得属于MP4、WebM等常见格式，
+    大小应小于100MB，而后上传OSS(Object Storage Service，对象存储服务)，
+    上传成功后返回对应的URL，
+    最终会以<video controls src="\{URL\}"></video>的标签插入编辑器中。
+
+    OSS是阿里云提供的一种可靠、安全的云存储方案，
+    本平台的所有图片、视频等资源均交由OSS管理，
+    在上传文件至OSS前，需要对OSS的region、accessKeyId、accessKeySecret、bucket等进行配置和加载。
+    OSS文件上传流程如图\ref{fig:oss-upload-flowchart}所示。
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.7\textwidth]{figures/drawio/OSS文件上传流程图.drawio.png}
+        \caption{OSS文件上传流程图}
+        \label{fig:oss-upload-flowchart}
+    \end{figure}
+
+    \newpage 
+
+       \subsection{幻灯片文档协同编辑}
+
+      
+    本平台能够依据文档的协作状态选择独立编辑模式还是实时协作模式。
+    由于建立WebSocket连接以及后端文档合并编辑冲突会有一定的性能开销，
+    这样的设计可以尽可能兼顾性能和用户的使用体验。
+    独立模式下，不需要建立WebSocket连接，会定期自动保存内容，也可以手动保存或是建立版本，
+    % 而在实时协作模式，需要按照上文所述的步骤，与后端建立WebSocket连接。
+    而在实时协作模式，与后端建立WebSocket连接。
+    
+    实时协作前，用户需要邀请协作者，并授予相应权限，
+    如图\ref{fig:permission-panel-interface}所示。
+    % 实时协作前，用户需要在编辑器右上角的协作面板中点击“邀请成员”按钮，
+    % 输入协作者的用户名（可以通过搜索框搜索用户名）
+    % 并选择角色权限（owner/editor/commenter/viewer）。
+    % 如图\ref{fig:permission-panel-interface}所示。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/permission-panel-pure-white.png}
+        \caption{协作者权限管理面板界面}
+        \label{fig:permission-panel-interface}
+    \end{figure}
+
+    某个用户编辑文档时，其他用户可以在编辑器中看到其实时的光标位置和选中的内容，不同用户用不同颜色区分。
+    协作面板还会实时显示当前在线的协作者列表，包括头像等信息，
+    如图\ref{fig:shared-doc-presentation-interface}所示。
+    % 邀请协作者：在编辑器右上角的协作面板中点击“邀请成员”按钮，输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（Owner/Editor/Commenter/Viewer）。
+    % 实时光标追踪：协作者在编辑文档时，其他用户可以在编辑器中看到其实时光标位置和选中内容，不同用户用不同颜色区分。
+    % 在线状态显示：协作面板实时会显示当前在线的协作者列表，包括头像、用户名和编辑状态。
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.9\textwidth]{figures/appt/shared-doc-presentation.png}
+        \caption{共享幻灯片文档演示界面}
+        \label{fig:shared-doc-presentation-interface}
+    \end{figure}
+
+    % 具体流程如图\ref{fig:collaboration-flowchart}所示。
+    % % 本平台的文档协同流程可以用分支结构清晰地表示出来，能够依据文档的协作状态选择独立编辑模式还是实时协作模式。具体流程详见图\ref{fig:collaboration-flowchart}。
+    % \begin{figure}[htbp]
+    %     \centering
+    %     \includegraphics[width=0.9\textwidth]{figures/drawio/文档编辑流程图.drawio.png}
+    %     \caption{文档编辑流程图}
+    %     \label{fig:collaboration-flowchart}
+    % \end{figure}
+    % \newpage
+
     本平台将幻灯片文档的内容定义为Yjs中的Y.Text类型，并通过y-codemirror.next作为桥梁，
     与CodeMirror编辑器绑定，
     当用户在CodeMirror中编辑内容时，内容的变更（删除、插入等）会立即转换为Yjs的更新操作，
@@ -200,193 +341,27 @@
     \end{figure}
 
 
-    实时协作前，用户需要邀请协作者，并授予相应权限，
-    如图\ref{fig:permission-panel-interface}所示。
-    % 实时协作前，用户需要在编辑器右上角的协作面板中点击“邀请成员”按钮，
-    % 输入协作者的用户名（可以通过搜索框搜索用户名）
-    % 并选择角色权限（owner/editor/commenter/viewer）。
-    % 如图\ref{fig:permission-panel-interface}所示。
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.9\textwidth]{figures/appt/permission-panel-pure-white.png}
-        \caption{协作者权限管理面板界面}
-        \label{fig:permission-panel-interface}
-    \end{figure}
+   
 
-    某个用户编辑文档时，其他用户可以在编辑器中看到其实时的光标位置和选中的内容，不同用户用不同颜色区分。
-    协作面板还会实时显示当前在线的协作者列表，包括头像、用户名，
-    如图\ref{fig:shared-doc-presentation-interface}所示。
-    % 邀请协作者：在编辑器右上角的协作面板中点击“邀请成员”按钮，输入协作者的用户名（可以通过搜索框搜索用户名）并选择角色权限（Owner/Editor/Commenter/Viewer）。
-    % 实时光标追踪：协作者在编辑文档时，其他用户可以在编辑器中看到其实时光标位置和选中内容，不同用户用不同颜色区分。
-    % 在线状态显示：协作面板实时会显示当前在线的协作者列表，包括头像、用户名和编辑状态。
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.95\textwidth]{figures/appt/shared-doc-presentation.png}
-        \caption{共享幻灯片文档演示界面}
-        \label{fig:shared-doc-presentation-interface}
-    \end{figure}
 
-\subsection{幻灯片文档编辑流程}
-
-    本平台能够依据文档的协作状态选择独立编辑模式还是实时协作模式。
-    % 本平台的幻灯片文档编辑流程可以用分支结构清晰地表示出来，
-    % 能够依据文档的协作状态选择独立编辑模式还是实时协作模式。
-    由于建立WebSocket连接以及后端文档合并编辑冲突会有一定的性能开销，
-    这样的设计可以尽可能兼顾性能和用户的使用体验。
-    独立模式下，不需要建立WebSocket连接，会定期自动保存内容，也可以手动保存或是建立版本，
-    而在实时协作模式，需要按照上文所述的步骤，与后端建立WebSocket连接。
-    具体流程如图\ref{fig:collaboration-flowchart}所示。
-    % 本平台的文档协同流程可以用分支结构清晰地表示出来，能够依据文档的协作状态选择独立编辑模式还是实时协作模式。具体流程详见图\ref{fig:collaboration-flowchart}。
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.9\textwidth]{figures/drawio/文档编辑流程图.drawio.png}
-        \caption{文档编辑流程图}
-        \label{fig:collaboration-flowchart}
-    \end{figure}
     \newpage
   
-    % 流程的关键决策依据是文档是否存在协作者，具体实现逻辑如下所述：
-
-    % 第一步，文档加载阶段：用户打开文档时，系统加载文档内容和权限信息，同时查询该文档的协作者列表。
-    % 第二步，协作状态判断：检查文档是否有除当前用户外的其他协作者。如果文档为私有文档或只有当前用户有访问权限，则进入独立编辑模式；否则进入实时协作模式。
-    % 第三步，独立编辑模式：适用于个人文档或私有编辑场景，编辑操作实时应用，提供流畅的本地编辑体验，定期或手动保存时将内容同步到后端MySQL数据库。
-    % 第四步，实时协作模式\cite{cai2021collaborative}：适用于多人协作场景，初始化WebSocket连接，连接到Hocuspocus协作服务器；创建Yjs文档实例，并与CodeMirror编辑器绑定；通过CRDT算法自动同步文档状态，解决编辑冲突；支持实时光标追踪、用户状态显示等协作功能；定期将协作文档状态持久化到后端数据库，防止数据丢失。
-
-    % 这种条件分支设计具有以下优势：资源优化：私有文档无需建立WebSocket连接，从而节省服务器资源；性能提升：独立编辑模式减少了网络延迟，能够提供更快的响应速度；灵活适应：能够根据实际协作需求动态调整技术方案；用户体验：保持了编辑界面的一致性，用户无需关注底层技术差异。
-
-    % 本平台通过智能化的协作状态判断与模式选择机制，在确保功能完整性的基础上，优化了系统性能与用户体验。这一设计实现了高效且灵活的文档协同编辑解决方案。
-    % \subsubsection{Slidev编辑器}
-    %     CodeMirror 6提供专业的Markdown编辑体验，支持Markdown语法高亮渲染，如标题、列表、链接、代码块等。
-    %     幻灯片页面用`---`分隔符来创建。
-    %     右侧预览窗口有Dev和Build两种模式，Dev模式实时显示Slidev实时渲染效果，Build模式展示最终构建好的渲染效果。
-    %     编辑器还支持多种编程语言的语法高亮，包括JavaScript、TypeScript、Python、Java等，适合技术演示的场景。
-    %     左侧大纲面板会显示文档结构，点击大纲节点就能快速定位到对应内容，编辑器和预览窗口也会同步滚动到对应的页面。
-    %     还可以使用以下快捷键组合：
-    %     Ctrl+S保存当前文档，Ctrl+Shift+S创建新版本，Ctrl+B切换左侧菜单，Ctrl+Alt+B切换右侧预览，Ctrl+I切换AI面板，Ctrl+V插入图片并自动上传到OSS。
-    %     如图\ref{fig:editor-interface}所示。
-    %         \begin{figure}[htbp]
-    %     \centering
-    %     \includegraphics[width=0.9\textwidth]{figures/appt/editor.png}
-    %     \caption{智能幻灯片协作平台编辑器界面}
-    %     \label{fig:editor-interface}
-    % \end{figure}
-    % CodeMirror 6提供专业的Markdown编辑体验：
- 
-    % \begin{listing}[htp]
-    %     \caption{Hocuspocus提供的生命周期钩子以及实现的功能}
-    %     \label{code:Hocuspocus}
-    %     \begin{jscode}
-    %         this.server = new Server({
-    %                 // 文档初始化钩子：初始化时，从数据库中加载文档
-    %                 async onLoadDocument(data: onLoadDocumentPayload) {},
-    %                 // 文档存储钩子：文档编辑操作合并后，持久化到数据库
-    %                 async onStoreDocument(data: onStoreDocumentPayload) {},
-    %                 // 认证钩子：连接前，验证JWT Token，并校验是否有对应权限
-    %                 async onAuthenticate(data: onAuthenticatePayload) {},
-    %                 // 连接钩子：记录日志
-    %                 async onConnect(data: onConnectPayload) {},
-    %                 // 断开连接钩子：记录日志
-    %                 async onDisconnect(data: onDisconnectPayload) {},
-    %             })
-
-    %     \end{jscode}
-    % \end{listing}
-    % 例如当多个用户同时在同一位置插入文本时，Yjs 会根据预定义的顺序规则（通常结合插入位置、用户标识和时间戳）确定最终结果，保证所有客户端最终收敛到完全一致的状态，为用户带来自然流畅的实时协作体验。
-
-    % 本平台用Yjs库所实现的CRDT算法实现实时协作编辑，
-    % 幻灯片文档类型设置为Yjs中的YText，并和CodeMirror编辑器绑定，
-    % 再由WebSocket同步所有编辑操作，并用CRDT算法来合并编辑过程中产生的并发冲突，
-    % % 所有编辑操作通过WebSocket连接进行同步，并发编辑过程中产生的冲突依靠CRDT算法解决，
-    % 保证文档在各个用户之间的一致性。
-
-    % \section{协同算法原理}
-
-    % 本平台采用了基于CRDT（Conflict-Free Replicated Data Type，无冲突复制数据类型）的协同算法来实现实时协作编辑。
-    % CRDT作为一种无冲突复制数据类型的算法，能够确保在异步网络环境中，多个数据副本之间最终一致，而不需要中央协调器来解决冲突。
-    % TODO 文献引用
-    % \subsubsection{CRDT基本概念}
-
-    % % CRDT作为一种无冲突复制数据类型的算法，能够确保在异步网络环境中，多个数据副本之间最终一致，而不需要中央协调器来解决冲突。
-
-    % CRDT算法主要包含两种类型，一种是基于操作的CRDT（Op-based CRDT），通过同步操作序列实现一致性，
-    % 另一种是基于状态的CRDT（State-based CRDT），通过同步状态实现一致性。
-
-    % 这个算法处理并发的操作时，不会因为操作的顺序而改变最终的结果，以一个通俗的例子，无论是操作“A”+“B”还是“B”+“A”，其结果都是相同的，
-    % 即使发生网络重传之类等意外情况时，我们可能会意外地执行多个相同的操作，最终的结果也不会受到影响\cite{preguicca2018overviewcrdt}。
-    % % 操作的顺序不会影响最终结果，不管操作按什么顺序到达，最终状态都能保持一致。
-    % % 操作组合的方式也不会影响最终结果，
-    % % 而且重复执行相同的操作不会改变状态，网络重传或重复消息不会造成数据不一致。
-
-    % % 本平台采用Yjs库实现的基于操作的CRDT算法，该算法具有以下特点：
-    % % 交换性：操作的顺序不会影响最终结果，无论操作到达的顺序如何，最终状态都能够保持一致；
-    % % 结合性：操作组合的方式不会影响最终结果；
-    % % 幂等性：重复执行相同的操作不会改变状态，网络重传和重复消息不会造成数据不一致。
-
-    % % \subsubsection{Yjs文档模型设计}
-
-    % % Yjs采用分层文档模型设计，核心数据结构包括：Y.Text：富文本数据类型，支持字符级别的插入、删除和格式属性设置，用于表示幻灯片内容；Y.Array：有序数组类型，支持元素的插入、删除和移动，用于管理幻灯片页面顺序；Y.Map：键值对类型，支持属性的增删改查，用于存储幻灯片元数据和用户配置。
-
-    % % TODO 文献引用
-    % \subsubsection{冲突解决机制}
-
-    % 当多个用户同时编辑同一文档位置时，CRDT算法通过以下机制自动处理冲突：
-    % \begin{enumerate}
-    %     \item  位置标识算法：使用唯一标识符（ID）标记每个字符位置，而不是传统的位置索引。字符插入时生成新的唯一ID，删除时标记为墓碑状态。
-    %     \item   偏序关系定义：基于操作ID的因果关系定义偏序关系，确保因果一致性。如果操作A在操作B之前发生，且操作B依赖于操作A的结果，则A必须优先于B执行。
-    %     \item  合并策略：当并发操作无因果关系时，采用确定性合并策略。例如，字符插入冲突时，基于操作ID的字典序确定最终位置顺序。
-    % \end{enumerate}
-    % % 第一步，位置标识算法：使用唯一标识符（ID）标记每个字符位置，而不是传统的位置索引。字符插入时生成新的唯一ID，删除时标记为墓碑状态。
-    % % 第二步，偏序关系定义：基于操作ID的因果关系定义偏序关系，确保因果一致性。如果操作A在操作B之前发生，且操作B依赖于操作A的结果，则A必须优先于B执行。
-    % % 第三步，合并策略：当并发操作无因果关系时，采用确定性合并策略。例如，字符插入冲突时，基于操作ID的字典序确定最终位置顺序。
-
-    % 以文本编辑为例，假设用户A在位置P插入字符"X"，用户B又在这个位置插入字符"Y"。
-    % 传统方法会产生冲突，
-    % 而CRDT算法通过以下步骤解决：
-    % \begin{enumerate}
-    %     \item 为"X"生成唯一ID：(clientA, timestamp1)；
-    %     \item 为"Y"生成唯一ID：(clientB, timestamp2)；
-    %     \item 基于ID排序确定最终顺序：若clientA < clientB，则最终文本为"XY"；否则为"YX"。
-    % \end{enumerate}
-    % % 第一步，为"X"生成唯一ID：(clientA, timestamp1)；
-    % % 第二步，为"Y"生成唯一ID：(clientB, timestamp2)；
-    % % 第三步，基于ID排序确定最终顺序：若clientA < clientB，则最终文本为"XY"；否则为"YX"。
-    % % 第一步，为"X"生成唯一ID：(clientA, timestamp1)；
-    % % 第二步，为"Y"生成唯一ID：(clientB, timestamp2)；
-    % % 第三步，基于ID排序确定最终顺序：若clientA < clientB，则最终文本为"XY"；否则为"YX"。
-
-    % \subsubsection{与传统协同算法的对比}
-
-    % 与传统基于操作转换（OT）的协同算法相比，CRDT算法具有以下优势，如表\ref{tab:crdt-vs-ot}所示：
-    % \begin{table}[htbp]
-    %     \caption{CRDT与OT算法对比}
-    %     \label{tab:crdt-vs-ot}
-    %     \centering
-    %     \begin{tabular}{lll}
-    %         \toprule
-    %         对比维度  & CRDT算法       & OT算法        \\
-    %         \midrule
-    %         冲突解决  & 自动解决，无需中央协调器 & 需要中央服务器协调转换 \\
-    %         网络要求  & 支持直接同步       & 必须通过中央服务器   \\
-    %         算法复杂度 & 相对简单，基于数学理论  & 复杂，需要维护转换函数 \\
-    %         扩展性   & 容易扩展到大规模节点   & 中央服务器可能成为瓶颈 \\
-    %         离线支持  & 天然支持，本地操作独立  & 需要复杂的状态同步机制 \\
-    %         \bottomrule
-    %     \end{tabular}
-    % \end{table}
-
-    % CRDT算法的数学理论保障了系统的正确性与可靠性，从而为本平台提供了稳定且高效的实时协作体验 。
-
-
-
-    \section{版本控制系统}
+   \subsection{幻灯片文档版本管理}
 
     % 平台会定期保存文档内容到数据库，防止数据丢失，
     % 用户也可以自己手动操作，创建版本并添加提交消息，
     % 还能一键回滚到任意历史版本，让操作流程更加简单且直观。
     系统会定期自动保存文档内容防止数据丢失，用户也可以用Ctrl+S手动保存。
     使用Ctrl+Shift+S快捷键或点击版本控制面板里的“创建版本”按钮，手动创建版本并添加提交消息。
-    在版本控制面板里可以查看幻灯片文档的所有历史版本，包括创建时间、创建者和提交消息。
-    版本历史如\ref{fig:version-control-history}所示。
+    在版本控制面板里可以查看幻灯片文档的所有历史版本，包括创建时间、创建者和提交消息、完整版本快照。
+    幻灯片文档的Markdown源码通常占用存储空间不大，图片、视频些资源都存储在OSS服务，
+    所以这样直接存储完整版本快照的方式也是可以接受的。
+    % 同时，也正因为存储的是完整副本，进行回滚和查看历史版本时，不需要进行额外的计算。
+    % 这种全量快照方式虽然比增量存储占用更多空间，
+    % 但幻灯片内容通常不超过数百KB，
+    % 其优势在于回滚和对比操作无需重建内容，
+    % 直接读取目标版本即可，实现简单且可靠。
+    版本历史界面如\ref{fig:version-control-history}所示。
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/version-control-history.png}
@@ -401,12 +376,7 @@
     % 每次自动保存或用户手动创建版本时，都会把当前幻灯片内容（slides.content）的完整副本写入slide\_versions表，
     % 同时记录提交消息（commit\_msg）、创建者（created\_by）和时间戳（created\_at）。
     % slide\_versions通过slide\_id外键关联到slides表，删除幻灯片时，对应的版本记录也会因为外键约束跟着一起删除。
-    % 幻灯片的Markdown源码通常占用存储空间不大，图片这些资源都存储在OSS服务，所以这样直接存储完整副本的方式也是可以接受的，
-    % 同时，也正因为存储的是完整副本，进行回滚和查看历史版本时，不需要进行额外的计算。
-    % 这种全量快照方式虽然比增量存储占用更多空间，
-    % 但幻灯片内容通常不超过数百KB，
-    % 其优势在于回滚和对比操作无需重建内容，
-    % 直接读取目标版本即可，实现简单且可靠。
+
 
     在前端界面中，通过diff库可视化当前编辑器内容和所选择版本内容的差异，
     差异部分会以删除和新增的样式渲染。
@@ -420,67 +390,27 @@
         \caption{版本对比界面}
         \label{fig:version-control-interface}
     \end{figure}
-    \section{智能辅助内容生成}
+
+    \newpage 
+    \subsection{AI辅助创作}
 
     本平台接入通义千问官方的qwen-plus大模型API，能够方便、高效地生成文本内容和图片素材。
-    不仅支持多轮对话、大纲生成，还支持编辑器内联编辑。
-    将Slidev官方文档、主题模板以及相关范例加入到AI的知识库中，
-    让AI生成的内容符合Slidev的Markdown语法。
-
-    \subsection{文生图集成}
-
-    % \begin{enumerate}
-    %     \item 用户输入图像生成提示词（可结合当前幻灯片上下文自动增强）。
-    %     \item 平台调用DashScope API（通义千问图像模型，如qwen-image-plus）。
-    %     \item 创建异步图像生成任务。
-    %     \item 轮询任务状态，直至生成完成。
-    %     \item 将图像上传至OSS对象存储，返回可直接在Slidev中引用的URL。
-    %     \item 可选：生成多张变体供用户选择，或根据Slidev主题色调进行风格适配。
-    % \end{enumerate}
-
-    后端调用阿里云的qwen-image-plus模型创建异步图像生成任务，
-    并且需要通过任务id轮询获取图像生成的结果。由于这个结果是临时保存在阿里云服务器的，
-    所以需要上传生成的图像到阿里云的OSS，
-    最终返回对应的图像URL。
-    % 具体代码实现如图\ref{fig:ai-image-generate}所示。
-
+    不仅支持幻灯片文档大纲生成，还支持编辑器内联编辑。
+    幻灯片文档大纲生成功能主要是为了帮助用户快速生成幻灯片内容的大纲和基本布局，
+    而幻灯片是为了表达演讲者所要呈现的内容的，这个制作过程并非是能够一步到位的。
+    内联编辑则是为了在帮助用户在幻灯片文档大纲生成后能够更快、更好地细化、完善幻灯片的细节。
     
 
-    具体流程如图\ref{fig:ai-generate-iamge-flowchart}所示。
-
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.5\textwidth]{figures/drawio/AI生图流程图.drawio.png}
-        \caption{AI生图流程图}
-        \label{fig:ai-generate-iamge-flowchart}
-    \end{figure}
-    % 具体实现如代码段\ref{code:ai-image-generate}所示：
-    % \begin{figure}[htbp]
-    %     \centering
-    %     \includegraphics[width=0.9\textwidth]{figures/code/ai-image-generate.png}
-    %     \caption{调用大模型生成图像核心代码}
-    %     \label{fig:ai-image-generate}
-    % \end{figure}
-    % \begin{listing}[htbp]
-    %     \caption{大模型文生图核心代码}
-    %     \label{code:ai-image-generate}
-    %     \begin{jscode}
-    %         async generateImage(dto: GenerateImageDto): Promise<string> {
-    %                 const apiKey = this.configService.get<string>('DASHSCOPE_API_KEY');
-    %                 const imageModel = this.configService.get<string>('QWEN_IMAGE_MODEL') || 'qwen-image-plus';
-    %                 if (!apiKey) throw new Error('DASHSCOPE_API_KEY is not configured');
-    %                 // 创建图像生成任务
-    %                 const taskId = await this.createImageTask(apiKey, imageModel, dto.prompt, dto.size);
-    %                 // 轮询获取图像生成结果，并存储到OSS，返回图像URL
-    %                 return this.pollImageTask(taskId, apiKey);
-    %             }
-    %     \end{jscode}
-    % \end{listing}
-    \subsection{智能大纲生成}
-    用户需要设置主题、期望页数、其他要求、标题等，还可以加入自定义的参考文档（md、txt为后缀的纯文本文档），这些需求
-    都会转为GenerateOutlineDto。
-    每次调用大纲生成时，后端都会先加载Slidev官方文档等内容作为大语言模型的初始化内容。
-    若加入参考文档，后端会根据参考文档构建额外的提示词，作为大语言模型的输入参数。
+   
+    
+    幻灯片文档大纲生成需要用户在左侧编辑器的工具栏中的幻灯片文档大纲生成面板设置主题、期望页数、其他要求、标题等，
+    且只能选择选择平台提供的主题，否则后端无法进行编译，
+    且在主题选择弹窗中显示主题的预览图片帮助用户更方便地选择合适的主题。
+    还可以拖过拖拽或是选择文件的方式加入自定义的参考文档（md、txt为后缀的纯文本文档），
+    这些需求都会转为GenerateOutlineDto。
+    每次调用大纲生成时，后端都会先加载Slidev官方文档、主题模板以及相关范例加入到AI的知识库中，
+    让AI生成的内容符合Slidev的Markdown语法。
+    若加入参考文档，后端会解析参考文档的内容，并作为参考文档输入大语言模型，
     最后以流式输出返回给前端，同时，当用户点击“停止输出”按钮，
     前端会触发一个中止信号，
     后端收到该信号后立即停止流式输出，对话中断。
@@ -491,7 +421,7 @@
     %     \caption{调用大模型生成大纲核心代码}
     %     \label{fig:ai-outline-generate}
     % \end{figure}
-    具体流程如图\ref{fig:ai-generate-flowchart}所示：
+    具体流程如图\ref{fig:ai-generate-flowchart}所示。
 
     \begin{figure}[htbp]
         \centering
@@ -501,49 +431,53 @@
     \end{figure}
 
 
-    实现效果如图\ref{fig:ai-generate-interface}所示。
+    % 实现效果如图\ref{fig:ai-generate-interface}所示。
+    % \begin{figure}[htbp]
+    %     \centering
+    %     \includegraphics[width=0.9\textwidth]{figures/appt/ai-gernerate-v2.png}
+    %     \caption{智能幻灯片协作平台AI内容生成界面}
+    %     \label{fig:ai-generate-interface}
+    % \end{figure}
+       
+
+
+        %  \item 内联编辑
+        
+        内联编辑器界面可由快捷键Ctrl+I呼出/关闭，
+        触发内联编辑器时，前端会将光标选中的部分作为修改的目标，
+        通过“/”来触发常用功能，如润色文案、更换布局、修复语法、AI生图，
+        也可以手动输入指令。
+        其界面如图\ref{fig:inline-editing-interface}所示。
     \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.9\textwidth]{figures/appt/ai-gernerate-v2.png}
-        \caption{智能幻灯片协作平台AI内容生成界面}
-        \label{fig:ai-generate-interface}
+        \includegraphics[width=0.9\textwidth]{figures/appt/ai-assistant-inline.png}
+        \caption{内联编辑器界面}
+        \label{fig:inline-editing-interface}
     \end{figure}
-    % \begin{enumerate}
-    %     \item 用户输入需求：选择主题风格、期望页数、演讲主题、目标受众等关键信息。
-    %     \item 可选上传参考文档：平台解析用户上传的PDF、Word或Markdown参考材料，提取关键内容。
-    %     \item 系统构建提示词：
-    %     \begin{itemize}
-    %         \item 系统提示（System Prompt）：包含Slidev语法规范、结构化演示文稿最佳实践、主题适配要求等。
-    %         \item 用户提示（User Prompt）：融合用户需求与参考文档提取的内容。
-    %     \end{itemize}
-    %     \item 调用大模型流式生成：采用流式输出（Streaming），实时返回大纲结构·。
-    %     \item 后处理：平台对生成的大纲进行结构校验、幻灯片页数控制，并可一键转换为Slidev Markdown格式。
+
+       润色文案、更换布局、修复语法功能配置对应的提示词指令快速调用大模型接口，如
+       更换布局的指令为
+       “更改此幻灯片的 Slidev 布局。从以下布局中选择更合适的：
+       居中（center）、双栏（two-cols）、右图（image-right）、封面（cover）、章节（section）...”。
+
+
+       而AI生图功能调用阿里云的qwen-image-plus模型创建异步图像生成任务，
+    并且需要通过任务id轮询获取图像生成的结果。由于这个结果是临时保存在阿里云服务器的，
+    所以需要上传生成的图像到阿里云的OSS，
+        最终返回对应的图像URL。
+    具体流程如图\ref{fig:ai-generate-iamge-flowchart}所示。
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.55\textwidth]{figures/drawio/AI生图流程图.drawio.png}
+        \caption{AI生图流程图}
+        \label{fig:ai-generate-iamge-flowchart}
+    \end{figure}
+
+        
     % \end{enumerate}
-
-    % 大模型生成大纲的核心代码如代码段\ref{code:ai-outline-generate}所示：
-    % \begin{listing}[htpb]
-    %     \caption{大模型生成大纲核心代码}
-    %     \label{code:ai-outline-generate}
-    %     \begin{jscode}
-    %         async *streamGenerateOutline(
-    %         dto: GenerateOutlineDto,
-    %         signal?: AbortSignal): AsyncIterable<string> {
-    %         const stream = await this.client.chat.completions.create({
-    %         model: this.model,
-    %         stream: true,
-    %         messages: [
-    %         // 根据Slidev相关文档构建提示词
-    %         { role: 'system', content: this.buildOutlineSystemPromptBySlideDocs(dto) },
-    %         // 根据用户需求（选用的主题、生成的页数）以及用户上传的参考文档构建提示词
-    %         { role: 'user', content: this.buildOutlineUserPromptByReferenceDocsAndRequirement(dto)},
-    %         ],
-    %         });
-    %         yield* this.streamChunks(stream, signal, 'Generate-outline');
-    %         }
-    %     \end{jscode}
-    % \end{listing}
-
-    \newpage
+   
+    % 具体代码实现如图\ref{fig:ai-image-generate}所示。
 
     \section{代码片段管理}
 
@@ -552,7 +486,7 @@
     代码片段就会保存到用户的个人片段库中，如图\ref{fig:snippets-interface}所示。
     \begin{figure}[!htbp]
         \centering
-        \includegraphics[width=0.95\textwidth]{figures/appt/snnipets-management.png}
+        \includegraphics[width=0.9\textwidth]{figures/appt/snnipets-management.png}
         \caption{代码片段管理界面}
         \label{fig:snippets-interface}
     \end{figure}
@@ -565,7 +499,7 @@
 
     \begin{figure}[!htbp]
         \centering
-        \includegraphics[width=0.95\textwidth]{figures/appt/snnipets-intelligence.png}
+        \includegraphics[width=0.9\textwidth]{figures/appt/snnipets-intelligence.png}
         \caption{代码提示效果界面}
         \label{fig:snnipets-intelligence}
     \end{figure}
@@ -574,65 +508,28 @@
     % 创建代码片段：在编辑器中选中代码内容，右键选择“保存为代码片段”，输入片段名称和描述信息。代码片段会保存到用户的个人片段库中。
     % 插入代码片段：在编辑器中点击插入菜单的“代码片段”选项，从片段库中选择需要的代码片段插入到当前光标位置。支持按名称搜索和按语言分类筛选。
     % 管理片段库：在设置页面的代码片段管理界面中，用户可以查看、编辑、删除和分类管理所有个人代码片段。
+        \section{幻灯片评论}
 
-    \newpage
-    
-    \section{幻灯片空间管理}
-    % 用户可以利用幻灯片空间来管理幻灯片文档。
-    % 空间里的文档为树形结构，通过拖拽就能调整文档的层级关系，平台也提供了全局搜索功能。
-
-    幻灯片文档的树形结构主要由其parent\_id字段实现，
-    后端返回的数据为扁平化的数据，需要由前端构建为树形结构，
-    代码实现如图\ref{fig:slides-build-tree}所示。
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.9\textwidth]{figures/code/slides-build-tree.png}
-        \caption{幻灯片文档树构建核心代码}
-        \label{fig:slides-build-tree}
-    \end{figure}
-
-    幻灯片空间管理界面如图\ref{fig:slideSpace-interface}所示。
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.9\textwidth]{figures/appt/slideSpace-slide.png}
-        \caption{幻灯片空间管理界面}
-        \label{fig:slideSpace-interface}
-    \end{figure}
-
-    当调整某个文档的层级位置时，
-    只需要更改它的parent\_id即可，例如原先id为1且parent\_id为2的文档需要移动到
-    parent\_id为3的文档下，只需要将它的parent\_id改为3即可。
-    但是需要注意不能将parent\_id设置为自己以及不能移动到到另外一个幻灯片空间中等问题。
-    幻灯片文档移动流程如图\ref{fig:slides-move-flowchart}所示。
-
-    \begin{figure}[htbp]
-        \centering
-        \includegraphics[width=0.9\textwidth]{figures/drawio/幻灯片文档移动流程图.drawio.png}
-        \caption{幻灯片文档移动流程图}
-        \label{fig:slides-move-flowchart}
-    \end{figure}
-
-
-
-    当需要在某个文档目录下新建文档时，
-    只需要在数据库中存入该文档的记录，并将parent\_id设置为目标目录的id即可。
-    而当需要删除文档时，则需要通过递归删除所有子文档，且父级文档必须要在子文档删除后，才会被删除。
-    
-
-
-    \section{评论与讨论系统}
+    %     用户可以在发现界面搜索公开的幻灯片，并支持分页加载，如图\ref{fig:explore-interface}所示。
+    % \begin{figure}[htbp]
+    %     \centering
+    %     \includegraphics[width=0.9\textwidth]{figures/appt/explore.png}
+    %     \caption{发现界面}
+    %     \label{fig:explore-interface}
+    % \end{figure}
 
     平台里集成评论功能，可以对幻灯片文档内容进行讨论和反馈，如图\ref{fig:comment-interface}所示。
     评论的树形结构是由评论表的parent\_id和path字段共同实现的。
 
     \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.95\textwidth]{figures/appt/comment.png}
+        \includegraphics[width=0.9\textwidth]{figures/appt/comment.png}
         \caption{评论系统界面}
         \label{fig:comment-interface}
     \end{figure}
     
-    对于新增评论，在用户有权限评论时，新增评论需要检查是否同一幻灯片中是否有所回复的评论等情况，
+    对于新增评论，在用户有权限评论时，
+    新增评论需要检查所评论的幻灯片是否存在、同一幻灯片中是否有所回复的评论等情况，
     新增评论流程如图\ref{fig:add-comment-flowchart}所示。
     \begin{figure}[htbp]
         \centering
@@ -645,12 +542,18 @@
     对于顶层评论而言，replyId为空，
     新增评论的path字段由回复的目标评论的path和自身id组成，
     而评论的id是自增字段，所以需要先存入新增评论的数据，再构建新增评论的path字段，这两个操作不可中断，
-    作者使用事务来保证评论创建和字段更新这两个操作是一气呵成的。
+    typeorm提供的this.dataSource.transaction()可以实现数据库的事务，
+    作者以此确保评论创建和字段更新这两个操作是一气呵成的。
     
 
     对于删除评论，
     由于在新增评论的时候，已经维护了每个评论的path字段，所以可以使用如DELETE FROM slide\_comments WHERE path LIKE
-    '1-5-\%'的SQL语句即可实现一键删除该评论以及所有子评论，避免相对复杂的递归删除。
+    '1-5-\%'的SQL语句即可实现一键删除该评论以及所有子评论，避免相对复杂的逐项删除。
+    \newpage
+    
+ 
+
+
 
 
     % \section{测试与评估}\label{sec:testing-evaluation}
