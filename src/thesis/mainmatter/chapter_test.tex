@@ -26,59 +26,69 @@
         \bottomrule
     \end{tabular}
 \end{table}
+    
 
-    \section{系统功能性测试}
+    \section{系统功能测试}
 
-    % \section{幻灯片创建与编辑}
-    % 幻灯片创建与编辑模块测试包括新建幻灯片、修改标题、编辑内容、保存、删除、编辑器语法高亮及快捷键响应等操作，如\ref{tab:test-slide-crud}表所示。
+    \subsection{用户登录模块功能测试}
+    \begin{table}[htbp]
+    \caption{用户登录模块功能测试}
+    \label{tab:test-login}
+    \centering
+    \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+        \toprule
+        测试功能 & 测试描述 & 预期结果 & 测试结果 \\
+        \midrule
+        用户密码格式校验 & 用户登录时，输入仅有数字或长度仅为2的密码 & 登录失败，平台提示错误 & 通过 \\
+        \addlinespace 
+        token生成 & 用户成功登录平台 & 平台将生成的token保存只localStorage & 通过 \\
+        \addlinespace
+        用户登录& 用户输入正确的用户名、密码以及验证码 & 用户成功登录，且之后均自动跳转到“工作台”界面 & 通过 \\
+        \addlinespace
+        \bottomrule
+    \end{tabular}
+\end{table}
+    \subsection{协作者权限管理功能测试}
+    协作者权限管理测试owner、editor、commenter、viewer四种角色进行操作时是否能正常地校验权限，如表\ref{tab:test-permission}所示。
 
-    % \begin{table}[htbp]
-    %     \caption{集成测试用例：幻灯片创建与编辑}
-    %     \label{tab:test-slide-crud}
-    %     \centering
-    %     \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
-    %         \toprule
-    %         用例名称    & 输入项描述                    & 测试数据              & 预期结果              & 是否通过 \\
-    %         \midrule
-    %         新建幻灯片   & 在指定空间内创建新幻灯片，输入标题        & 空间ID=1，标题=“测试幻灯片” & 提示创建成功，空间下出现新幻灯片  & 通过   \\
-    %         \addlinespace
-    %         修改标题    & 编辑已有幻灯片的标题字段             & 标题改为“新标题”         & 标题更新成功，列表中显示新标题   & 通过   \\
-    %         \addlinespace
-    %         编辑内容    & 使用编辑器修改幻灯片正文             & 输入多行Markdown文本    & 内容保存后可正确回显        & 通过   \\
-    %         \addlinespace
-    %         保存幻灯片   & 编辑后执行保存操作                & 修改任意内容后点击保存       & 提示保存成功，更新时间刷新     & 通过   \\
-    %         \addlinespace
-    %         删除幻灯片   & 删除指定幻灯片                  & 删除“测试幻灯片”         & 幻灯片从列表消失，关联数据级联清除 & 通过   \\
-    %         \addlinespace
-    %         编辑器语法高亮 & 在CodeMirror中写入Markdown语法 & 输入\#\#标题、列表项      & 关键字高亮显示，符合预期      & 通过   \\
-    %         \addlinespace
-    %         快捷键响应   & 使用常用快捷键（如Ctrl+S保存）       & 按下Ctrl+S          & 触发保存动作，编辑器无卡顿     & 通过   \\
-    %         \bottomrule
-    %     \end{tabular}
-    % \end{table}
+    \begin{table}[htbp]
+        \caption{协作者权限管理模块功能测试}
+        \label{tab:test-permission}
+        \centering
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+            \toprule
+            测试功能        & 测试描述                & 预期结果              & 测试结果 \\
+            \midrule
+            owner权限     & owner删除幻灯片      & 操作成功              & 通过 \\
+            \addlinespace
+            editor权限    & editor尝试删除幻灯片   & 操作被拒绝，并提示用户无权操作   & 通过 \\
+            \addlinespace
+            commenter权限 & commenter尝试编辑内容 & 编辑区只读，无法编辑        & 通过 \\
+            \addlinespace
+            viewer权限    & viewer尝试输入评论    & 评论请求被拦截，并提示用户无法评论 & 通过 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    \subsection{幻灯片管理}
 
-    % \section{Markdown渲染}
-    % Markdown渲染模块测试包含标题、列表、代码块等格式的实时预览效果，如\ref{tab:test-markdown}表所示。
-
-    % \begin{table}[htbp]
-    %     \caption{集成测试用例：Markdown渲染}
-    %     \label{tab:test-markdown}
-    %     \centering
-    %     \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{4cm} c}
-    %         \toprule
-    %         用例名称   & 输入项描述         & 测试数据              & 预期结果          & 是否通过 \\
-    %         \midrule
-    %         标题渲染   & 输入多级标题语法      & \#一级、\#\#二级       & 右侧预览呈现对应层级标题  & 通过   \\
-    %         \addlinespace
-    %         列表渲染   & 输入有序/无序列表     & -项目1、1.步骤1        & 预览显示正确项目符号和编号 & 通过   \\
-    %         \addlinespace
-    %         代码块渲染  & 输入围栏代码块       & \`\`\`js...\`\`\` & 预览区代码高亮，格式保留  & 通过   \\
-    %         \addlinespace
-    %         混合内容渲染 & 同时包含标题、列表、代码块 & 组合上述多种元素          & 所有元素样式正确，无错乱  & 通过   \\
-    %         \bottomrule
-    %     \end{tabular}
-    % \end{table}
-
+    \begin{table}[htbp]
+        \caption{幻灯片管理模块功能测试}
+        \label{tab:test-permission}
+        \centering
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+            \toprule
+            测试功能        & 测试描述                & 预期结果              & 测试结果 \\
+            \midrule
+            owner权限     & owner删除幻灯片      & 操作成功              & 通过 \\
+            \addlinespace
+            editor权限    & editor尝试删除幻灯片   & 操作被拒绝，并提示用户无权操作   & 通过 \\
+            \addlinespace
+            commenter权限 & commenter尝试编辑内容 & 编辑区只读，无法编辑        & 通过 \\
+            \addlinespace
+            viewer权限    & viewer尝试输入评论    & 评论请求被拦截，并提示用户无法评论 & 通过 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
     \subsection{实时协作功能测试}
     实时协作模块利用多开浏览器测试多用户同时编辑时的内容同步、协作状态显示等能力，如表\ref{tab:test-collab}所示。
 
@@ -147,27 +157,7 @@
         \end{tabular}
     \end{table}
 
-    \subsection{权限管理功能测试}
-    权限管理模块测试owner、editor、commenter、viewer四种角色进行操作时是否能正常地校验权限，如表\ref{tab:test-permission}所示。
 
-    \begin{table}[htbp]
-        \caption{权限管理功能测试}
-        \label{tab:test-permission}
-        \centering
-        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
-            \toprule
-            测试功能        & 测试描述                & 预期结果              & 测试结果 \\
-            \midrule
-            owner权限     & owner删除幻灯片      & 操作成功              & 通过 \\
-            \addlinespace
-            editor权限    & editor尝试删除幻灯片   & 操作被拒绝，并提示用户无权操作   & 通过 \\
-            \addlinespace
-            commenter权限 & commenter尝试编辑内容 & 编辑区只读，无法编辑        & 通过 \\
-            \addlinespace
-            viewer权限    & viewer尝试输入评论    & 评论请求被拦截，并提示用户无法评论 & 通过 \\
-            \bottomrule
-        \end{tabular}
-    \end{table}
 
     % \section{AI辅助功能}
     % AI辅助功能模块测试了内容生成、优化及Slidev语法合规性，如\ref{tab:test-ai}表所示。
