@@ -24,11 +24,11 @@
 		
 		平台前端选用React，后端采用NestJS，
 		使用MySQL来存储相关数据，
-		通过Yjs的CRDT算法实现无冲突的实时协作编辑，
-		支持多用户协同编辑和实时光标追踪，
+		通过Yjs的CRDT算法来处理多个用户的编辑冲突，
+		支持协同编辑和实时光标追踪，
 		并通过NestJS提供的Guards来实现对编辑、查阅、评论等权限的管理，
 		选择Qwen-Plus来辅助用户创作幻灯片，
-		以快照存储的的方式实现版本管理，提供版本历史查看、差异对比和回滚功能。
+		版本管理功能支持用户查看版本历史、对比版本差异和回滚到特定版本。
 		
 
 \end{chineseabstract}
@@ -48,22 +48,9 @@
 
 \begin{englishabstract}
 {Intelligent Slide Collaboration Platform; Real-time Collaboration; Yjs; Slidev}
-		Slides are important tools for conveying speakers' ideas and presenting speech content.
-		However, common slide tools require users to spend a lot of effort on layout and style adjustments
-		rather than content creation.
-		To solve the above problems, the author designed and developed an intelligent slide collaboration platform based on Slidev,
-		which supports functions such as real-time collaboration, permission management, AI(Artificial Intelligence) assistance, and version management.
-		It can help speakers conveniently create slides using Slidev-compatible Markdown,
-		allowing them to focus only on content creation instead of layout and styling.
-		At the same time, a wealth of plugins and themes can be used to achieve many interesting animation effects and visual presentations.
-		
-		The platform adopts React for the frontend and NestJS for the backend,
-		and uses MySQL to store relevant data.
-		It achieves conflict-free real-time collaborative editing through Yjs's CRDT algorithm,
-		supporting multi-user collaborative editing and real-time cursor tracking.
-		Permission management for operations such as editing, viewing, and commenting is implemented via Guards provided by NestJS.
-		Qwen-Plus is selected to assist users in creating slides,
-		and version management is realized through snapshot storage, providing functions including version history viewing, difference comparison, and rollback.
+Slides are essential tools for conveying a speaker’s ideas and presenting content. However, common slide tools often require users to spend considerable effort on layout and style adjustments rather than on content creation. To address this issue, the author designs and develops an intelligent slide collaboration platform based on Slidev. It supports real-time collaboration, permission management, AI(Artificial Intelligence) assistance, and version management, enabling speakers to easily create slides using Markdown syntax adapted for Slidev, so they can focus solely on content creation instead of layout and style. Additionally, rich plugins and themes can be used to achieve numerous engaging animation effects and visual presentations.
+
+The front-end of the platform is built with React, while the back-end employs NestJS. MySQL is used to store related data. The Yjs CRDT algorithm is adopted to handle editing conflicts among multiple users, supporting collaborative editing and real-time cursor tracking. Guards provided by NestJS are utilized to manage permissions for editing, viewing, and commenting. Qwen-Plus is chosen to assist users in creating slides. The version management feature allows users to view version history, compare differences between versions, and roll back to a specific version.
 \end{englishabstract}
 
 % \vspace{-0.5cm}
