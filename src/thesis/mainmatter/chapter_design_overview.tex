@@ -314,7 +314,7 @@
             password\_hash         & varchar(255) & 否     & 密码哈希值     \\
             avatar\_url            & varchar(500) & 是     & 头像URL     \\
             % state                  & tinyint      & 否     & 用户状态（1正常） \\
-            % registration\_code\_id & bigint       & 是     & 使用的注册码ID  \\
+            % registration\_code\_id & bigint       & 是     & 使用的注册码id  \\
             created\_at            & datetime     & 否     & 创建时间      \\
             updated\_at            & datetime     & 否     & 最近更新时间    \\
             \bottomrule
@@ -323,7 +323,7 @@
 
     \item slide\_spaces 幻灯片空间表
 
-    幻灯片空间表存储幻灯片空间的基本信息，包括空间名称、所有者用户ID等字段，
+    幻灯片空间表存储幻灯片空间的基本信息，包括空间名称、所有者用户id等字段，
     is\_public仅用于表明幻灯片空间的基本信息是否公开，当它为1时，
     并不代表整个幻灯片空间的所有幻灯片公开，
     幻灯片空间表结构如表\ref{tab:slide-spaces}所示。
@@ -338,7 +338,7 @@
             \midrule
             id          & bigint       & 否     & 空间唯一主键        \\
             name        & varchar(200) & 否     & 空间名称          \\
-            owner\_id   & bigint       & 否     & 所有者用户ID       \\
+            owner\_id   & bigint       & 否     & 所有者用户id       \\
             is\_public  & tinyint      & 否     & 是否公开（0私有，1公开） \\
             created\_at & datetime     & 否     & 创建时间          \\
             updated\_at & datetime     & 否     & 最近更新时间        \\
@@ -347,7 +347,7 @@
     \end{table}
    \item slide\_comments 评论表
    
-    评论表评论向相关信息，包括评论正文内容、所属幻灯片ID、评论者发表者ID、父评论ID等字段，
+    评论表评论向相关信息，包括评论正文内容、所属幻灯片id、评论者发表者id、父评论id等字段，
     评论表通过reply\_id和path字段实现评论的树形结构。
     reply\_id指向父评论id，顶层评论的reply\_id为NULL。
 
@@ -374,18 +374,18 @@
             字段名         & 数据类型          & 是否允许空 & 说明              \\
             \midrule
             id          & bigint        & 否     & 评论唯一主键          \\
-            slide\_id   & bigint        & 否     & 所属幻灯片ID         \\
-            user\_id    & bigint        & 否     & 评论发表者ID         \\
+            slide\_id   & bigint        & 否     & 所属幻灯片id         \\
+            user\_id    & bigint        & 否     & 评论发表者id         \\
             content     & text          & 否     & 评论正文内容          \\
             path        & varchar(1000) & 否     & 根节点到本节点的物化路径    \\
-            reply\_id   & bigint        & 是     & 父评论ID，顶层评论为NULL \\
+            reply\_id   & bigint        & 是     & 父评论id，顶层评论为NULL \\
             created\_at & datetime      & 否     & 评论发布时间          \\
             \bottomrule
         \end{tabular}
     \end{table}
     \item slides 幻灯片表
 
-    幻灯片表存储每个幻灯片文档相关信息，包括幻灯片Markdown源码、所属空间ID、预览URL  等字段。
+    幻灯片表存储每个幻灯片文档相关信息，包括幻灯片Markdown源码、所属空间id、预览URL  等字段。
     preview\_url是Slidev构建好的幻灯片预览图片，方便用户在幻灯片列表中快速浏览幻灯片内容。
     is\_public字段用于说明幻灯片是否公开，未公开时，只有具有查阅权限的协作者才能访问该链接。
     created\_by作为冗余字段（其值等于slide\_spaces表的owner\_id），可在部分查询中减少内联接。
@@ -406,10 +406,10 @@
             id               & bigint       & 否     & 文档唯一主键          \\
             title            & varchar(200) & 否     & 文档标题            \\
             content          & longtext     & 是     & 幻灯片Markdown源码   \\
-            slide\_space\_id & bigint       & 否     & 所属空间ID          \\
-            parent\_id       & bigint       & 是     & 父文档ID，根节点为NULL  \\
+            slide\_space\_id & bigint       & 否     & 所属空间id          \\
+            parent\_id       & bigint       & 是     & 父文档id，根节点为NULL  \\
             allow\_comment   & tinyint      & 否     & 是否允许评论（1允许，0禁止） \\
-            created\_by      & bigint       & 否     & 创建者用户ID         \\
+            created\_by      & bigint       & 否     & 创建者用户id         \\
             is\_public       & tinyint      & 否     & 是否公开（0私有，1公开）   \\
             is\_build        & tinyint      & 否     & 是否已构建为静态页面       \\
             preview\_url     & varchar(255) & 是     & 预览图片URL         \\
@@ -422,12 +422,12 @@
     \item slide\_versions 幻灯片文档历史版本表
 
     幻灯片文档历史版本表记录幻灯片的版本历史，
-    % 包括版本内容快照、提交说明、创建者用户ID等字段。
-    包括版本内容快照、提交说明、创建者用户ID等字段。
+    % 包括版本内容快照、提交说明、创建者用户id等字段。
+    包括版本内容快照、提交说明、创建者用户id等字段。
     提交说明字段记录的是每次版本提交的摘要信息，
     每个版本的幻灯片源码都会完整存为一条记录，
-    创建者用户ID不仅可以是幻灯片文档的所有者ID，
-    也可以是具有编辑权限的协作者的ID，
+    创建者用户id不仅可以是幻灯片文档的所有者id，
+    也可以是具有编辑权限的协作者的id，
     幻灯片文档历史版本表结构如表\ref{tab:slide-versions}所示。
 
     \begin{table}[htbp]
@@ -439,10 +439,10 @@
             字段名         & 数据类型         & 是否允许空 & 说明      \\
             \midrule
             id          & bigint       & 否     & 版本唯一主键  \\
-            slide\_id   & bigint       & 否     & 所属幻灯片ID \\
+            slide\_id   & bigint       & 否     & 所属幻灯片id \\
             content     & longtext     & 是     & 版本内容快照  \\
             commit\_msg & varchar(500) & 是     & 提交说明    \\
-            created\_by & bigint       & 否     & 创建者用户ID \\
+            created\_by & bigint       & 否     & 创建者用户id \\
             created\_at & datetime     & 否     & 创建时间    \\
             \bottomrule
         \end{tabular}
@@ -451,7 +451,7 @@
     \item slide\_user\_roles 用户角色表
 
     用户角色表定义用户在幻灯片中的角色，
-    主要包括幻灯片ID、用户ID、角色等字段，
+    主要包括幻灯片id、用户id、角色等字段，
     角色字段为enum，可以为owner、editor、commenter、viewer之一，
     用于控制幻灯片协作者的权限。
     用户角色表结构如表\ref{tab:slide-user-roles}所示。
@@ -465,8 +465,8 @@
             字段名         & 数据类型     & 是否允许空 & 说明                                \\
             \midrule
             id          & bigint   & 否     & 角色记录主键                            \\
-            slide\_id   & bigint   & 否     & 幻灯片ID                             \\
-            user\_id    & bigint   & 否     & 用户ID                              \\
+            slide\_id   & bigint   & 否     & 幻灯片id                             \\
+            user\_id    & bigint   & 否     & 用户id                              \\
             role        & enum     & 否     & 角色（owner/editor/commenter/viewer） \\
             created\_at & datetime & 否     & 创建时间                              \\
             \bottomrule
@@ -477,7 +477,7 @@
 
     \item snippets 代码片段表
 
-    代码片段表用于存储用户创建的自定义代码片段，包括所属用户ID、片段名称、片段内容、创建时间等字段，
+    代码片段表用于存储用户创建的自定义代码片段，包括所属用户id、片段名称、片段内容、创建时间等字段，
     片段名称不仅帮助用户区分不同的代码片段，还可以作为编辑器代码提示的检索关键词，
     用户在编辑幻灯片时，编辑器会根据片段名称前缀检索显示需要插入的代码片段。
     代码片段表结构如表\ref{tab:snippets}所示。
@@ -494,7 +494,7 @@
             字段名         & 数据类型         & 是否允许空 & 说明     \\
             \midrule
             id          & bigint       & 否     & 片段唯一主键 \\
-            user\_id    & bigint       & 否     & 所属用户ID \\
+            user\_id    & bigint       & 否     & 所属用户id \\
             name        & varchar(100) & 否     & 片段名称   \\
             content     & text         & 是     & 片段内容   \\
             created\_at & datetime     & 否     & 创建时间   \\
@@ -506,7 +506,7 @@
     % \item registration\_codes 注册码表
 
     % 注册码表用于管理平台的注册码，
-    % 包括注册码字符串 、使用者ID、是否已使用、创建时间、过期时间等字段。
+    % 包括注册码字符串 、使用者id、是否已使用、创建时间、过期时间等字段。
     % 因为每个注册码只能使用一次，用户注册时需通过是否已经使用校验注册码的有效性，
     % 同时需要通过过期时间来检验注册码是否过期，
     % 注册码表结构如表\ref{tab:registration-codes}所示。
@@ -521,9 +521,9 @@
     %         id          & bigint      & 否     & 注册码唯一主键        \\
     %         code        & varchar(50) & 否     & 注册码字符串         \\
     %         is\_used    & tinyint     & 否     & 是否已使用（0未用，1已用） \\
-    %         used\_by    & bigint      & 是     & 使用者ID          \\
+    %         used\_by    & bigint      & 是     & 使用者id          \\
     %         used\_at    & datetime    & 是     & 使用时间           \\
-    %         % created\_by & bigint      & 是      & 创建者（管理员ID）   \\
+    %         % created\_by & bigint      & 是      & 创建者（管理员id）   \\
     %         created\_at & datetime    & 否     & 创建时间           \\ expires\_at & datetime & 是 & 过期时间 \\
     %         \bottomrule
     %     \end{tabular}
