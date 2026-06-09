@@ -70,7 +70,7 @@
     SlidePermissionGuard继承@nestjs/common的CanActivate类，通过canActivate()方法来判断是否校验通过，
     在这个方法内，会先通过reflector获取到@RequirePermission()装饰器中所需要的权限，
     而后通过解析前端传送的token，利用context.switchToHttp().getRequest().user获取上下文中的角色信息，
-    若幻灯片允许评论且该接口需要是评论权限，则直接放行，对于幻灯片需要查阅权限的接口同样如此。
+    若幻灯片公开且该接口需要是查阅权限，则直接放行，对于幻灯片需要评论权限的接口同样如此。
     否则将以上参数传入validatePermission()方法中校验，
     并与装饰器中所声明需要的权限相比对，实现权限校验。
     validatePermission()方法的实现代码如图\ref{fig:validatePermission}所示。
@@ -241,14 +241,18 @@
        \subsection{幻灯片文档协同编辑模块设计与实现}
 
       
-    本平台能够依据文档的协作状态选择独立编辑模式还是实时协作模式。
+    在幻灯片加载时，
+    平台会根据文档是否有协作者
+    选择独立编辑模式还是实时协作模式，
+    注意这里的协作者并非实时在线的协作者，
+    % 在幻灯片加载时，会先调用/slides/\{slideId\}/collaborators来获取该幻灯片的协作者，
+    若没有协作者就进入独立编辑模式。
     由于建立WebSocket连接以及后端文档合并编辑冲突会有一定的性能开销，
     这样的设计可以尽可能兼顾性能和用户的使用体验。
     独立模式下，不需要建立WebSocket连接，会定期自动保存内容，也可以手动保存或是建立版本，
     % 而在实时协作模式，需要按照上文所述的步骤，与后端建立WebSocket连接。
     而在实时协作模式，与后端建立WebSocket连接。
-    
-    实时协作前，用户需要邀请协作者，并授予相应权限，
+    实时协作前，幻灯片的所有者可以通过根据用户名搜索用户，并授予相应权限，
     如图\ref{fig:permission-panel-interface}所示。
     % 实时协作前，用户需要在编辑器右上角的协作面板中点击“邀请成员”按钮，
     % 输入协作者的用户名（可以通过搜索框搜索用户名）
@@ -290,9 +294,11 @@
     所有编辑操作通过WebSocket实时广播，每个客户端仅需传输增量的Yjs update，
     % 大大降低带宽消耗。
     后端通过Hocuspocus接收这些更新，并通过CRDT算法自动合并来自不同用户的并发编辑，
-    持久化、权限认证等功能主要通过Hocuspocus提供的生命周期钩子实现，
+    持久化、权限认证等功能主要通过Hocuspocus提供事件接口实现，
     % 这些钩子负责WebSocket的权限校验、文档加载与持久化。
-    而各钩子内部的功能已通过代码注释说明，如图\ref{fig:Hocuspocus}所示。
+    % 需要说明的是，
+    % 权限认证发生在Websocket连接前，因此，在建立连接后，撤销协作者的编辑权限也不能马上另其进入只读模式。
+    而事件内部的功能已通过代码注释说明，如图\ref{fig:Hocuspocus}所示。
     % 主要通过Hocuspocus提供的生命周期钩子实现WebSocket的权限校验、文档加载与持久化，
     % 代码中的注释分别说明了每个钩子内部所实现的功能，如图\ref{fig:Hocuspocus}所示。
     % 后端Hocuspocus服务器主要通过图\ref{fig:Hocuspocus}所示的函数实现后端WebSocket的权限校验、文档加载与持久化，
@@ -332,11 +338,11 @@
 
 
     由于Y.Text为二进制数据，所以在文档加载和持久化的实现中，都需要与文本数据相互转化。
-    以Y.Text转为文本数据为例，文档存储钩子的实现代码如图\ref{fig:Hocuspocus-onStoreDocument}所示。
+    以Y.Text转为文本数据为例，文档存储事件的实现代码如图\ref{fig:Hocuspocus-onStoreDocument}所示。
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/code/Hocuspocus-onStoreDocument-lg-width.png}
-        \caption{文档存储钩子的实现代码}
+        \caption{文档存储事件的实现代码}
         \label{fig:Hocuspocus-onStoreDocument}
     \end{figure}
 
@@ -456,9 +462,12 @@
     \end{figure}
 
        润色文案、更换布局、修复语法功能配置对应的提示词指令快速调用大模型接口，如
-       更换布局的指令为
-       “更改此幻灯片的 Slidev 布局。从以下布局中选择更合适的：
-       居中（center）、双栏（two-cols）、右图（image-right）、封面（cover）、章节（section）...”。
+       修复语法的指令为
+       “请全面检查并修正给定文本中所有与Slidev相关的语法错误、拼写错误及格式问题”。
+    %    润色文案、更换布局、修复语法功能配置对应的提示词指令快速调用大模型接口，如
+    %    更换布局的指令为
+    %    “更改此幻灯片的 Slidev 布局。从以下布局中选择更合适的：
+    %    居中（center）、双栏（two-cols）、右图（image-right）、封面（cover）、章节（section）...”。
 
 
        而AI生图功能调用阿里云的Qwen-Image-Plus模型创建异步图像生成任务，
@@ -530,7 +539,7 @@
   
     \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.6\textwidth]{figures/drawio/新增评论流程图.drawio.png}
+        \includegraphics[width=0.7\textwidth]{figures/drawio/新增评论流程图.drawio.png}
         \caption{新增评论流程图}
         \label{fig:add-comment-flowchart}
     \end{figure}
@@ -545,10 +554,10 @@
     新增评论需要检查所评论的幻灯片是否存在、同一幻灯片中是否有所回复的评论等情况，
     新增评论流程如图\ref{fig:add-comment-flowchart}所示。
 
-    对于删除评论，
-    由于在新增评论的时候，已经维护了每个评论的path字段，所以可以使用如DELETE FROM slide\_comments WHERE path LIKE
+    删除评论需要用户为评论的发表者或是幻灯片的拥有者。
+    由于在新增评论的时候，已经维护了每个评论的path字段，
+    所以可以使用如DELETE FROM slide\_comments WHERE path LIKE
     '1-5-\%'的SQL语句即可实现一键删除该评论以及所有子评论，避免相对复杂的逐项删除。
-    \newpage
     
  
 
