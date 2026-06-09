@@ -10,56 +10,57 @@
 	% 2.  分析：分析国内外相关研究的主要成果、研究方法和研究趋势
 	% 3. 研究评述：评价已有研究的优缺点，指出研究中存在的问题和不足
 	% 4. 研究展望：提出未来研究的方向和可能的突破点
+	
 	\section{React}\label{sec:React}
-	React是由FaceBook团队开发得JavaScript库，
+	React是由FaceBook团队开发的JavaScript库，
+	允许开发者使用JSX语法来编写前端页面，
+	React会将JSX文件编译为新的JavaScript文件，而JSX可以看作JavaScript的语法拓展，
+	可以在JavaScript中编写HTML，这样在编写HTML页面的同时，也可以更方便地处理交互逻辑，
+	而非分将这两者分离开来\cite{1023559989.nh}。
+	同时其组件化的设计思路可以帮助开发者对组件进行封装以及逻辑复用，
+	% 开发时可以将一些大组件拆分为更小的组件，
+	如本平台中的前端UI库 
+	lucide-react把每一个SVG图标都封装成可定义参数的React组件，
+    使开发者可以像使用普通组件那样以声明式的方式放在界面中，
+    改变对应参数就可以设置图片的颜色、大小、描边宽度等。
+	为了减少性能开销，React设计了虚拟DOM，
+	每次页面发生变化的时候，Raect会将虚拟DOM和真实DOM进行对比，
+	通过Diff算法计算并更新的变化的部分，减少对真实DOM的资源消耗\cite{1023036236.nh}。
+	
+	
 	\section{NestJS}\label{sec:NestJS}
-
-
+	NodeJS是一个跨平台、开源的服务端JavaScript运行时环境，
+	底层使用C++编写，通过异步执行的方式处理网络请求和文件操作，避免函数阻塞，极大减少了服务端的资源利用率。
+	不仅支持HTTP、HTTPS、DNS等网络模块，
+	而且在许多模块都提供了事件驱动的接口，
+	以Socket模块为例，它提供了open、message、close等可以注册的事件。
+	可以帮助开发者更加方便开发服务端\cite{1021830702.nh}。
+	
+	而NestJS正是基于NodeJS的服务端框架，支持TypeScript和JavaScript，
+	融入了面向对象编程、函数式编程等思想\cite{pham2020developing}，
+	同时提供了管道、守卫、拦截器等常用功能，
+	其中管道可以用于请求参数格式校验和转化，如将字符串的某一部分解析为整数，
+	守卫可以用于权限或身份的校验。
+	NestJs项目结构中的每个模块有清晰的结构，主要包括controller、service、module等。
+	
 	\section{MySQL}\label{sec:MySQL}
 
 
+	MySQL是一个开源的关系型数据库，
+	不仅具有性能高、安全性强、运行时占用内存小的优点，
+	而且支持跨平台，可以运行在大部分常用的操作系统上\cite{XXDL202314058}，
+	为C++、Java、Python、TypeScript等常见的编程语言都提供了接口，
+	% 开发者可以编写这些语言的呈现来连接、管理MySQL数据库，
+	如本平台就采用TypeORM这样的支持TypeScript的ORM（Object Relational Mapping，对象关系映射）框架
+	来连接、管理MySQL数据。
 
 
 
-	\section{实时协作技术}\label{sec:collaboration-tech}
-
-	% \subsection{CRDT算法与操作转换技术}
-
-	实时协作编辑的主要技术有冲突复制数据类型（CRDT）算法和操作转换（OT）\cite{SJCM79F193E0431876530855F41675323DC6}。
-	CRDT算法利用它预设的数据结构，保证多个用户协作时操作具有交换性和幂等性，达到无冲突的最终一致性\cite{preguicca2018conflict}。
-	% CRDT算法通过设计特定的数据结构，保证多用户协作时操作的交换性、结合性和幂等性，从而实现无冲突的最终一致性。
-	OT技术则通过转换并发操作来解决冲突，并且需要中心服务器进行协调\cite{takeichi2024coordination}。
-	% OT技术则通过转换并发操作\cite{sun1998operational}来解决冲突，并且需要中心服务器进行协调\cite{takeichi2024coordination}。
-	在现在的Web实时协作领域中，人们常常使用CRDT算法，主要因为它不需要中央节点进行统一调度，且容错能力更强。
-
-	Yjs就是一个使用CRDT算法的高性能实时协作库，内置了文档状态同步和冲突解决机制\cite{nicolaescu2015yjs}。
-	它使用基于链表的CRDT数据结构，可以对任意位置进行插入和删除操作，在保持内存占用较低的同时又获得较好的性能表现。
-	现在，Yjs已经应用于Web编辑器中，CodeMirror和Quill这些工具都在使用。
-
-	% \subsection{WebSocket实时通信技术}
-
-	WebSocket协议提供了全双工通信通道\cite{DNZS201028018,zhou2019websocket}，这意味着服务器与浏览器之间可以相互发送和接收消息，
-	能够实现浏览器和服务器间的异步通信，这是实现实时协作的关键技术。
-	% 但对于HTTP协议，通信只能由客户端发起，服务器的消息却不能主动推送到浏览器，
-	% 这样的性能和协作及时性将大打折扣。
-	Hocuspocus库使用Yjs，可以基于WebSocket协议实现多客户端的文档状态同步，
-	而且它提供了文档初始化、存储、认证等生命周期的钩子，开发者可以很方便地利用这些生命钩子
-	完成自己项目中的业务需求。
 	% WebSocket协议相较于HTTP 协议来说，具有自己的优势，HTTP协议有一个缺陷：
 	% 通信只能由客户端发起，也就是说服务器端的变动不能主动由服务器端向客户端推送，
 	% 只有在客户端发起请求时，服务器端才能响应，及时性就大打折扣，当然也可以使用长连接，但这是非常浪费带宽资源的
 
-	% Hocuspocus作为Yjs的协作服务器，基于WebSocket协议实现了文档状态的多客户端同步。
-	% BUILD CHECK
-	% 在本平台中，前端Yjs客户端通过WebSocket连接Hocuspocus服务器，实现文档状态的实时同步。
-	% Hocuspocus服务器处理多客户端连接、文档加载和状态管理，并与后端业务层交互进行数据持久化存储。
-
-	% \subsection{实时协作在文档编辑中的应用}
-
-	% 实时协作技术已广泛应用于在线文档编辑、代码协作等领域。
-	% Notion和语雀等工具采用了成熟的实时协作技术，支持多用户同时编辑。
-	% 但在幻灯片制作领域，传统工具如Microsoft PowerPoint和Apple Keynote不支持原生的实时协作。
-
+	
 	% \section{权限管理}\label{sec:permission-management}
 
 	% \subsection{RBAC模型}
@@ -130,25 +131,51 @@
 	\section{Slidev}\label{sec:slideshow-tools}
 
 	% \subsection{Slidev技术架构与特点}
-	Markdown作为一种轻量级标记语言，因其简洁性和易读性在文档编写中广泛应用。
-	基于Markdown的幻灯片工具如Reveal.js、Marp、Slidev等，
-	允许用户使用纯文本编写幻灯片，并通过CSS样式控制视觉效果。
+	% Markdown作为一种轻量级标记语言，因其简洁性和易读性在文档编写中广泛应用。
+	% 基于Markdown的幻灯片工具如Reveal.js、Marp、Slidev等，
+	% 允许用户使用纯文本编写幻灯片，并通过CSS样式控制视觉效果。
 
-	其中，Slidev是专门为开发者设计的现代幻灯片制作工具，
+	% 其中，Slidev是专门为开发者设计的现代幻灯片制作工具，
+	Slidev是专门为开发者设计的现代幻灯片制作工具，
 	它基于Vue，把幻灯片制作与Web开发技术结合起来，支持代码高亮、实时预览和自定义主题，
 	编写Markdown文档就可以制作幻灯片，
 	当然它不仅仅只是支持简单的Markdown语法，也支持Vue、UnoCSS、Shiki、Iconify等工具和技术，
-	用户还可以利用它丰富的插件还可以实现许多有趣生动的动画效果。
+	用户还可以利用它丰富的插件还可以实现许多有趣生动的动画效果,
 	它先将Markdown文档中的“---”作为分页符，同时在第一页中可以对主题、插件进行配置，
 	也可以在各个页面对布局等进行配置。
 	而后根据该文档中的内容渲染为Web界面，实现幻灯片的效果。
 	它支持热加载以及静态资源打包的方式，
 	其中热加载方式可以实现根据Markdown文档的内容实时更新渲染幻灯片页面，
-	使用命令如“Slidev slides.md --port 4090",
-	而静态资源打包则是将Markdown文档构建为一个静态的单页应用，包括js、css、html等资源，
+	使用命令如“Slidev slides.md --port 4090”,
+	而静态资源打包则是将Markdown文档构建为一个静态的单页应用，包括JavaScript、CSS、HTML等资源，
 	可以部署到服务器中，
-	其使用命令如“Slidev build slides.md"。
+	其使用命令如“Slidev build slides.md”。
 	
+	\section{实时协作技术}\label{sec:collaboration-tech}
+
+	% \subsection{CRDT算法与操作转换技术}
+
+	实时协作编辑技术有冲突复制数据类型（CRDT）算法和操作转换（OT）\cite{SJCM79F193E0431876530855F41675323DC6}。
+	CRDT算法利用它预设的数据结构，保证多个用户协作时操作具有交换性和幂等性，达到无冲突的最终一致性\cite{preguicca2018conflict}。
+	% CRDT算法通过设计特定的数据结构，保证多用户协作时操作的交换性、结合性和幂等性，从而实现无冲突的最终一致性。
+	OT技术则通过转换并发操作来解决冲突，并且需要中心服务器进行协调\cite{takeichi2024coordination}。
+	% OT技术则通过转换并发操作\cite{sun1998operational}来解决冲突，并且需要中心服务器进行协调\cite{takeichi2024coordination}。
+	% 在现在的Web实时协作领域中，人们常常使用CRDT算法，主要因为它不需要中央节点进行统一调度，且容错能力更强。
+
+	Yjs就是一个使用CRDT算法的高性能实时协作库，内置了文档状态同步和冲突解决机制\cite{nicolaescu2015yjs}。
+	它使用基于链表的CRDT数据结构，可以对任意位置进行插入和删除操作，在保持内存占用较低的同时又获得较好的性能表现。
+	现在，Yjs已经应用于Web编辑器中，CodeMirror和Quill这些工具都在使用。
+
+	% \subsection{WebSocket实时通信技术}
+
+	WebSocket协议提供了全双工通信通道，这意味着服务器与浏览器之间可以相互发送和接收消息，
+	能够实现浏览器和服务器间的异步通信\cite{1024463893.nh,zhou2019websocket}，这是实现实时协作的关键技术。
+	% 但对于HTTP协议，通信只能由客户端发起，服务器的消息却不能主动推送到浏览器，
+	% 这样的性能和协作及时性将大打折扣。
+	Hocuspocus库使用Yjs，可以基于WebSocket协议实现多客户端的文档状态同步，
+	而且它提供了文档初始化、存储、认证等可注册的事件接口，开发者可以很方便地利用这些接口
+	完成自己项目中的业务需求。
+
 	% Slidev（slide + dev）是专门为开发者设计的现代幻灯片制作工具。
 	% 它基于Vue.js组件系统，支持Markdown语法编写幻灯片内容，并提供了丰富的插件生态。
 	% Slidev的核心理念是将幻灯片制作与Web开发技术结合，支持代码高亮、实时预览和自定义主题。
@@ -161,16 +188,25 @@
 	% 现代Web幻灯片工具注重与开发者工具的集成。
 	% VS Code等代码编辑器提供了Slidev插件支持。
 	% 本平台通过集成CodeMirror编辑器，为开发者提供了熟悉的编码环境和实时预览功能。
-	\section{AI辅助创作}\label{sec:ai-assistance}
 
-	% \subsection{大语言模型与Slidev的融合}
+	\section{qwen-plus}
+	qwen-plus是由阿里巴巴团队开发的大语言模型，属于通义千问系列，
+	不仅支持中文、英文等主流语言，以及处理代码生成、逻辑推理等复杂任务，
+	还能理解较长的上下文并快速生成连贯的文本内容，
+	常应用于企业级的智能客服、舆情分析、个人智能助手等领域。
+	在本平台中，可以将Slidev的相关文档加载到它的上下文中，
+	以此来辅助用户快速生成幻灯片文档大纲以及优化部分内容的表达。
 
-	大语言模型（LLMs）如GPT系列、通义千问等，擅长处理各种自然语言任务。
-	这些模型通过预训练和微调，能够理解上下文并生成连贯的文本内容。
-	在文档创作领域，LLMs可以辅助用户生成初稿、优化表达和提供创意建议。
+	% \section{AI辅助创作}\label{sec:ai-assistance}
 
-	国内也有研究者将大语言模型应用于Slidev的内容生成\cite{slidevAi}，并开发了名为PreGenie的Agent框架，他们将多模态的文档输入到该框架，
-	生成出Slidev的源码，进而渲染出精美的幻灯片。
+	% % \subsection{大语言模型与Slidev的融合}
+
+	% 大语言模型（LLMs）如GPT系列、通义千问等，擅长处理各种自然语言任务。
+	% 这些模型通过预训练和微调，能够理解上下文并生成连贯的文本内容。
+	% 在文档创作领域，LLMs可以辅助用户生成初稿、优化表达和提供创意建议。
+
+	% 国内也有研究者将大语言模型应用于Slidev的内容生成\cite{slidevAi}，并开发了名为PreGenie的Agent框架，他们将多模态的文档输入到该框架，
+	% 生成出Slidev的源码，进而渲染出精美的幻灯片。
 
 
 	% \section{研究评述与展望}\label{sec:review-prospect}
