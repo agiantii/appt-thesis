@@ -220,7 +220,7 @@
     通过event.clipboardData.items获取剪切板内容，
     而后通过item.type来判断粘贴内容的类型，
     后端会以此对视频的格式、大小先后校验，视频的格式得属于MP4、WebM等常见格式，
-    大小应小于100MB，而后上传OSS(Object Storage Service，对象存储服务)，
+    大小应小于100MB，而后上传OSS，
     上传成功后返回对应的URL，
     最终会以<video controls src="\{URL\}"></video>的标签插入编辑器中。
 
