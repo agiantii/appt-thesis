@@ -299,15 +299,12 @@
     % 需要说明的是，
     % 权限认证发生在Websocket连接前，因此，在建立连接后，撤销协作者的编辑权限也不能马上另其进入只读模式。
     而事件内部的功能已通过代码注释说明，如图\ref{fig:Hocuspocus}所示。
-    % 主要通过Hocuspocus提供的生命周期钩子实现WebSocket的权限校验、文档加载与持久化，
-    % 代码中的注释分别说明了每个钩子内部所实现的功能，如图\ref{fig:Hocuspocus}所示。
-    % 后端Hocuspocus服务器主要通过图\ref{fig:Hocuspocus}所示的函数实现后端WebSocket的权限校验、文档加载与持久化，
-    % 代码中的注释分别说明了每个钩子内部所实现的功能。
+
 
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/code/Hocuspocus-all-lg-width.png}
-        \caption{Hocuspocus服务端核心代码}
+        \caption{后端Hocuspocus核心逻辑代码}
         \label{fig:Hocuspocus}
     \end{figure}
     % \begin{figure}[htbp]
