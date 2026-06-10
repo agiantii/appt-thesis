@@ -1,24 +1,25 @@
 \begin{cuzchapter}{系统测试}{chap:test}
     %  \section{测试与评估}\label{sec:testing-evaluation}
 
-    为保证系统质量以及确保系统能够符合系统的功能性需求分析，
-    接下来将对核心功能进行了功能测试，
-    重点验证用户登录、协作者权限管理、幻灯片文档协同编辑和版本管理等功能模块是否正常运行、符合预期，
-    同时关注各个模式的使用体验。
+    % 为保证系统质量以及确保系统能够符合系统的功能性需求分析，
+    % 接下来将对核心功能进行了功能测试，
+    % 重点验证用户登录、协作者权限管理、幻灯片文档协同编辑和版本管理等功能模块是否正常运行、符合预期，
+    % 同时关注各个模式的使用体验。
     % 测试结果显示所有核心功能均正常运行，符合前文的系统需求。
 
     \section{系统测试环境}
-    为了全面测试本平台的功能以及确保测试结果可重现，本次测试在统一的环境下进行。
-    系统测试环境配置如表\ref{tab:testenv}所示。
+    为了全面测试本平台的功能以及确保测试结果可重现，本次测试在统一的环境下进行，
+    并利用多开浏览器来模拟多用户协作。
+    系统测试环境如表\ref{tab:testenv}所示。
 
 
 \begin{table}[htbp]
     \centering
-    \caption{系统测试环境配置表}
+    \caption{系统测试环境表}
     \label{tab:testenv}
     \begin{tabular}{ll}
         \toprule
-        \textbf{配置项} & \textbf{环境或版本} \\
+        配置项 & 环境或版本 \\
         \midrule
         处理器   & 12th Gen Intel(R) Core(TM) i7-12700H (2.30 GHz) \\
         \addlinespace
@@ -29,6 +30,8 @@
         MySQL    & 8.0.30 \\
         \addlinespace
         NestJS & 11.0.1 \\
+        \addlinespace 
+        React & 19.2.4 \\
         \addlinespace
         浏览器   &  Edge浏览器、谷歌浏览器以及火狐浏览器 \\
 
@@ -38,11 +41,15 @@
     
 
     \section{系统功能测试}
-
+    为保证系统质量以及确保系统能够符合系统的功能性需求分析，
+    接下来将对核心功能进行了功能测试，
+    重点验证用户登录、协作者权限管理、幻灯片管理、
+    幻灯片创作和代码片段管理等功能模块是否正常运行、符合预期。
+    % 同时关注各个模式的使用体验。
     \subsection{用户登录模块功能测试}
     用户登录模块功能测试
-    主要关注验证码随机生成、用户密码格式校验、用户登录、用户登录状态判功能是否符合预期。
-    用户登录模块功能测试结果如表\ref{test-login}所示。
+    主要关注验证码随机生成、用户密码格式校验、用户登录、用户登录状态判功能等是否符合预期。
+    用户登录模块功能测试结果如表\ref{tab:test-login}所示。
     \begin{table}[htbp]
     \caption{用户登录模块功能测试}
 
@@ -50,7 +57,7 @@
     \centering
     \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
         \toprule
-        测试功能 & 测试描述 & 预期结果 & 测试结果 \\
+        测试名称 & 测试描述 & 预期结果 & 测试结果 \\
         \midrule
         % 用户密码格式校验 & 用户登录时，输入仅有数字或长度仅为2的密码 & 登录失败，平台提示格式错误 & 通过 \\
         % \addlinespace 
@@ -65,10 +72,11 @@
         \bottomrule
     \end{tabular}
 \end{table}
-\section{协作者权限管理模块功能测试}
+\subsection{协作者权限管理模块功能测试}
     协作者权限管理模块功能测试
     主要关注owner、editor、commenter、viewer四种角色进行操作时是否能正常地校验权限，
-   协作者权限管理模块功能测试结果如表\ref{tab:test-permission}所示。
+    每个角色选取一些权限内或权限外的的用例进行测试。
+    协作者权限管理模块功能测试结果如表\ref{tab:test-permission}所示。
 
     \begin{table}[htbp]
         \caption{协作者权限管理模块功能测试}
@@ -76,50 +84,85 @@
         \centering
         \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
             \toprule
-            测试功能        & 测试描述                & 预期结果              & 测试结果 \\
+            测试名称        & 测试描述                & 预期结果              & 测试结果 \\
             \midrule
             owner权限     & owner删除幻灯片      & 操作成功              & 通过 \\
             \addlinespace
             editor权限    & editor尝试删除幻灯片   & 操作被拒绝，并提示用户无权操作   & 通过 \\
             \addlinespace
-            commenter权限 & commenter尝试编辑内容 & 编辑区只读，无法编辑        & 通过 \\
+            commenter权限 & commenter尝试编辑内容  & 编辑区只读，无法编辑，但可以实时查看其他协作者的编辑区域  & 通过 \\
+            % \addlinespace
+            % commenter权限 & 1.commenter尝试编辑内容 \newline 2.commenter发表评论  & 1.编辑区只读，无法编辑，但可以实时查看其他协作者的编辑区域 \newline 2.评论发表成功         & 通过 \\
             \addlinespace
-            viewer权限    & viewer尝试输入评论    & 评论请求被拦截，并提示用户无法评论 & 通过 \\
+            viewer权限    & viewer尝试发表评论    & 评论请求被拦截，并提示用户无法评论 & 通过 \\
             \bottomrule
         \end{tabular}
     \end{table}
-\section{幻灯片管理模块功能测试}
+\subsection{幻灯片管理模块功能测试}
+幻灯片管理模块主要测试幻灯片添加、幻灯片移动、 幻灯片删除等功能，
+且由具有管理权限的用户执行。
+幻灯片管理模块功能测试结果如表\ref{tab:test-slide-management}所示。
     \begin{table}[htbp]
         \caption{幻灯片管理模块功能测试}
-        \label{tab:test-management}
+        \label{tab:test-slide-management}
         \centering
         \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
             \toprule
-            测试功能        & 测试描述                & 预期结果              & 测试结果 \\
+            测试名称        & 测试描述                & 预期结果              & 测试结果 \\
             \midrule
-            幻灯片添加     & owner删除幻灯片      & 操作成功              & 通过 \\
+            幻灯片添加     &    用户在某个幻灯片A下添幻灯片B  & 目标幻灯片A下成功新增所添加的幻灯片B    & 通过 \\
             \addlinespace
-            幻灯片移动    & editor尝试删除幻灯片   & 操作被拒绝，并提示用户无权操作   & 通过 \\
+            幻灯片移动    & 1.用户将幻灯片A移动到处于同一幻灯片空间的幻灯片B下 \newline 2.用户将幻灯片A移动到不在同一幻灯片空间的幻灯片C下 \newline 3.用户尝试将幻灯片A父节点设置为自己  & 1.幻灯片A以及其子幻灯片均移动到幻灯片B下 \newline 2.系统提示不能移动到其他空间 \newline 3.系统提示不能将父节点设置为自己  & 通过 \\
             \addlinespace
-            幻灯片删除 & commenter尝试编辑内容 & 编辑区只读，无法编辑        & 通过 \\
+            幻灯片删除 & 用户删除幻灯片A & 幻灯片A以及其子幻灯片均被删除        & 通过 \\
         
             \bottomrule
         \end{tabular}
     \end{table}
-    \section{幻灯片创作模块功能测试}
+    \subsection{幻灯片创作模块功能测试}
     
+    幻灯片创作模块
+    主要对幻灯片文档基础编辑、幻灯片文档协同编辑、幻灯片文档版本管理、AI辅助创作等功能模块进行测试。
+    
+    \begin{enumerate}
+        \item 幻灯片文档基础编辑模块功能测试
+        
+        幻灯片文档基础编辑模块主要对快捷键使用、文件上传、大纲同步等功能进行测试，
+        幻灯片文档基础编辑模块功能测试结果如表\ref{tab:test-editor-basic}所示。
+        \begin{table}[htbp]
+    \caption{幻灯片文档基础编辑模块功能测试}
+    \label{tab:test-editor-basic}
+    \centering
+    \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+        \toprule
+        测试名称 & 测试描述 & 预期结果 & 测试结果 \\
+        \midrule
+        快捷键使用 & 用户使用Ctrl+B、Ctrl+Alt+B等快捷键 & 能正常呼出/关闭对应的窗口 & 通过 \\
+        \addlinespace
+        图片文件上传   & 用户在编辑器中使用Ctrl+V上传小于5MB的JPG图片& 上传成功并返回URL，以<img>标签形式插入编辑器  & 通过 \\
+        \addlinespace 
+        视频文件上传   & 用户在编辑器中使用Ctrl+V上传120MB的MP4视频 & 提示视频文件大小不能超过 100MB & 通过 \\
+        \addlinespace
+        大纲同步   & 用户点击幻灯片大纲第3页的标题 & 编辑器区域和预览窗口都跳转到对应幻灯片页面 & 通过 \\
 
-   
-    \subsection{实时协作功能测试}
-    实时协作模块利用多开浏览器测试多用户同时编辑时的内容同步、协作状态显示等能力，如表\ref{tab:test-collab}所示。
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+        \item  幻灯片文档协同编辑模块功能测试
+        
+            幻灯片文档协同编辑模块利用多开浏览器
+            测试多用户同时编辑时的内容同步、协作状态显示等功能，
+    幻灯片文档协同编辑模块功能测试结果
+    如表\ref{tab:test-collab}所示。
 
 \begin{table}[htbp]
-    \caption{实时协作功能测试}
+    \caption{幻灯片文档协同编辑模块功能测试}
     \label{tab:test-collab}
     \centering
     \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
         \toprule
-        测试功能 & 测试描述 & 预期结果 & 测试结果 \\
+        测试名称 & 测试描述 & 预期结果 & 测试结果 \\
         \midrule
         文字输入同步 & 用户A输入文字，用户B观察编辑区 & B的编辑区实时显示A的修改 & 通过 \\
         \addlinespace
@@ -132,48 +175,100 @@
         用户加入状态显示 & 用户C在A和B已协作时打开同一文档 & A和B的实时协作成员列表中立即出现C & 通过 \\
          \addlinespace
         用户离开状态更新 & 用户A关闭编辑页面，用户B保持在线 & B的实时协作成员列表中不再显示A  & 通过 \\
-          \addlinespace
-        用户重连 & 用户A离开后重连，用户B保持在线 & A重连后自动恢复最新文档内容 & 通过 \\
+        %   \addlinespace
+        % 用户重连 & 用户A离开后重连，用户B保持在线 & A重连后自动恢复最新文档内容 & 通过 \\
         \bottomrule
     \end{tabular}
 \end{table}
-
-    \subsection{版本管理功能测试}
-    版本管理模块测试保存版本、查看历史、对比差异和回滚等操作，如表\ref{tab:test-version}所示。
-
-    \begin{table}[htbp]
-        \caption{版本管理功能测试}
+        \item 幻灯片文档版本管理模块功能测试
+        
+        幻灯片文档版本管理模块主要测试新版本保存、历史记录查看、版本差异对比和指定版本回滚功能，
+    幻灯片文档版本管理模块功能测试结果如表\ref{tab:test-version}所示。
+      \begin{table}[htbp]
+        \caption{幻灯片文档版本管理模块功能测试}
         \label{tab:test-version}
         \centering
         \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
             \toprule
-            测试功能    & 测试描述        & 预期结果              & 测试结果 \\
+            测试名称    & 测试描述        & 预期结果              & 测试结果 \\
             \midrule
-            保存新版本   & 编辑内容后提交版本，修改内容，输入提交信息“v1” & 生成新版本号，历史列表中出现该版本 & 通过 \\
+            新版本保存   & 编辑内容后提交版本，修改内容，输入提交信息“v1” & 提交的版本成功添加到版本历史 & 通过 \\
             \addlinespace
-            查看历史记录  & 打开版本列表，查看版本历史          & 显示所有提交信息、时间       & 通过 \\
+            历史记录查看  & 打开版本列表，查看版本历史          & 显示所有提交信息、时间       & 通过 \\
             \addlinespace
-            对比版本差异  & 选择两个版本进行差异比较       & 正确可视化内容的差异        & 通过 \\
+            版本差异对比  & 选择两个版本进行差异比较       & 正确可视化内容的差异        & 通过 \\
             \addlinespace
-            回滚到指定版本 & 执行回滚到旧版本，对版本v1执行回滚         & 当前内容恢复为v1状态       & 通过 \\
+            指定版本回滚 & 执行回滚到旧版本v1      & 当前内容恢复为v1状态       & 通过 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+        \item AI辅助创作模块功能测试
+        
+        AI辅助创作模块主要测试幻灯片大纲生成、内联编辑的功能，
+        AI辅助创作模块功能测试结果如表\ref{tab:test-ai}所示。
+
+          \begin{table}[htbp]
+        \caption{AI辅助创作模块功能测试}
+        \label{tab:test-ai}
+        \centering
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+            \toprule
+            测试名称 & 测试描述       & 预期结果          & 测试结果 \\
+            \midrule
+            幻灯片大纲生成 & 用户输入系统中存在的主题、页数等需求，并上传参考文档 & AI根据参考文档生成符合需求的幻灯片文档大纲& 通过 \\
+            \addlinespace
+            内联编辑 &   用户使用内联编辑的AI生图功能，提示词为“冯诺依曼结构图”  &  正确生成对应图片，并以<img>插入编辑器 & 通过 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+        
+    \end{enumerate}
+   
+
+
+    % \subsection{幻灯片文档版本管理模块功能测试}
+    % 幻灯片文档版本管理模块功能测试保存版本、查看历史、对比差异和回滚等操作，
+    % 幻灯片文档版本管理模块功能测试结果如表\ref{tab:test-version}所示。
+
+  
+    \subsection{代码片段管理模块功能测试}
+    代码片段管理模块主要测试代码片段的添加、修改、删除等功能是否正常。
+代码片段管理模块功能测试结果如表\ref{tab:code-comment}所示。
+    \begin{table}[htbp]
+        \caption{代码片段管理模块功能测试}
+        \label{tab:code-comment}
+        \centering
+        \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
+            \toprule
+            测试名称 & 测试描述       & 预期结果          & 测试结果 \\
+            \midrule
+            代码片段添加 & 用户新增一份代码片段，且该片段名称不重复 & 代码片段成功添加，同时可以在编辑器中使用 & 通过 \\
+            \addlinespace
+            代码片段修改 & 用户将某一份代码片段名称修改为重复过的代码片段 &  平台提示该代码片段名称已存在  & 通过 \\
+            \addlinespace
+            代码片段删除 & 用户删除一份代码片段   & 代码片段成功删除 & 通过 \\
             \bottomrule
         \end{tabular}
     \end{table}
 
-    \subsection{评论功能测试}
-    评论功能模块测试在幻灯片下添加评论和回复评论，如表\ref{tab:test-comment}所示。
+
+    \subsection{幻灯片评论模块功能测试}
+    幻灯片评论模块功主要测试评论添加、评论回复和评论删除功能，关注删除评论时其子评论是否能够正确删除。
+    幻灯片评论模块功能测试结果如表\ref{tab:test-comment}所示。
 
     \begin{table}[htbp]
-        \caption{评论功能测试}
+        \caption{幻灯片评论模块功能测试}
         \label{tab:test-comment}
         \centering
         \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{5.5cm} >{\raggedright\arraybackslash}p{4cm} c}
             \toprule
-            测试功能 & 测试描述       & 预期结果          & 测试结果 \\
+            测试名称 & 测试描述       & 预期结果          & 测试结果 \\
             \midrule
-            添加评论 & 用户在幻灯片下发表评论，输入文本“寄存器部分能不能具体一点” & 评论区能显示新增的评论内容 & 通过 \\
+            评论添加 & 用户在幻灯片下发表评论，输入文本“寄存器部分能不能具体一点” & 评论区能显示新增的评论内容 & 通过 \\
             \addlinespace
-            回复评论 & 对已有评论进行回复，点击某评论回复，输入“可以的”    & 回复嵌套显示，引用关系正确 & 通过 \\
+            评论回复 & 对已有评论进行回复，点击某评论回复，输入“可以的”    & 在目标评论下成功添加评论“可以的”，且其构造的path字段正确 & 通过 \\
+            \addlinespace
+            评论删除 & 评论发表者对自己的评论进行删除   &  该评论以及子评论均被成功删除 & 通过 \\
             \bottomrule
         \end{tabular}
     \end{table}
