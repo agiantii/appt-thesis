@@ -355,7 +355,7 @@
     当新增一条评论时，只需要把父评论的path加上当前评论的id，就能得到该评论的path。作者可以使用如SELECT * FROM
     slide\_comments WHERE path LIKE '1-5-\%'的SQL查询语句，一次性获取任意评论节点下的所有子孙评论，不需要递归查询；
     删除某条评论及其所有回复时同样也只需要一条如DELETE FROM slide\_comments WHERE path LIKE
-    '1-5-\%'的SQL语句，不需要递归删除。
+    '1-5-\%'的SQL语句，不需要逐个删除。
     评论表结构如表\ref{tab:slide-comments}所示。
     % 另外，评论操作中最频繁的两个场景，正好是物化路径比较擅长的：
     % 一个是展开某条评论下的所有回复，这时候只需要执行如SELECT * FROM slide\_comments WHERE path LIKE '1-5-\%'这样一条SQL查询，
