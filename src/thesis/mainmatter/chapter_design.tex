@@ -168,7 +168,7 @@
     对同一个幻灯片，会优先返回已经启动的进程所对应的页面URL，
     其格式为http://\{IP\}:\{PORT\}，
     同时定时清理1小时内不再更新的幻灯片所对应的进程。
-    而Build模式下则不会，若未构建则提示用户进行构建，否则直接返回最后构建的静态页面URL。
+    而Build模式下则不会，若未构建则提示用户进行构建，否则直接返回最后构建的静态页面URL，
     其格式为http://\{IP\}/api/v1/presentation/\{slideId\}。
     在用户有查阅权限的情况下，
     幻灯片预览流程如图\ref{fig:slide-preview-flowchart}所示。
@@ -187,11 +187,10 @@
     % \end{figure}
         \subsection{幻灯片文档基础编辑模块设计与实现}
     用户可以在编辑器中编辑幻灯片文档的内容，
-    编辑器使用轻量级的编辑器CodeMirror，
-    前端通过加入HTML、CSS、Markdown相关的插件，
+    前端采用轻量级的开源编辑器CodeMirror，
+    并加入HTML、CSS、Markdown相关的插件，
     实现代码高亮、基础的代码提示等常见编辑器的功能。
     % 而且CodeMirror与React兼容，只需要将编辑器视图挂载到React组件内，
-    % 就可以把编辑器的内部状态同步到React。
 
     % Slidev的语法和一般的Markdown有所不同，
     前端根据Slidev语法解析幻灯片的文档内容，划分页面大纲，每个大纲只显示部分关键内容，
@@ -274,7 +273,7 @@
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/shared-doc-presentation-v2.png}
-        \caption{共享幻灯片文档演示界面}
+        \caption{幻灯片文档协同编辑演示界面}
         \label{fig:shared-doc-presentation-interface}
     \end{figure}
 
@@ -488,7 +487,7 @@
 
     用户可以很方便地管理和使用自己常用的代码片段，
     编辑器中编辑代码内容，再输入片段名称，保存为代码片段，
-    代码片段就会保存到用户的个人片段库中，如图\ref{fig:snippets-interface}所示。
+    代码片段就会保存到用户的个人代码片段库中，如图\ref{fig:snippets-interface}所示。
     \begin{figure}[!htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/snippets-management-v3.png}
@@ -523,7 +522,8 @@
         \label{fig:explore-interface}
     \end{figure}
 
-    平台里集成评论功能，可以对幻灯片文档内容进行讨论和反馈，如图\ref{fig:comment-interface}所示。
+    点击对应的幻灯片，就可以进入其演示界面，
+    在这里可以对幻灯片内容进行讨论和反馈，如图\ref{fig:comment-interface}所示。
     评论的树形结构是由评论表的replyId和path字段共同实现的。
 
     \begin{figure}[htbp]
