@@ -495,11 +495,13 @@
         \label{fig:snippets-interface}
     \end{figure}
 
-    想要插入代码片段时，点击插入菜单里的“代码片段”选项，就能从片段库中选择需要的片段插入到当前光标位置，
+    想要插入代码片段时，点击片段库中选择需要的片段，即可将其插入到当前光标位置，
+    % 想要插入代码片段时，点击插入菜单里的“代码片段”选项，就能从片段库中选择需要的片段插入到当前光标位置，
     还可以在编辑器中输入代码片段名称的前缀，触发对应代码提示。
     为实现代码提示功能，编辑器挂载时会调用snippetApi.findAll()获取所有用户自定义的代码片段列表，
     并注入到CodeMirror的autocompletion配置，之后当用户输入时，就会过滤出snippets数组中name匹配的代码片段。
     代码提示效果如图\ref{fig:snnipets-intelligence}所示。
+    % 代码提示效果如图\ref{fig:snnipets-intelligence}所示。
 
     \begin{figure}[!htbp]
         \centering
