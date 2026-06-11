@@ -22,8 +22,8 @@
 	基于Web的轻量化幻灯片工具逐渐出现在人们的视野，
 	% 如Reveal.js、Marp、Slidev等工具支持用Markdown语法编写幻灯片内容，
 	% 还可以结合现代Web栈实现许多有趣且丰富的交互效果。
-	其中，Slidev（slide + dev）作为一个基于Web的幻灯片渲染引擎，不仅支持用Vue编写组件，而且支持丰富的自定义插件和主题，
-	可以通过Slidev的主题等配置完成大部分布局排版和样式的设置，让用户以Markdown的形式专注于编写幻灯片的内容，
+	其中，Slidev作为一个基于Web的幻灯片渲染引擎，不仅支持用Vue编写组件，而且支持丰富的自定义插件和主题，
+	可以通过Slidev的主题等配置完成大部分布局排版和样式的设置。让用户以Markdown的形式专注于编写幻灯片的内容，
 	并制作出具有交互式演示功能的、高度可自定义的幻灯片\cite{slidevteam2026slidedoc}。
 	% Markdown作为一种轻量级标记语言，因其简洁性和易读性在文档编写中广泛应用。
 	% 但是Slidev缺乏一个在线协作的平台，无法支持多人同时编辑同一份幻灯片，
@@ -76,7 +76,7 @@ Slidev构建出的幻灯片本质是一个网页，
 	用户可以通过浏览器访问URL即可在平板、手机等多端上查看最新版本的幻灯片，
 	让幻灯片的分享变得更加方便，
 	同时可以结合Web实现丰富的交互式效果。
-	2006年，Raggett提出了基于JavaScript和CSS的Web幻灯片方案Slidy\cite{raggett2006slidywebppt}，
+	2006年，Raggett提出了基于JavaScript和CSS的Web幻灯片框架Slidy\cite{raggett2006slidywebppt}，
 	而后，Reveal.js、Marp等框架也慢慢受到用户的关注，
 	不过相对于Slidev，Reveal.js和Slidy无法像Slidev一样利用Vue来实现很方便地复用组件，
 	且语法更加复杂。
