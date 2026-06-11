@@ -423,12 +423,12 @@
     %     \caption{调用大模型生成大纲核心代码}
     %     \label{fig:ai-outline-generate}
     % \end{figure}
-    具体流程如图\ref{fig:ai-generate-flowchart}所示。
+    幻灯片文档大纲生成流程如图\ref{fig:ai-generate-flowchart}所示。
 
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.5\textwidth]{figures/drawio/AI大纲流程图.drawio.png}
-        \caption{大纲智能生成流程图}
+        \caption{幻灯片文档大纲生成流程图}
         \label{fig:ai-generate-flowchart}
     \end{figure}
 
@@ -449,7 +449,7 @@
         触发内联编辑器时，前端会将光标选中的部分作为修改的目标，
         通过“/”来触发常用功能，如润色文案、更换布局、修复语法、AI生图，
         也可以手动输入指令。
-        其界面如图\ref{fig:inline-editing-interface}所示。
+        内联编辑器界面如图\ref{fig:inline-editing-interface}所示。
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/ai-assistant-inline.png}
@@ -470,7 +470,7 @@
     并且需要通过任务id轮询获取图像生成的结果。由于这个结果是临时保存在阿里云服务器的，
     所以需要上传生成的图像到阿里云的OSS，
         最终返回对应的图像URL。
-    具体流程如图\ref{fig:ai-generate-iamge-flowchart}所示。
+    AI生图流程如图\ref{fig:ai-generate-iamge-flowchart}所示。
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=0.55\textwidth]{figures/drawio/AI生图流程图.drawio.png}
@@ -487,7 +487,7 @@
 
     用户可以很方便地管理和使用自己常用的代码片段，
     编辑器中编辑代码内容，再输入片段名称，保存为代码片段，
-    代码片段就会保存到用户的个人代码片段库中，如图\ref{fig:snippets-interface}所示。
+    代码片段就会保存到用户的个人代码片段库中。代码片段管理界面如图\ref{fig:snippets-interface}所示。
     \begin{figure}[!htbp]
         \centering
         \includegraphics[width=0.9\textwidth]{figures/appt/snippets-management-v3.png}
@@ -499,7 +499,7 @@
     还可以在编辑器输入代码片段名称的前缀，触发对应代码提示。
     为实现代码提示功能，编辑器挂载时会调用snippetApi.findAll()获取所有用户自定义的代码片段列表，
     并注入到CodeMirror的autocompletion配置，之后当用户输入时，就会过滤出snippets数组中name匹配的代码片段。
-    如图\ref{fig:snnipets-intelligence}所示。
+    代码提示效果如图\ref{fig:snnipets-intelligence}所示。
 
     \begin{figure}[!htbp]
         \centering
@@ -523,7 +523,7 @@
     \end{figure}
 
     点击卡片就可以查看对应的幻灯片，
-    在这里可以对幻灯片内容进行讨论和反馈，如图\ref{fig:comment-interface}所示。
+    在这里可以对幻灯片内容进行讨论和评论，如图\ref{fig:comment-interface}所示。
     评论的树形结构是由评论表的replyId和path字段共同实现的。
 
     \begin{figure}[htbp]
